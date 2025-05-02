@@ -150,15 +150,22 @@
                     <img class="rounded-circle header-profile-user me-2" src="assets/images/users/avatar-1.jpg"
                         alt="Header Avatar" height="32">
                     <div class="d-none d-xl-block text-start" style="line-height: 1;">
-                        <span class="d-block fw-bold text-dark">Nama User</span>
-                        <small class="text-muted">Role User</small>
+                        <span class="d-block fw-bold text-dark" title="{{ Auth::user()->name }}">
+                            {{ Str::limit(Auth::user()->name, 15, '...') }}
+                        </span>
+                        <small class="text-muted">
+                            {{ Auth::user()->role->nama_role }}
+                            @if (Auth::user()->role->nama_role === 'Teknisi')
+                                ({{ Auth::user()->teknisi->jenis_teknisi->nama_jenis_teknisi }})
+                            @endif
+                        </small>
                     </div>
                     <i class="mdi mdi-chevron-down ms-2 text-dark"></i>
                 </button>
                 <div class="dropdown-menu dropdown-menu-end">
                     <!-- item-->
                     <a class="dropdown-item" href="#"><i class="ri-user-line align-middle me-1"></i> Profile</a>
-                    <a class="dropdown-item text-danger" href="#"><i
+                    <a class="dropdown-item text-danger" href="{{ url('logout') }}"><i
                             class="ri-shut-down-line align-middle me-1 text-danger"></i> Logout</a>
                 </div>
             </div>

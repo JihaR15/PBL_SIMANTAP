@@ -15,36 +15,39 @@
                     </a>
                 </li>
 
-                <li class="menu-title">Pengguna</li>
+                @if(auth()->check() && auth()->user()->role->kode_role === 'ADM')
+                    <li class="menu-title">Pengguna</li>
 
-                <li>
-                    <a href="index.html" class="waves-effect">
-                        <i class="ri-team-line"></i>
-                        <span>Manajemen Pengguna</span>
-                    </a>
-                </li>
+                    <li>
+                        <a href="index.html" class="waves-effect">
+                            <i class="ri-team-line"></i>
+                            <span>Manajemen Pengguna</span>
+                        </a>
+                    </li>
 
-                <li class="menu-title">Master Data</li>
+                    <li class="menu-title">Master Data</li>
 
-                <li>
-                    <a href="index.html" class="waves-effect">
-                        <i class="ri-building-2-line"></i>
-                        <span>Data Gedung & Area</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="index.html" class="waves-effect">
-                        <i class="ri-tools-line"></i>
-                        <span>Data Fasilitas & Barang</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="index.html" class="waves-effect">
-                        <i class="ri-calendar-line"></i>
-                        <span>Data Periode</span>
-                    </a>
-                </li>
+                    <li>
+                        <a href="index.html" class="waves-effect">
+                            <i class="ri-building-2-line"></i>
+                            <span>Data Gedung & Area</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="index.html" class="waves-effect">
+                            <i class="ri-tools-line"></i>
+                            <span>Data Fasilitas & Barang</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="index.html" class="waves-effect">
+                            <i class="ri-calendar-line"></i>
+                            <span>Data Periode</span>
+                        </a>
+                    </li>
+                @endif
 
+                @if(auth()->check() && auth()->user()->role->kode_role === 'SRN')
                 <li class="menu-title">LAYANAN PELAPORAN</li>
                 <li>
                     <a href="index.html" class="waves-effect">
@@ -58,39 +61,59 @@
                         <span>Riwayat Verifikasi</span>
                     </a>
                 </li>
+                @endif
 
 
-                <li class="menu-title">Laporan</li>
+                @if(auth()->check() && in_array(auth()->user()->role->kode_role, ['MHS', 'DSN', 'TDK']))
+                    <li class="menu-title">Laporan</li>
 
-                <li>
-                    <a href="index.html" class="waves-effect">
-                        <i class="ri-file-paper-2-line"></i>
-                        <span>Buat Laporan</span>
-                    </a>
-                </li>
+                    <li>
+                        <a href="index.html" class="waves-effect">
+                            <i class="ri-file-paper-2-line"></i>
+                            <span>Buat Laporan</span>
+                        </a>
+                    </li>
 
-                <li>
-                    <a href="index.html" class="waves-effect">
-                        <i class="ri-history-line"></i>
-                        <span>Riwayat Laporan</span>
-                    </a>
-                </li>
-                
-                <li class="menu-title">Status</li>
+                    <li>
+                        <a href="index.html" class="waves-effect">
+                            <i class="ri-history-line"></i>
+                            <span>Riwayat Laporan</span>
+                        </a>
+                    </li>
+                    
+                    <li class="menu-title">Status</li>
 
-                <li>
-                    <a href="index.html" class="waves-effect">
-                        <i class="ri-search-eye-line"></i>
-                        <span>Status Perbaikan</span>
-                    </a>
-                </li>
+                    <li>
+                        <a href="index.html" class="waves-effect">
+                            <i class="ri-search-eye-line"></i>
+                            <span>Status Perbaikan</span>
+                        </a>
+                    </li>
 
-                <li>
-                    <a href="index.html" class="waves-effect">
-                        <i class="ri-star-smile-line"></i>
-                        <span>Feedback Perbaikan</span>
-                    </a>
-                </li>
+                    <li>
+                        <a href="index.html" class="waves-effect">
+                            <i class="ri-star-smile-line"></i>
+                            <span>Feedback Perbaikan</span>
+                        </a>
+                    </li>
+                @endif
+
+                @if(auth()->check() && auth()->user()->role->kode_role === 'TKS')
+                    <li class="menu-title">Laporan</li>
+
+                    <li>
+                        <a href="index.html" class="waves-effect">
+                            <i class="ri-inbox-line"></i>
+                            <span>Laporan Masuk</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="index.html" class="waves-effect">
+                            <i class="ri-history-line"></i>
+                            <span>Riwayat Perbaikan</span>
+                        </a>
+                    </li>
+                @endif
 
                 {{-- <li>
                     <a href="javascript: void(0);" class="has-arrow waves-effect">
