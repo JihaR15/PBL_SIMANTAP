@@ -40,6 +40,11 @@ class UserModel extends Authenticatable
         return $this->hasOne(TeknisiModel::class, 'user_id');
     }
 
+    public function hasRole($role)
+    {
+        return $this->role->kode_role == $role;
+    }
+
     // public function laporan()
     // {
     //     return $this->hasMany(LaporanModel::class, 'user_id');
