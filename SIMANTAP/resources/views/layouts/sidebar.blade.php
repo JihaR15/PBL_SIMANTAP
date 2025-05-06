@@ -5,11 +5,11 @@
         <!--- Sidemenu -->
         <div id="sidebar-menu">
             <!-- Left Menu Start -->
-            <ul class="metismenu list-unstyled" id="side-menu">
+            <ul class="metismenu list-unstyled mm-show" id="side-menu">
                 {{-- <li class="menu-title">Menu</li> --}}
 
-                <li>
-                    <a href="index.html" class="waves-effect">
+                <li class="{{ $activeMenu == 'dashboard' ? 'mm-active' : '' }}">
+                    <a href="{{ url('/') }}" class="waves-effect " >
                         <i class="ri-dashboard-line"></i>
                         <span>Dashboard</span>
                     </a>
@@ -19,7 +19,7 @@
                     <li class="menu-title">Pengguna</li>
 
                     <li>
-                        <a href="index.html" class="waves-effect">
+                        <a href="{{ url('/user') }}" class="waves-effect">
                             <i class="ri-team-line"></i>
                             <span>Manajemen Pengguna</span>
                         </a>

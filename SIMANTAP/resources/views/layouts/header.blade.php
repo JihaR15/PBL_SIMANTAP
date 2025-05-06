@@ -147,8 +147,8 @@
             <div class="dropdown d-inline-block user-dropdown ">
                 <button type="button" class="btn header-item waves-effect ms-2 d-flex align-items-center"
                     id="page-header-user-dropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    <img class="rounded-circle header-profile-user me-2" src="assets/images/users/avatar-1.jpg"
-                        alt="Header Avatar" height="32">
+                    <img class="rounded-circle header-profile-user me-2" src="{{ Auth::user()->foto_profile ? asset('images/' . Auth::user()->foto_profile) : asset('profile_placeholder.png') }}?{{ now() }}"
+                        alt="Header Avatar">
                     <div class="d-none d-xl-block text-start" style="line-height: 1;">
                         <span class="d-block fw-bold text-dark" title="{{ Auth::user()->name }}">
                             {{ Str::limit(Auth::user()->name, 15, '...') }}

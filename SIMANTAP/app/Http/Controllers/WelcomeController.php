@@ -8,8 +8,11 @@ class WelcomeController extends Controller
 {
     public function dashboard()
     {
+        $user = auth()->user();
+        $activeMenu = 'dashboard';
         return view('welcome', [
-            'title' => 'Selamat Datang, user',
+            'title' => 'Selamat Datang, ' . $user->name,
+            'activeMenu' => $activeMenu,
             'breadcrumbs' => [
                 ['label' => 'Dashboard']
             ]
