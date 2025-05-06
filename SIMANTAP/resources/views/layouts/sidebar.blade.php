@@ -19,9 +19,23 @@
                     <li class="menu-title">Pengguna</li>
 
                     <li>
+                        <a href="{{ url('/role') }}" class="waves-effect">
+                            <i class="ri-shield-user-line"></i>
+                            <span>Role Pengguna</span>
+                        </a>
+                    </li>
+
+                    <li>
                         <a href="{{ url('/user') }}" class="waves-effect">
                             <i class="ri-team-line"></i>
                             <span>Manajemen Pengguna</span>
+                        </a>
+                    </li>
+
+                    <li>
+                        <a href="{{ url('/jenisteknisi') }}" class="waves-effect">
+                            <i class="ri-user-settings-line"></i>
+                            <span>Jenis Teknisi</span>
                         </a>
                     </li>
 

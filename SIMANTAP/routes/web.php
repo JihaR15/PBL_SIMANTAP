@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\WelcomeController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\RoleController;
 use App\Http\Controllers\AuthController;
 
 
@@ -40,5 +41,16 @@ Route::middleware(['auth'])->group(function () {
         Route::put('user/{id}/update/', [UserController::class,'update'])->name('user.update');
         Route::get('user/{id}/delete/', [UserController::class,'confirmDelete'])->name('user.confirmDelete');
         Route::delete('user/{id}/delete/', [UserController::class,'destroy'])->name('user.delete');
+
+        //role
+        Route::get('role', [RoleController::class,'index'])->name('role.index');
+        Route::post('role/list', [RoleController::class,'list'])->name('role.list');
+        Route::get('role/create', [RoleController::class,'create'])->name('role.create');
+        Route::get('role/{id}/show/', [RoleController::class,'show'])->name('role.show');
+        Route::post('role/store', [RoleController::class,'store'])->name('role.store');
+        Route::get('role/{id}/edit/', [RoleController::class,'edit'])->name('role.edit');
+        Route::put('role/{id}/update/', [RoleController::class,'update'])->name('role.update');
+        Route::get('role/{id}/delete/', [RoleController::class,'confirmDelete'])->name('role.confirmDelete');
+        Route::delete('role/{id}/delete/', [RoleController::class,'destroy'])->name('role.delete');
     });
 });
