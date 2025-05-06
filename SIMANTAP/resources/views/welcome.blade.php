@@ -15,7 +15,7 @@
       
 
       <div class="row">
-          <div class="col-xl-6">
+          {{-- <div class="col-xl-6">
 
               <div class="card">
                   <div class="card-body pb-0">
@@ -116,7 +116,7 @@
                       <div id="column_line_chart" class="apex-charts" dir="ltr"></div>
                   </div>
               </div><!-- end card -->
-          </div>
+          </div> --}}
           <!-- end col -->
       </div>
       <!-- end row -->

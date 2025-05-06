@@ -66,15 +66,13 @@
                         </div>
                     </div>
 
-                    <div class="col-md-4 text-center">
+                    <div class="col-md-4 text-center mt-4">
                         <label for="foto_profile" class="position-relative d-block mx-auto"
                             style="width: 150px; height: 150px; clip-path: circle(50% at 50% 50%); cursor: pointer;">
                             <img src="{{ asset('profile_placeholder.png') }}" alt="Profile Picture"
                                 class="rounded-circle w-100">
-                            <div class="overlay rounded-circle" style="opacity: 0; transition: opacity 0.15s;"
-                                onmouseover="this.style.opacity = 1;" onmouseout="this.style.opacity = 0;">
-                                <i class="fas fa-upload position-absolute text-white"
-                                    style="top: 50%; left: 50%; transform: translate(-50%, -50%);"></i>
+                            <div class="overlay rounded-circle">
+                                <i class="fas fa-upload position-absolute text-white"></i>
                             </div>
                         </label>
                         <p class="mt-2 mb-1 text-muted" style="font-size: 14px;">Upload Foto Profil</p>
