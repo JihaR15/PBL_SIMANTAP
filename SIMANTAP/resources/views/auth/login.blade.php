@@ -184,7 +184,7 @@
             $('#form-login').validate({
                 rules: {
                     username: { required: true, minlength: 4, maxlength: 20 },
-                    password: { required: true, minlength: 6, maxlength: 20 }
+                    password: { required: true, minlength: 5, maxlength: 20 }
                 },
                 messages: {
                     username: "Username wajib diisi",
