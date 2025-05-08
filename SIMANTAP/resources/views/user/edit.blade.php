@@ -64,21 +64,21 @@
                                 </div>
                             </div>
 
-                            @if($user->role && $user->role->kode_role == 'TKS')
-                                <div class="form-group" id="jenis-teknisi-container" hidden>
-                                    <label class="col-form-label">Jenis Teknisi</label>
-                                    <div class="row mb-3">
-                                        <div class="col-sm-12">
-                                            <select name="jenis_teknisi_id" id="jenis_teknisi_id" class="form-select" required>
-                                                @foreach($jenis_teknisi as $jt)
-                                                    <option value="{{ $jt->jenis_teknisi_id }}" {{ (isset($user->teknisi) && $user->teknisi->jenis_teknisi_id == $jt->jenis_teknisi_id) ? 'selected' : '' }}>{{ $jt->nama_jenis_teknisi }}</option>
-                                                @endforeach
-                                            </select>
-                                            <small id="error-teknisi_id" class="error-text form-text text-danger"></small>
-                                        </div>
+
+                            <div class="form-group" id="jenis-teknisi-container" hidden>
+                                <label class="col-form-label">Jenis Teknisi</label>
+                                <div class="row mb-3">
+                                    <div class="col-sm-12">
+                                        <select name="jenis_teknisi_id" id="jenis_teknisi_id" class="form-select" required>
+                                            @foreach($jenis_teknisi as $jt)
+                                                <option value="{{ $jt->jenis_teknisi_id }}" {{ (isset($user->teknisi) && $user->teknisi->jenis_teknisi_id == $jt->jenis_teknisi_id) ? 'selected' : '' }}>{{ $jt->nama_jenis_teknisi }}</option>
+                                            @endforeach
+                                        </select>
+                                        <small id="error-teknisi_id" class="error-text form-text text-danger"></small>
                                     </div>
                                 </div>
-                            @endif
+                            </div>
+
 
                             <div class="form-group">
                                 <label>Password</label>
@@ -130,7 +130,7 @@
             justify-content: center;
             border-radius: 50%;
         }
-    
+
         label:hover .overlay {
             opacity: 1;
         }

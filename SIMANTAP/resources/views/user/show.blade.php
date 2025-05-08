@@ -5,14 +5,14 @@
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
-            <div class="d-flex align-items-start align-items-center">
-                <div class="me-4">
+            <div class="row align-items-center">
+                <div class="col-12 col-md-auto text-center mb-3 mb-md-0">
                     <img src="{{ $user->foto_profile ? asset('images/' . $user->foto_profile) : asset('profile_placeholder.png') }} ? {{ now() }}"
-                        alt="Foto Profil" class="rounded-circle"
+                        alt="Foto Profil" class="rounded-circle img-fluid"
                         style="width: 150px; height: 150px; object-fit: cover;">
                 </div>
 
-                <div class="flex-grow-1">
+                <div class="col-12 col-md">
                     <table class="table table-borderless table-sm">
                         <tr>
                             <td style="width: 150px;"><strong>ID</strong></td>
