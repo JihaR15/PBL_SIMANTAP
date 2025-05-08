@@ -20,11 +20,9 @@ return new class extends Migration
             $table->unsignedBigInteger('barang_lokasi_id')->index();
             $table->unsignedBigInteger('periode_id')->index();
             $table->unsignedBigInteger('kategori_kerusakan_id')->index();
-            $table->unsignedBigInteger('level_kerusakan_id')->index();
-            $table->unsignedBigInteger('prioritas_id')->index();
             $table->enum('status_verif', ['belum diverifikasi', 'diverifikasi'])->default('belum diverifikasi');
             $table->text('deskripsi');
-            $table->string('foto_laporan');
+            $table->string('foto_laporan')->nullable();
             $table->timestamps();
 
             $table->foreign('user_id')->references('user_id')->on('m_users');
@@ -34,8 +32,6 @@ return new class extends Migration
             $table->foreign('barang_lokasi_id')->references('barang_lokasi_id')->on('m_barang_lokasi');
             $table->foreign('periode_id')->references('periode_id')->on('m_periode');
             $table->foreign('kategori_kerusakan_id')->references('kategori_kerusakan_id')->on('m_kategori_kerusakan');
-            $table->foreign('level_kerusakan_id')->references('level_kerusakan_id')->on('m_level_kerusakan');
-            $table->foreign('prioritas_id')->references('prioritas_id')->on('m_prioritas');
         });
     }
 

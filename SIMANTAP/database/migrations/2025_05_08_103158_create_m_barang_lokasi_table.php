@@ -15,7 +15,6 @@ return new class extends Migration
             $table->id('barang_lokasi_id');
             $table->unsignedBigInteger('jenis_barang_id')->index();
             $table->unsignedBigInteger('tempat_id')->index();
-            $table->text('keterangan');
             $table->timestamps();
 
             $table->foreign('jenis_barang_id')->references('jenis_barang_id')->on('m_jenis_barang');

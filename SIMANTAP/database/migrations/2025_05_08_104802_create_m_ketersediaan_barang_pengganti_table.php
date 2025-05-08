@@ -11,10 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('m_level_kerusakan', function (Blueprint $table) {
-            $table->id('level_kerusakan_id');
-            $table->string('nama_level_kerusakan', 100);
-            $table->timestamps();
+        Schema::create('m_ketersediaan_barang_pengganti', function (Blueprint $table) {
+            $table->id('ketersediaan_barang_pengganti_id');
+            $table->string('nama_ketersediaan_barang', 100);
+            $table->double('nilai');
         });
     }
 
@@ -23,6 +23,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('m_level_kerusakan');
+        Schema::dropIfExists('m_ketersediaan_barang_pengganti');
     }
 };
