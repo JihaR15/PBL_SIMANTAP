@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\WelcomeController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\RoleController;
+use App\Http\Controllers\JenisTeknisiController;
 use App\Http\Controllers\AuthController;
 
 
@@ -52,5 +53,16 @@ Route::middleware(['auth'])->group(function () {
         Route::put('role/{id}/update/', [RoleController::class,'update'])->name('role.update');
         Route::get('role/{id}/delete/', [RoleController::class,'confirmDelete'])->name('role.confirmDelete');
         Route::delete('role/{id}/delete/', [RoleController::class,'destroy'])->name('role.delete');
+
+        //jenis teknisi
+        Route::get('jenisteknisi', [JenisTeknisiController::class,'index'])->name('jenisteknisi.index');
+        Route::post('jenisteknisi/list', [JenisTeknisiController::class,'list'])->name('jenisteknisi.list');
+        Route::get('jenisteknisi/create', [JenisTeknisiController::class,'create'])->name('jenisteknisi.create');
+        Route::get('jenisteknisi/{id}/show/', [JenisTeknisiController::class,'show'])->name('jenisteknisi.show');
+        Route::post('jenisteknisi/store', [JenisTeknisiController::class,'store'])->name('jenisteknisi.store');
+        Route::get('jenisteknisi/{id}/edit/', [JenisTeknisiController::class,'edit'])->name('jenisteknisi.edit');
+        Route::put('jenisteknisi/{id}/update/', [JenisTeknisiController::class,'update'])->name('jenisteknisi.update');
+        Route::get('jenisteknisi/{id}/delete/', [JenisTeknisiController::class,'confirmDelete'])->name('jenisteknisi.confirmDelete');
+        Route::delete('jenisteknisi/{id}/delete/', [JenisTeknisiController::class,'destroy'])->name('jenisteknisi.delete');
     });
 });
