@@ -32,6 +32,11 @@
             body {
                 visibility: hidden;
             }
+
+            .btn-success {
+                background-color: #28a745;
+                border-color: #28a745;
+            }
         </style>
     </head>
 

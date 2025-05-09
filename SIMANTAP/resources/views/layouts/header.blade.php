@@ -67,7 +67,7 @@
 
         <div class="d-flex">
 
-            <div class="dropdown d-inline-block d-lg-none ms-2">
+            {{-- <div class="dropdown d-inline-block d-lg-none ms-2">
                 <button type="button" class="btn header-item noti-icon waves-effect" id="page-header-search-dropdown"
                     data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     <i class="ri-search-line"></i>
@@ -87,7 +87,7 @@
                         </div>
                     </form>
                 </div>
-            </div>
+            </div> --}}
 
             <div class="dropdown d-inline-block">
                 <button type="button" class="btn header-item noti-icon waves-effect"
@@ -145,11 +145,11 @@
             </div>
 
             <div class="dropdown d-inline-block user-dropdown ">
-                <button type="button" class="btn header-item waves-effect ms-2 d-flex align-items-center"
+                <button type="button" class="btn header-item waves-effect ms-1 d-flex align-items-center"
                     id="page-header-user-dropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     <img class="rounded-circle header-profile-user me-2" src="{{ Auth::user()->foto_profile ? asset('images/' . Auth::user()->foto_profile) : asset('profile_placeholder.png') }}?{{ now() }}"
                         alt="Header Avatar">
-                    <div class="d-none d-xl-block text-start" style="line-height: 1;">
+                    <div class="d-none d-lg-block text-start lh-sm" >
                         <span class="d-block fw-bold text-dark" title="{{ Auth::user()->name }}">
                             {{ Str::limit(Auth::user()->name, 15, '...') }}
                         </span>
@@ -168,13 +168,6 @@
                     <a class="dropdown-item text-danger" href="{{ url('logout') }}"><i
                             class="ri-shut-down-line align-middle me-1 text-danger"></i> Logout</a>
                 </div>
-            </div>
-
-
-            <div class="dropdown d-none d-lg-inline-block ms-1">
-                <button type="button" class="btn header-item noti-icon waves-effect" data-toggle="fullscreen">
-                    <i class="ri-fullscreen-line text-dark"></i>
-                </button>
             </div>
 
         </div>

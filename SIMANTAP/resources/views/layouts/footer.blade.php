@@ -1,4 +1,4 @@
-<footer class="footer" style="position: fixed;">
+<footer class="footer" style="position: fixed; z-index: 25;">
     <div class="container-fluid">
         <div class="row">
             <div class="col-sm-6">

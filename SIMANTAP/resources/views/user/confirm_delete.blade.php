@@ -27,7 +27,7 @@
             </div>
             <div class="modal-body">
                 <div class="alert alert-warning">
-                    <h5><i class="icon fas fa-ban"></i> Konfirmasi !!!</h5>
+                    <h5 class="alert-heading"><i class="icon fas fa-ban"></i> Konfirmasi !!!</h5>
                     Apakah Anda ingin menghapus data seperti di bawah ini?
                 </div>
                 <div class="d-flex align-items-start align-items-center">

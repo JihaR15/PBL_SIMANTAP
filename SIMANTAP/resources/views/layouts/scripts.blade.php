@@ -30,6 +30,7 @@
         const themeIcon = document.getElementById('theme-icon');
         const bootstrapStyle = document.getElementById('bootstrap-style');
         const appStyle = document.getElementById('app-style');
+        const dataTable = document.querySelector('#datatable');
 
         // Fungsi untuk mengatur tema
         const setTheme = (theme) => {
@@ -38,11 +39,19 @@
                 appStyle.setAttribute('href', 'assets/css/app-dark.min.css');
                 themeIcon.classList.remove('ri-sun-line');
                 themeIcon.classList.add('ri-moon-line');
+
+                if (dataTable) {
+                    dataTable.classList.add('table-dark');
+                }
             } else {
                 bootstrapStyle.setAttribute('href', 'assets/css/bootstrap.min.css');
                 appStyle.setAttribute('href', 'assets/css/app.min.css');
                 themeIcon.classList.remove('ri-moon-line');
                 themeIcon.classList.add('ri-sun-line');
+
+                if (dataTable) {
+                dataTable.classList.remove('table-dark');
+                }
             }
             localStorage.setItem('theme', theme); // Simpan preferensi tema di localStorage
         };
