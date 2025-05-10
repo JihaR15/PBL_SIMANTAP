@@ -17,27 +17,37 @@ class AuthController extends Controller
 
     public function postlogin(Request $request) 
     { 
-        if($request->ajax() || $request->wantsJson()){ 
+        if ($request->ajax() || $request->wantsJson()) { 
             $credentials = $request->only('username', 'password'); 
- 
+    
             if (Auth::attempt($credentials)) { 
-                $request->session()->regenerate();
-                return response()->json([ 
-                    'status' => true, 
-                    'user' => Auth::user(),
-                    'message' => 'Login Berhasil', 
-                    'redirect' => url('/')
-                ]); 
+                // Periksa apakah status pengguna adalah 1 (Aktif)
+                if (Auth::user()->status == 1) {
+                    $request->session()->regenerate();
+                    return response()->json([ 
+                        'status' => true, 
+                        'user' => Auth::user(),
+                        'message' => 'Login Berhasil', 
+                        'redirect' => url('/')
+                    ]); 
+                }
+    
+                // Logout jika status pengguna bukan 1
+                Auth::logout();
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Akun Anda tidak aktif. Silakan hubungi administrator.'
+                ]);
             } 
-             
+    
             return response()->json([ 
                 'status' => false, 
-                'message' => 'Login Gagal' 
+                'message' => 'Login Gagal. Username atau password salah.'
             ]); 
         } 
- 
+    
         return redirect('login'); 
-    } 
+    }
 
     public function logout(Request $request) 
     { 

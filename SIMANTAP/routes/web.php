@@ -42,6 +42,7 @@ Route::middleware(['auth'])->group(function () {
         Route::put('user/{id}/update/', [UserController::class,'update'])->name('user.update');
         Route::get('user/{id}/delete/', [UserController::class,'confirmDelete'])->name('user.confirmDelete');
         Route::delete('user/{id}/delete/', [UserController::class,'destroy'])->name('user.delete');
+        Route::post('/user/toggle-status', [UserController::class, 'toggleStatus'])->name('user.toggleStatus');
 
         //role
         Route::get('role', [RoleController::class,'index'])->name('role.index');

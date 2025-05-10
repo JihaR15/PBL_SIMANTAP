@@ -30,7 +30,7 @@ class UserController extends Controller
 
     public function list(Request $request)
     {
-        $users = UserModel::select('user_id', 'username', 'name', 'role_id')
+        $users = UserModel::select('user_id', 'username', 'name', 'role_id', 'foto_profile', 'status')
             ->with('role');
 
         if ($request->role_id) {
@@ -39,13 +39,32 @@ class UserController extends Controller
 
         return DataTables::of($users)
             ->addIndexColumn()
+            ->addColumn('status_switch', function ($user) {
+                $checked = $user->status == 1 ? 'checked' : '';
+                return '<div class="form-check form-switch">
+                            <input class="form-check-input toggle-status" type="checkbox" data-id="' . $user->user_id . '" ' . $checked . '>
+                        </div>';
+            })
             ->addColumn('action', function ($user) {
                 return '<button onclick="modalAction(\'' . url('/user/' . $user->user_id . '/show') . '\')"class="btn btn-sm btn-primary" onclick="editUser(' . $user->user_id . ')">Detail</button>
                         <button onclick="modalAction(\'' . url('/user/' . $user->user_id . '/edit') . '\')"class="btn btn-sm btn-warning" onclick="editUser(' . $user->user_id . ')">Edit</button>
                         <button onclick="modalAction(\'' . url('/user/' . $user->user_id . '/delete') .  '\')"class="btn btn-sm btn-danger">Delete</button>';
             })
-            ->rawColumns(['action'])
+            ->rawColumns(['status_switch', 'action'])
             ->make(true);
+    }
+
+    public function toggleStatus(Request $request)
+    {
+        $user = UserModel::findOrFail($request->id);
+        $user->status = $user->status == 1 ? 0 : 1; // Toggle status
+        $user->save();
+    
+        return response()->json([
+            'status' => true,
+            'message' => 'Status berhasil diperbarui.',
+            'new_status' => $user->status
+        ]);
     }
 
     public function create()

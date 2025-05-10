@@ -14,10 +14,12 @@
 
             <div class="row">
                 <div class="col-12">
-                    <div class="card">                        
+                    <div class="card">
                         <div class="card-body">
                             <h3 class="card-title">Data Pengguna</h3>
-                            <p class="card-title-desc">Berikut adalah daftar pengguna yang terdaftar dalam sistem. Anda dapat mengelola data pengguna seperti menambah, mengedit, atau menghapus pengguna sesuai kebutuhan.</p>
+                            <p class="card-title-desc">Berikut adalah daftar pengguna yang terdaftar dalam sistem. Anda
+                                dapat mengelola data pengguna seperti menambah, mengedit, atau menghapus pengguna sesuai
+                                kebutuhan.</p>
 
                             <div class="row mb-4">
                                 <div class="col-md-4">
@@ -31,7 +33,9 @@
                                     <small class="form-text text-muted">Role Pengguna</small>
                                 </div>
                                 <div class="col-md-8 text-end align-items-center d-flex justify-content-end">
-                                    <button type="button" class="btn btn-success" onclick="modalAction('{{ url('user/create') }}')"><i class="fas fa-plus"></i> Tambah Pengguna</button>
+                                    <button type="button" class="btn btn-success"
+                                        onclick="modalAction('{{ url('user/create') }}')"><i class="fas fa-plus"></i> Tambah
+                                        Pengguna</button>
                                 </div>
                             </div>
 
@@ -43,6 +47,7 @@
                                         <th>Username</th>
                                         <th>Nama</th>
                                         <th>Role</th>
+                                        <th>Status</th>
                                         <th>Aksi</th>
                                     </tr>
                                 </thead>
@@ -69,19 +74,19 @@
 <script src="{{ asset('assets/libs/sweetalert2/sweetalert2.all.min.js') }}"></script>
 
 <script>
-    function modalAction(url = ''){ 
-        $('#myModal').load(url,function(){ 
-            $('#myModal').modal('show'); 
-        }); 
+    function modalAction(url = '') {
+        $('#myModal').load(url, function () {
+            $('#myModal').modal('show');
+        });
     }
 
     var dataUser;
     $(document).ready(function () {
-        dataUser = $('#datatable').DataTable({ 
+        dataUser = $('#datatable').DataTable({
             serverSide: true,
             ajax: {
                 "url": "{{ url('user/list') }}",
-                "headers": {'X-CSRF-TOKEN': $('meta[name="csrf_token"]').attr('content')},
+                "headers": { 'X-CSRF-TOKEN': $('meta[name="csrf_token"]').attr('content') },
                 "dataType": "json",
                 "type": "POST",
                 "data": function (d) {
@@ -89,15 +94,15 @@
                 }
             },
             columns: [
-                {   
+                {
                     data: "DT_RowIndex",
                     className: "text-center",
                     orderable: false,
                     searchable: false
                 }, {
                     data: "username",
-                    className: "",  
-                    orderable: true, 
+                    className: "",
+                    orderable: true,
                     searchable: true
                 }, {
                     data: "name",
@@ -107,6 +112,11 @@
                 }, {
                     data: "role.nama_role",
                     className: "",
+                    orderable: false,
+                    searchable: false
+                }, {
+                    data: "status_switch",
+                    className: "text-center",
                     orderable: false,
                     searchable: false
                 }, {
@@ -121,5 +131,41 @@
         $('#role_id').on('change', function () {
             dataUser.ajax.reload();
         });
-    }); 
+    });
+
+    $(document).on('change', '.toggle-status', function () {
+        const userId = $(this).data('id');
+        const isChecked = $(this).is(':checked');
+
+        $.ajax({
+            url: 'user/toggle-status',
+            type: 'POST',
+            data: {
+                id: userId,
+                _token: $('meta[name="csrf_token"]').attr('content') 
+            },
+            success: function (response) {
+                if (response.status) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Berhasil',
+                        text: 'Status berhasil diperbarui menjadi ' + (response.new_status == 1 ? 'Aktif' : 'Nonaktif')
+                    });
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Gagal',
+                        text: 'Terjadi kesalahan saat memperbarui status.'
+                    });
+                }
+            },
+            error: function () {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Gagal',
+                    text: 'Terjadi kesalahan saat memperbarui status.'
+                });
+            }
+        });
+    });
 </script>

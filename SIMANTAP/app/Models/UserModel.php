@@ -23,6 +23,7 @@ class UserModel extends Authenticatable
         'username',
         'name',
         'password',
+        'status',
     ];
 
     protected $hidden = [
