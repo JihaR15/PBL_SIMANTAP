@@ -12,7 +12,12 @@ class JenisBarangModel extends Model
     protected $table = 'm_jenis_barang';
     protected $primaryKey = 'jenis_barang_id';
 
-    protected $fillable = [
+    protected $fillable =[
         'nama_barang',
     ];
+
+    public function tempat()
+    {
+        return $this->belongsToMany(TempatModel::class, 'm_barang_lokasi', 'jenis_barang_id', 'tempat_id');
+    }
 }

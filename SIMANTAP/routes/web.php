@@ -1,11 +1,14 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\WelcomeController;
-use App\Http\Controllers\UserController;
-use App\Http\Controllers\RoleController;
-use App\Http\Controllers\JenisTeknisiController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\RoleController;
+use App\Http\Controllers\UserController;
+use App\Http\Controllers\TempatController;
+use App\Http\Controllers\WelcomeController;
+use App\Http\Controllers\JenisBarangController;
+use App\Http\Controllers\BarangLokasiController;
+use App\Http\Controllers\JenisTeknisiController;
 
 
 
@@ -68,5 +71,25 @@ Route::middleware(['auth'])->group(function () {
         Route::put('jenisteknisi/{id}/update/', [JenisTeknisiController::class,'update'])->name('jenisteknisi.update');
         Route::get('jenisteknisi/{id}/delete/', [JenisTeknisiController::class,'confirmDelete'])->name('jenisteknisi.confirmDelete');
         Route::delete('jenisteknisi/{id}/delete/', [JenisTeknisiController::class,'destroy'])->name('jenisteknisi.delete');
+
+        // Jenis Barang
+        Route::get('jenisbarang', [JenisBarangController::class,'index'])->name('jenisbarang.index');
+        Route::post('jenisbarang/list', [JenisBarangController::class,'list'])->name('jenisbarang.list');
+        Route::get('jenisbarang/create', [JenisBarangController::class,'create'])->name('jenisbarang.create');
+        Route::get('jenisbarang/{id}/show/', [JenisBarangController::class,'show'])->name('jenisbarang.show');
+        Route::post('jenisbarang/store', [JenisBarangController::class,'store'])->name('jenisbarang.store');
+        Route::get('jenisbarang/{id}/edit/', [JenisBarangController::class,'edit'])->name('jenisbarang.edit');
+        Route::put('jenisbarang/{id}/update/', [JenisBarangController::class,'update'])->name('jenisbarang.update');
+        Route::get('jenisbarang/{id}/delete/', [JenisBarangController::class,'confirmDelete'])->name('jenisbarang.confirmDelete');
+        Route::delete('jenisbarang/{id}/delete/', [JenisBarangController::class,'destroy'])->name('jenisbarang.delete');
+
+        // Lokasi Barang
+        Route::get('lokasibarang', [BarangLokasiController::class, 'index'])->name('lokasibarang.index');
+        Route::post('lokasibarang/list', [BarangLokasiController::class, 'list'])->name('lokasibarang.list');
+        Route::get('lokasibarang/{tempat_id}/show', [BarangLokasiController::class, 'show'])->name('lokasibarang.show');
+        Route::get('lokasibarang/{tempat_id}/create', [BarangLokasiController::class, 'create'])->name('lokasibarang.create');
+        Route::post('lokasibarang/{tempat_id}/store', [BarangLokasiController::class, 'store'])->name('lokasibarang.store');
+        Route::get('/lokasibarang/{tempat_id}/confirmDelete/{jenis_barang_id}', [BarangLokasiController::class, 'confirmDelete'])->name('lokasibarang.confirmDelete');
+        Route::delete('/lokasibarang/{tempat_id}/delete/{jenis_barang_id}', [BarangLokasiController::class, 'delete'])->name('lokasibarang.delete');
     });
 });

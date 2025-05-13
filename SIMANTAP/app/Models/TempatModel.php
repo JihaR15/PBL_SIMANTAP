@@ -9,9 +9,9 @@ class TempatModel extends Model
 {
      use HasFactory;
 
-    protected $table = 'm_tempat'; 
-    protected $primaryKey = 'tempat_id'; 
-    public $timestamps = true; 
+    protected $table = 'm_tempat';
+    protected $primaryKey = 'tempat_id';
+    public $timestamps = true;
 
     protected $fillable = [
         'unit_id',
@@ -21,5 +21,10 @@ class TempatModel extends Model
     public function unit()
     {
         return $this->belongsTo(UnitModel::class, 'unit_id', 'unit_id');
+    }
+
+    public function jenisBarang()
+    {
+        return $this->belongsToMany(JenisBarangModel::class, 'm_barang_lokasi', 'tempat_id', 'jenis_barang_id');
     }
 }

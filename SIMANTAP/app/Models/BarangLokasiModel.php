@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class BarangLokasiModel extends Model
 {
-     use HasFactory;
+    use HasFactory;
 
     protected $table = 'm_barang_lokasi';
     protected $primaryKey = 'barang_lokasi_id';

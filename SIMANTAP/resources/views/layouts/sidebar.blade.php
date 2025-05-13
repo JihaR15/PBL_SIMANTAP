@@ -48,9 +48,15 @@
                         </a>
                     </li>
                     <li>
-                        <a href="index.html" class="waves-effect">
-                            <i class="ri-tools-line"></i>
-                            <span>Data Fasilitas & Barang</span>
+                        <a href="{{ url('/jenisbarang') }}" class="waves-effect">
+                            <i class="ri-airplay-line"></i>
+                            <span>Data Barang</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ url('/lokasibarang') }}" class="waves-effect">
+                            <i class="ri-building-line"></i>
+                            <span>Data Fasilitas Ruangan</span>
                         </a>
                     </li>
                     <li>
@@ -94,7 +100,7 @@
                             <span>Riwayat Laporan</span>
                         </a>
                     </li>
-                    
+
                     <li class="menu-title">Status</li>
 
                     <li>
