@@ -82,7 +82,8 @@ class BarangLokasiController extends Controller
     public function store(Request $request, $tempat_id)
     {
         $validator = Validator::make($request->all(), [
-            'jenis_barang_id' => 'required|exists:m_jenis_barang,jenis_barang_id',
+            'jenis_barang_id' => 'required|array',
+            'jenis_barang_id.*' => 'exists:m_jenis_barang,jenis_barang_id',
         ]);
 
         if ($validator->fails()) {
@@ -90,15 +91,17 @@ class BarangLokasiController extends Controller
         }
 
         $tempat = TempatModel::findOrFail($tempat_id);
-        $barang = JenisBarangModel::findOrFail($request->jenis_barang_id);
 
-        // Simpan data
-        $barangLokasi = new BarangLokasiModel();
-        $barangLokasi->tempat_id = $tempat_id;
-        $barangLokasi->jenis_barang_id = $request->jenis_barang_id;
-        $barangLokasi->save();
+        foreach ($request->jenis_barang_id as $jenis_barang_id) {
+            $barang = JenisBarangModel::findOrFail($jenis_barang_id);
 
-        return redirect()->route('lokasibarang.index')->with('success', 'Fasilitas ' . $barang->nama_barang . ' berhasil ditambahkan di Lokasi ' . $tempat->nama_tempat);
+            $barangLokasi = new BarangLokasiModel();
+            $barangLokasi->tempat_id = $tempat_id;
+            $barangLokasi->jenis_barang_id = $jenis_barang_id;
+            $barangLokasi->save();
+        }
+
+        return redirect()->route('lokasibarang.index')->with('success', 'Fasilitas berhasil ditambahkan di Lokasi ' . $tempat->nama_tempat);
     }
 
     public function confirmDelete($tempat_id, $jenis_barang_id)

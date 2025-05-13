@@ -1,3 +1,34 @@
+<style>
+    .checkbox-container {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 20px;
+    }
+
+    .checkbox-item {
+        width: calc(20% - 20px);
+        display: flex;
+        align-items: center;
+        margin-bottom: 10px;
+    }
+
+    .checkbox-item input[type="checkbox"] {
+        margin-right: 10px;
+    }
+
+    @media (max-width: 768px) {
+        .checkbox-item {
+            width: calc(50% - 20px);
+        }
+    }
+
+    @media (max-width: 480px) {
+        .checkbox-item {
+            width: 100%;
+        }
+    }
+</style>
+
 <div id="modal-master" class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
         <div class="modal-header">
@@ -9,18 +40,25 @@
             <form action="javascript:void(0);" id="tambah-barang-form" style="float: right; margin-bottom: 15px;">
                 <button type="button" id="btn-tambah" class="btn btn-sm btn-primary">Tambah Fasilitas</button>
             </form>
+
             <!-- Dropdown -->
             <div id="dropdown-container" class="mb-3" style="display: none;">
                 <form action="{{ route('lokasibarang.store', $tempat_id) }}" method="POST">
                     @csrf
                     <label for="jenis_barang_id" class="form-label">Pilih Jenis Barang</label>
-                    <select class="form-control" id="jenis_barang_id" name="jenis_barang_id" required>
+
+                    <!-- Checkbox  -->
+                    <div class="checkbox-container">
                         @foreach($semuaJenisBarang as $jenis)
                             @if(!in_array($jenis->jenis_barang_id, $barangLokasi->pluck('jenis_barang_id')->toArray()))
-                                <option value="{{ $jenis->jenis_barang_id }}">{{ $jenis->nama_barang }}</option>
+                                <div class="form-check checkbox-item">
+                                    <input type="checkbox" class="form-check-input" id="jenis_barang_{{ $jenis->jenis_barang_id }}" name="jenis_barang_id[]" value="{{ $jenis->jenis_barang_id }}">
+                                    <label class="form-check-label" for="jenis_barang_{{ $jenis->jenis_barang_id }}">{{ $jenis->nama_barang }}</label>
+                                </div>
                             @endif
                         @endforeach
-                    </select>
+                    </div>
+
                     <button type="submit" class="btn btn-sm btn-primary mt-2">Tambah</button>
                 </form>
             </div>
