@@ -70,13 +70,13 @@
                 @if(auth()->check() && auth()->user()->role->kode_role === 'SRN')
                 <li class="menu-title">LAYANAN PELAPORAN</li>
                 <li>
-                    <a href="index.html" class="waves-effect">
+                    <a href="{{ url('/verifikasi') }}" class="waves-effect">
                         <i class="ri-checkbox-circle-line"></i>
                         <span>Verifikasi & Prioritas</span>
                     </a>
                 </li>
                 <li>
-                    <a href="index.html" class="waves-effect">
+                    <a href="{{ url('/riwayatverifikasi') }}" class="waves-effect">
                         <i class="ri-history-line"></i>
                         <span>Riwayat Verifikasi</span>
                     </a>
@@ -88,30 +88,30 @@
                     <li class="menu-title">Laporan</li>
 
                     <li>
-                        <a href="index.html" class="waves-effect">
+                        <a href="{{ url('/laporan') }}" class="waves-effect">
                             <i class="ri-file-paper-2-line"></i>
                             <span>Buat Laporan</span>
                         </a>
                     </li>
 
                     <li>
-                        <a href="index.html" class="waves-effect">
+                        <a href="{{ url('/riwayatlaporan') }}" class="waves-effect">
                             <i class="ri-history-line"></i>
                             <span>Riwayat Laporan</span>
                         </a>
                     </li>
-
+                    
                     <li class="menu-title">Status</li>
 
                     <li>
-                        <a href="index.html" class="waves-effect">
+                        <a href="{{ url('/statusperbaikan') }}" class="waves-effect">
                             <i class="ri-search-eye-line"></i>
                             <span>Status Perbaikan</span>
                         </a>
                     </li>
 
                     <li>
-                        <a href="index.html" class="waves-effect">
+                        <a href="{{ url('/feedback') }}" class="waves-effect">
                             <i class="ri-star-smile-line"></i>
                             <span>Feedback Perbaikan</span>
                         </a>
@@ -122,13 +122,13 @@
                     <li class="menu-title">Laporan</li>
 
                     <li>
-                        <a href="index.html" class="waves-effect">
+                        <a href="{{ url('/laporanmasuk') }}" class="waves-effect">
                             <i class="ri-inbox-line"></i>
                             <span>Laporan Masuk</span>
                         </a>
                     </li>
                     <li>
-                        <a href="index.html" class="waves-effect">
+                        <a href="{{ url('/riwayatperbaikan') }}" class="waves-effect">
                             <i class="ri-history-line"></i>
                             <span>Riwayat Perbaikan</span>
                         </a>

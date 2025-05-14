@@ -5,6 +5,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\TempatController;
+use App\Http\Controllers\LaporanController;
 use App\Http\Controllers\WelcomeController;
 use App\Http\Controllers\JenisBarangController;
 use App\Http\Controllers\BarangLokasiController;
@@ -91,5 +92,17 @@ Route::middleware(['auth'])->group(function () {
         Route::post('lokasibarang/{tempat_id}/store', [BarangLokasiController::class, 'store'])->name('lokasibarang.store');
         Route::get('/lokasibarang/{tempat_id}/confirmDelete/{jenis_barang_id}', [BarangLokasiController::class, 'confirmDelete'])->name('lokasibarang.confirmDelete');
         Route::delete('/lokasibarang/{tempat_id}/delete/{jenis_barang_id}', [BarangLokasiController::class, 'delete'])->name('lokasibarang.delete');
+    });
+
+    Route::middleware(['authorize:MHS,DSN,TDK'])->group(function () {
+        Route::get('laporan', [LaporanController::class,'index'])->name('laporan.index');
+        Route::get('/riwayatlaporan', [LaporanController::class, 'riwayatLaporan'])->name('riwayatlaporan');
+        Route::post('laporan/list', [LaporanController::class,'list'])->name('laporan.list');
+        Route::get('/laporan/{id}/show', [LaporanController::class, 'show'])->name('laporan.show');
+        Route::post('laporan/store', [LaporanController::class,'store'])->name('laporan.store');
+        // Route::get('laporan/{id}/edit/', [LaporanController::class,'edit'])->name('laporan.edit');
+        // Route::put('laporan/{id}/update/', [LaporanController::class,'update'])->name('laporan.update');
+        Route::get('laporan/{id}/delete/', [LaporanController::class,'confirmDelete'])->name('laporan.confirmDelete');
+        Route::delete('laporan/{id}/delete/', [LaporanController::class,'destroy'])->name('laporan.delete');
     });
 });
