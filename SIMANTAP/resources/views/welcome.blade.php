@@ -12,7 +12,7 @@
     </div>
     <!-- end page title -->
 
-      
+
 
       <div class="row">
           {{-- <div class="col-xl-6">
@@ -120,9 +120,18 @@
           <!-- end col -->
       </div>
       <!-- end row -->
-
   </div>
-  
+
 </div>
 <!-- End Page-content -->
 @endsection
+
+@push('js')
+<script>
+    function modalAction(url = ''){
+        $('#myModal').load(url,function(){
+            $('#myModal').modal('show');
+        });
+    }
+</script>
+@endpush
