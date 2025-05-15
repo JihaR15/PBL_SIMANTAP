@@ -42,7 +42,7 @@
                     <li class="menu-title">Master Data</li>
 
                     <li>
-                        <a href="index.html" class="waves-effect">
+                        <a href="{{ url('/unit') }}" class="waves-effect">
                             <i class="ri-building-2-line"></i>
                             <span>Data Gedung & Area</span>
                         </a>

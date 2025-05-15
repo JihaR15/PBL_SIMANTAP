@@ -11,6 +11,7 @@ use App\Http\Controllers\WelcomeController;
 use App\Http\Controllers\JenisBarangController;
 use App\Http\Controllers\BarangLokasiController;
 use App\Http\Controllers\JenisTeknisiController;
+use App\Http\Controllers\UnitController;
 
 
 
@@ -77,6 +78,28 @@ Route::middleware(['auth'])->group(function () {
         Route::put('jenisteknisi/{id}/update/', [JenisTeknisiController::class,'update'])->name('jenisteknisi.update');
         Route::get('jenisteknisi/{id}/delete/', [JenisTeknisiController::class,'confirmDelete'])->name('jenisteknisi.confirmDelete');
         Route::delete('jenisteknisi/{id}/delete/', [JenisTeknisiController::class,'destroy'])->name('jenisteknisi.delete');
+
+        // Unit
+        Route::get('unit', [UnitController::class,'index'])->name('unit.index');
+        Route::post('unit/list', [UnitController::class,'list'])->name('unit.list');
+        Route::get('unit/create', [UnitController::class,'create'])->name('unit.create');
+        Route::get('unit/{id}/show/', [UnitController::class,'show'])->name('unit.show');
+        Route::post('unit/store', [UnitController::class,'store'])->name('unit.store');
+        Route::get('unit/{id}/edit/', [UnitController::class,'edit'])->name('unit.edit');
+        Route::put('unit/{id}/update/', [UnitController::class,'update'])->name('unit.update');
+        Route::get('unit/{id}/delete/', [UnitController::class,'confirmDelete'])->name('unit.confirmDelete');
+        Route::delete('unit/{id}/delete/', [UnitController::class,'destroy'])->name('unit.delete');
+
+        // Tempat
+        Route::get('tempat/{unit_id}', [TempatController::class,'index'])->name('tempat.index');
+        Route::post('tempat/{unit_id}/list', [TempatController::class,'list'])->name('tempat.list');
+        Route::get('tempat/{unit_id}/create', [TempatController::class,'create'])->name('tempat.create');
+        Route::post('tempat/{unit_id}/store', [TempatController::class,'store'])->name('tempat.store');
+        Route::get('tempat/{tempat_id}/show/', [TempatController::class,'show'])->name('tempat.show');
+        Route::get('tempat/{tempat_id}/edit/', [TempatController::class,'edit'])->name('tempat.edit');
+        Route::put('tempat/{tempat_id}/update/', [TempatController::class,'update'])->name('tempat.update');
+        Route::get('tempat/{tempat_id}/delete/', [TempatController::class,'confirmDelete'])->name('tempat.confirmDelete');
+        Route::delete('tempat/{tempat_id}/delete/', [TempatController::class,'destroy'])->name('tempat.delete');
 
         // Jenis Barang
         Route::get('jenisbarang', [JenisBarangController::class,'index'])->name('jenisbarang.index');
