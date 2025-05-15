@@ -110,4 +110,8 @@ Route::middleware(['auth'])->group(function () {
         Route::get('laporan/{id}/delete/', [LaporanController::class,'confirmDelete'])->name('laporan.confirmDelete');
         Route::delete('laporan/{id}/delete/', [LaporanController::class,'destroy'])->name('laporan.delete');
     });
+
+    Route::middleware(['authorize:ADM,SRN'])->group(function () {
+        // Verif Laporan
+    });
 });

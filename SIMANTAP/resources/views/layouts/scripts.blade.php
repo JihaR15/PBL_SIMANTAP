@@ -25,6 +25,12 @@
 <script src="{{ asset('assets/js/app.js') }}"></script>
 
 <script>
+    function modalAction(url = ''){
+            $('#myModal').load(url,function(){
+                $('#myModal').modal('show');
+            });
+        }
+
     document.addEventListener('DOMContentLoaded', function () {
         const themeToggle = document.getElementById('theme-toggle');
         const themeIcon = document.getElementById('theme-icon');
