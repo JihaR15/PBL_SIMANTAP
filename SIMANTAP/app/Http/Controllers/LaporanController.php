@@ -2,17 +2,19 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use App\Models\LaporanModel;
-use App\Models\FasilitasModel;
+use Carbon\Carbon;
 use App\Models\UnitModel;
+use App\Models\UserModel;
 use App\Models\TempatModel;
-use App\Models\BarangLokasiModel;
+use App\Models\LaporanModel;
 use App\Models\PeriodeModel;
-use Yajra\DataTables\Facades\DataTables;
+use Illuminate\Http\Request;
+use App\Models\FasilitasModel;
+use App\Models\NotifikasiModel;
+use App\Models\BarangLokasiModel;
 use App\Models\KategoriKerusakanModel;
 use Illuminate\Support\Facades\Storage;
-use Carbon\Carbon;
+use Yajra\DataTables\Facades\DataTables;
 
 class LaporanController extends Controller
 {
@@ -76,8 +78,21 @@ class LaporanController extends Controller
                 $laporanData['foto_laporan'] = $path; // Tambahkan path file ke data laporan
             }
 
-            // Buat laporan
-            LaporanModel::create($laporanData);
+            // Buat laporan dan simpan
+            $laporan = LaporanModel::create($laporanData);
+
+            $usersToNotify = UserModel::whereHas('role', function ($query) {
+                $query->whereIn('kode_role', ['ADM', 'SRN']);
+            })->get();
+
+            foreach ($usersToNotify as $user) {
+                NotifikasiModel::create([
+                    'user_id' => $user->user_id,
+                    'laporan_id' => $laporan->laporan_id,
+                    'isi_notifikasi' => "Laporan baru dengan ID #{$laporan->laporan_id} telah dibuat dan menunggu verifikasi.",
+                    'is_read' => false,
+                ]);
+            }
 
             // Kembalikan respons sukses
             return redirect()->back()->with('success', 'Laporan berhasil dibuat.');
@@ -107,15 +122,17 @@ class LaporanController extends Controller
             })
             ->addColumn('status_verif', function ($row) {
                 if ($row->status_verif === 'belum diverifikasi') {
-                    return '<span class="badge bg-soft-warning text-dark">Belum Diverifikasi</span>';
+                    return '<span class="badge bg-warning" style="font-size: 12px; padding: 8px 10px; color: #fff; font-weight: 700;">Belum Diverifikasi</span>';
+                } elseif ($row->status_verif === 'diverifikasi') {
+                    return '<span class="badge bg-success" style="font-size: 12px; padding: 8px 10px; color: #fff; font-weight: 700;">Terverifikasi</span>';
                 } else {
-                    return '<span class="badge bg-soft-success">Terverifikasi</span>';
+                    return '<span class="badge bg-danger" style="font-size: 12px; padding: 8px 10px; color: #fff; font-weight: 700;">Ditolak</span>';
                 }
             })
             ->addColumn('created_at', function ($row) {
                 return Carbon::parse($row->created_at)->format('d M Y'); // Format tanggal
             })
-            ->rawColumns(['action', 'status_verif']) 
+            ->rawColumns(['action', 'status_verif'])
             ->make(true);
     }
 

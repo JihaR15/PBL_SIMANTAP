@@ -93,47 +93,54 @@
                 <button type="button" class="btn header-item noti-icon waves-effect"
                     id="page-header-notifications-dropdown" data-bs-toggle="dropdown" aria-expanded="false">
                     <i class="ri-notification-3-line text-dark"></i>
-                    <span class="noti-dot"></span>
+                    @if($unreadCount > 0)
+                        <span class="noti-dot"></span>
+                    @endif
                 </button>
+
                 <div class="dropdown-menu dropdown-menu-lg dropdown-menu-end p-0"
                     aria-labelledby="page-header-notifications-dropdown">
-                    <div class="p-3">
+
+                    <div class="p-3 border-bottom">
                         <div class="row align-items-center">
                             <div class="col">
-                                <h6 class="m-0"> Notifications </h6>
+                                <h6 class="m-0"> Notifications ({{ $unreadCount }}) </h6>
                             </div>
-                            <div class="col-auto">
-                                <a href="#!" class="small"> View All</a>
-                            </div>
+                            {{-- <div class="col-auto">
+                                <a href="{{ route('notifikasi.index') }}" class="small">View All</a>
+                            </div> --}}
                         </div>
                     </div>
 
                     <div data-simplebar style="max-height: 230px;">
-                        <a href="" class="text-reset notification-item">
+                        @forelse ($notifikasis as $notif)
+                        @php
+                            $userRole = auth()->user()->role->kode_role ?? null;
+                            $routeLink = in_array($userRole, ['ADM', 'SRN'])
+                                ? route('riwayatverifikasi')
+                                : route('riwayatlaporan');
+                        @endphp
+
+                        <a href="{{ $routeLink }}" class="text-reset notification-item notif-link" data-id="{{ $notif->notifikasi_id }}">
                             <div class="d-flex">
-                                <img src="assets/images/users/avatar-4.jpg" class="me-3 rounded-circle avatar-xs"
-                                    alt="user-pic">
                                 <div class="flex-1">
-                                    <h6 class="mb-1">Salena Layfield</h6>
+                                    <h6 class="mb-1">{{ $notif->user->name ?? 'User' }}</h6>
                                     <div class="font-size-12 text-muted">
-                                        <p class="mb-1">As a skeptical Cambridge friend of mine occidental.</p>
-                                        <p class="mb-0"><i class="mdi mdi-clock-outline"></i> 1 hours ago</p>
+                                        <p class="mb-1">{{ $notif->isi_notifikasi }}</p>
+                                        <p class="mb-0"><i class="mdi mdi-clock-outline"></i> {{ $notif->created_at->diffForHumans() }}</p>
                                     </div>
                                 </div>
+                                @if (!$notif->is_read)
+                                    <span class="badge bg-primary align-self-center ms-2">New</span>
+                                @endif
                             </div>
                         </a>
+                    @empty
+                        <p class="text-center p-3 mb-0">Tidak ada notifikasi baru.</p>
+                    @endforelse
                     </div>
 
-                    {{-- View More --}}
-                    {{-- <div class="p-2 border-top">
-                        <div class="d-grid">
-                            <a class="btn btn-sm btn-link font-size-14 text-center" href="javascript:void(0)">
-                                <i class="mdi mdi-arrow-right-circle me-1"></i> View More..
-                            </a>
-                        </div>
-                    </div> --}}
                 </div>
-
             </div>
 
             <div class="d-flex align-items-center">

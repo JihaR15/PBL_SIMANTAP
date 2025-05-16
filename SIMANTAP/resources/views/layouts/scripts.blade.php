@@ -83,4 +83,24 @@
         // Setelah tema diterapkan, tampilkan halaman
         document.body.style.visibility = 'visible';
     });
+
+    $(document).ready(function () {
+        $('.notif-link').click(function (e) {
+            e.preventDefault();
+            var url = $(this).attr('href');
+            var notifId = $(this).data('id');
+
+            $.ajax({
+                url: '/notifikasi/' + notifId + '/read',
+                type: 'POST',
+                data: {_token: '{{ csrf_token() }}'},
+                success: function () {
+                    window.location.href = url;
+                },
+                error: function () {
+                    window.location.href = url;
+                }
+            });
+        });
+    });
 </script>

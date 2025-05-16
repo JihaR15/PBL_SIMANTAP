@@ -3,15 +3,17 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\RoleController;
+use App\Http\Controllers\UnitController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\TempatController;
 use App\Http\Controllers\LaporanController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\WelcomeController;
+use App\Http\Controllers\NotifikasiController;
+use App\Http\Controllers\VerifikasiController;
 use App\Http\Controllers\JenisBarangController;
 use App\Http\Controllers\BarangLokasiController;
 use App\Http\Controllers\JenisTeknisiController;
-use App\Http\Controllers\UnitController;
 
 
 
@@ -44,6 +46,10 @@ Route::middleware(['auth'])->group(function () {
     Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
 
     Route::get('/', [WelcomeController::class,'dashboard'])->name('dashboard');
+
+    // notifikasi
+    Route::get('/notifikasi', [NotifikasiController::class, 'index'])->name('notifikasi.index');
+    Route::post('/notifikasi/{id}/read', [NotifikasiController::class, 'markRead'])->name('notifikasi.read');
 
     Route::middleware(['authorize:ADM'])->group(function () {
         Route::get('user', [UserController::class,'index'])->name('user.index');
@@ -91,15 +97,15 @@ Route::middleware(['auth'])->group(function () {
         Route::delete('unit/{id}/delete/', [UnitController::class,'destroy'])->name('unit.delete');
 
         // Tempat
-        Route::get('tempat/{unit_id}', [TempatController::class,'index'])->name('tempat.index');
-        Route::post('tempat/{unit_id}/list', [TempatController::class,'list'])->name('tempat.list');
-        Route::get('tempat/{unit_id}/create', [TempatController::class,'create'])->name('tempat.create');
-        Route::post('tempat/{unit_id}/store', [TempatController::class,'store'])->name('tempat.store');
-        Route::get('tempat/{tempat_id}/show/', [TempatController::class,'show'])->name('tempat.show');
-        Route::get('tempat/{tempat_id}/edit/', [TempatController::class,'edit'])->name('tempat.edit');
-        Route::put('tempat/{tempat_id}/update/', [TempatController::class,'update'])->name('tempat.update');
-        Route::get('tempat/{tempat_id}/delete/', [TempatController::class,'confirmDelete'])->name('tempat.confirmDelete');
-        Route::delete('tempat/{tempat_id}/delete/', [TempatController::class,'destroy'])->name('tempat.delete');
+        // Route::get('tempat/{unit_id}', [TempatController::class,'index'])->name('tempat.index');
+        // Route::post('tempat/{unit_id}/list', [TempatController::class,'list'])->name('tempat.list');
+        // Route::get('tempat/{unit_id}/create', [TempatController::class,'create'])->name('tempat.create');
+        // Route::post('tempat/{unit_id}/store', [TempatController::class,'store'])->name('tempat.store');
+        // Route::get('tempat/{tempat_id}/show/', [TempatController::class,'show'])->name('tempat.show');
+        // Route::get('tempat/{tempat_id}/edit/', [TempatController::class,'edit'])->name('tempat.edit');
+        // Route::put('tempat/{tempat_id}/update/', [TempatController::class,'update'])->name('tempat.update');
+        // Route::get('tempat/{tempat_id}/delete/', [TempatController::class,'confirmDelete'])->name('tempat.confirmDelete');
+        // Route::delete('tempat/{tempat_id}/delete/', [TempatController::class,'destroy'])->name('tempat.delete');
 
         // Jenis Barang
         Route::get('jenisbarang', [JenisBarangController::class,'index'])->name('jenisbarang.index');
@@ -136,5 +142,12 @@ Route::middleware(['auth'])->group(function () {
 
     Route::middleware(['authorize:ADM,SRN'])->group(function () {
         // Verif Laporan
+        Route::get('verifikasi', [VerifikasiController::class,'index'])->name('verifikasi.index');
+        Route::post('verifikasi/list', [VerifikasiController::class,'list'])->name('verifikasi.list');
+        Route::get('/verifikasi/{laporan_id}/show', [VerifikasiController::class, 'show'])->name('verifikasi.show');
+        Route::post('/verifikasi/{laporan_id}/verify', [VerifikasiController::class, 'verify'])->name('verifikasi.verify');
+        Route::post('/verifikasi/{laporan_id}/reject', [VerifikasiController::class, 'reject'])->name('verifikasi.reject');
+        Route::get('/riwayatverifikasi', [VerifikasiController::class, 'riwayatVerifikasi'])->name('riwayatverifikasi');
+        Route::get('/riwayatverifikasi/{laporan_id}/show', [VerifikasiController::class, 'show'])->name('riwayatverifikasi.show');
     });
 });
