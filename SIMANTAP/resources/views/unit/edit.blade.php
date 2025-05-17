@@ -34,10 +34,12 @@
                                         <select id="fasilitas_id" class="form-select" name="fasilitas_id" required>
                                             <option value="">- Pilih Fasilitas -</option>
                                             @foreach($fasilitas as $f)
-                                                <option value="{{ $f->fasilitas_id }}"
-                                                    {{ old('fasilitas_id', $unit->fasilitas_id) == $f->fasilitas_id ? 'selected' : '' }}>
-                                                    {{ $f->nama_fasilitas }}
-                                                </option>
+                                                @if($f->fasilitas_id != 2)
+                                                    <option value="{{ $f->fasilitas_id }}"
+                                                        {{ old('fasilitas_id', isset($unit) ? $unit->fasilitas_id : '') == $f->fasilitas_id ? 'selected' : '' }}>
+                                                        {{ $f->nama_fasilitas }}
+                                                    </option>
+                                                @endif
                                             @endforeach
                                         </select>
                                     </div>

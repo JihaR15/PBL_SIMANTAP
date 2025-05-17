@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\UnitModel;
 use App\Models\FasilitasModel;
+use App\Models\TempatModel;
 use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Support\Facades\Validator;
 
@@ -36,9 +37,18 @@ class UnitController extends Controller
         return DataTables::of($unit)
             ->addIndexColumn()
             ->addColumn('action', function ($unit) {
-                return '<button onclick="modalAction(\'' . url('/unit/' . $unit->unit_id . '/show') . '\')" class="btn btn-sm btn-primary">Detail</button> ' .
-                       '<button onclick="modalAction(\'' . url('/unit/' . $unit->unit_id . '/edit') . '\')" class="btn btn-sm btn-warning">Edit</button> ' .
-                       '<button onclick="modalAction(\'' . url('/unit/' . $unit->unit_id . '/delete') .  '\')" class="btn btn-sm btn-danger">Delete</button>';
+            if ($unit->fasilitas_id != 2) {
+                // Untuk Fasilitas Gedung (Tersedia button edit)
+                $detailBtn = '<button onclick="modalAction(\'' . url('/unit/' . $unit->unit_id . '/show') . '\')" class="btn btn-sm btn-primary flex-fill">Detail</button>';
+                $editBtn = '<button onclick="modalAction(\'' . url('/unit/' . $unit->unit_id . '/edit') . '\')" class="btn btn-sm btn-warning flex-fill">Edit</button>';
+                $deleteBtn = '<button onclick="modalAction(\'' . url('/unit/' . $unit->unit_id . '/delete') . '\')" class="btn btn-sm btn-danger flex-fill">Delete</button>';
+                return '<div class="d-flex gap-1 justify-content-center" style="min-width:180px;">' . $detailBtn . $editBtn . $deleteBtn . '</div>';
+            } else {
+                // Untuk Fasum (Button edit tidak tersedia)
+                $detailBtn = '<button onclick="modalAction(\'' . url('/unit/' . $unit->unit_id . '/show') . '\')" class="btn btn-sm btn-primary w-50">Detail</button>';
+                $deleteBtn = '<button onclick="modalAction(\'' . url('/unit/' . $unit->unit_id . '/delete') . '\')" class="btn btn-sm btn-danger w-50">Delete</button>';
+                return '<div class="d-flex gap-1 justify-content-center" style="min-width:180px;">' . $detailBtn . $deleteBtn . '</div>';
+    }
             })
             ->addColumn('tempat', function ($unit) {
                 return '<button onclick="window.location.href=\'' . url('/tempat/' . $unit->unit_id) . '\'" class="btn btn-sm btn-success">Kelola Ruang</button>';
@@ -50,7 +60,8 @@ class UnitController extends Controller
     public function create()
     {
         $fasilitas = FasilitasModel::all();
-        return view('unit.create', compact('fasilitas'));
+        $fasumExist = UnitModel::where('fasilitas_id', 2)->exists();
+        return view('unit.create', compact('fasilitas', 'fasumExist'));
     }
 
     public function store(Request $request)
@@ -67,6 +78,18 @@ class UnitController extends Controller
                 'message' => 'Validasi gagal.',
                 'msgField' => $validator->errors()
             ]);
+        }
+
+        // Cek apakah Fasilitas Umum ada di database
+        if ($request->fasilitas_id == 2) {
+            $exist = UnitModel::where('fasilitas_id', 2)->exists();
+            if ($exist) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Unit dengan Fasilitas Umum sudah ada, tidak bisa menambah lagi.',
+                    'msgField' => ['fasilitas_id' => ['Unit Fasilitas Umum sudah ada.']]
+                ]);
+            }
         }
 
         $unit = new UnitModel();
@@ -101,7 +124,7 @@ class UnitController extends Controller
     {
         $rules = [
             'nama_unit' => 'required|unique:m_unit,nama_unit,' . $id . ',unit_id',
-            'fasilitas_id' => 'required|exists:m_fasilitas,fasilitas_id',
+            'fasilitas_id' => 'required|exists:m_fasilitas,fasilitas_id|not_in:2',
         ];
 
         $validator = Validator::make($request->all(), $rules);
@@ -136,6 +159,11 @@ class UnitController extends Controller
 
     public function destroy($id)
     {
+        // Hapus tempat yang ada di dalam unit yang akan dihapus
+        $tempat = TempatModel::where('unit_id', $id);
+        $tempat->delete();
+
+        // Hapus unit
         $unit = UnitModel::findOrFail($id);
         $unit->delete();
         

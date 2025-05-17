@@ -13,12 +13,22 @@
                             <label>Jenis Fasilitas</label>
                             <div class="row mb-3">
                                 <div class="col-sm-12">
-                                    <select id="fasilitas_id" class="form-select" name="fasilitas_id" required>
-                                        <option value="">- Semua -</option>
-                                        @foreach($fasilitas as $f)
-                                            <option value="{{ $f->fasilitas_id }}">{{ $f->nama_fasilitas }}</option>
-                                        @endforeach
-                                    </select>
+                                    @if($fasumExist)
+                                        <input type="text" class="form-control" value="Fasilitas Gedung" readonly>
+                                        <input type="hidden" name="fasilitas_id" value="1">
+                                    @else
+                                        <select id="fasilitas_id" class="form-select" name="fasilitas_id" required>
+                                            <option value="">- Semua -</option>
+                                            @foreach($fasilitas as $f)
+                                                @if($f->fasilitas_id != 2 || !$fasumExist)
+                                                    <option value="{{ $f->fasilitas_id }}"
+                                                        {{ old('fasilitas_id', isset($unit) ? $unit->fasilitas_id : '') == $f->fasilitas_id ? 'selected' : '' }}>
+                                                        {{ $f->nama_fasilitas }}
+                                                    </option>
+                                                @endif
+                                            @endforeach
+                                        </select>
+                                    @endif
                                 </div>
                             </div>
                         </div>

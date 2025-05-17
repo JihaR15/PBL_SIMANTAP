@@ -32,8 +32,10 @@
                                         </select>
                                         <small class="form-text text-muted">Jenis Fasilitas</small>
                                     </div>
-                                    <div class="col-md-8 text-end align-items-center d-flex justify-content-end">
-                                        <button type="button" class="btn btn-success" onclick="modalAction('{{ url('unit/create') }}')"><i class="fas fa-plus"></i> Tambah Unit</button>
+                                    <div class="d-flex justify-content-end mb-2">
+                                        <button type="button" class="btn btn-success" onclick="modalAction('{{ url('unit/create') }}')">
+                                            <i class="fas fa-plus"></i> Tambah Unit
+                                        </button>
                                     </div>
                                 </div>
                             </div>
