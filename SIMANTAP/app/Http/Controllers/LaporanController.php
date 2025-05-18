@@ -54,7 +54,7 @@ class LaporanController extends Controller
             'periode_id' => 'required',
             'kategori_kerusakan_id' => 'required',
             'deskripsi' => 'required',
-            'file' => 'nullable|image|mimes:jpeg,png,jpg|max:2048', // Validasi file gambar
+            'foto_laporan' => 'image|mimes:jpeg,png,jpg|max:2048', // Validasi file gambar
         ]);
 
         try {
@@ -69,6 +69,7 @@ class LaporanController extends Controller
                 'periode_id' => $validated['periode_id'],
                 'deskripsi' => $validated['deskripsi'],
                 'status_verif' => 'belum diverifikasi',
+                'foto_laporan' => $validated['foto_laporan'],
             ];
 
             // Simpan file jika ada
@@ -172,6 +173,8 @@ class LaporanController extends Controller
         try {
         $laporan = LaporanModel::findOrFail($id);
 
+        $laporan->notifikasi()->delete();
+
         // Hapus file jika ada
         if ($laporan->foto_laporan && Storage::exists('public/' . $laporan->foto_laporan)) {
             Storage::delete('public/' . $laporan->foto_laporan);
@@ -185,9 +188,11 @@ class LaporanController extends Controller
             'message' => 'Laporan berhasil dihapus.'
         ]);
     } catch (\Exception $e) {
+        
         return response()->json([
             'status' => false,
-            'message' => 'Terjadi kesalahan saat menghapus laporan.'
+            'message' => 'Terjadi kesalahan saat menghapus laporan.',
+            'error' => $e->getMessage()
         ]);
     }
     }

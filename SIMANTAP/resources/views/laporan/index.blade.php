@@ -129,8 +129,8 @@
                                 <div class="mb-3">
                                     <label for="foto_laporan">Foto Laporan</label>
                                     <input type="file" name="foto_laporan" id="foto_laporan" class="form-control"
-                                        accept=".jpg,.jpeg,.png,.pdf" required>
-                                    <small id="error-foto_laporan" class="error-text form-text text-danger"></small>
+                                        accept="image/jpeg,image/jpg,image/png,image/gif,application/pdf" required>
+                                    <small id="error-foto-laporan" class="error-text form-text text-danger"></small>
                                 </div>
 
                                 <div class="mb-0">
@@ -161,6 +161,7 @@
 @push('js')
     <script src="{{ asset('assets/libs/jquery/jquery.min.js') }}"></script>
     <script src="{{ asset('assets/libs/jquery-validation/jquery.validate.min.js') }}"></script>
+    <script src="{{ asset('assets/libs/jquery-validation/additional-methods.min.js') }}"></script>
     <script src="{{ asset('assets/libs/sweetalert2/sweetalert2.all.min.js') }}"></script>
 
     <script>
@@ -295,6 +296,10 @@
                 $('#barang_lokasi_id').prop('disabled', filteredBarangLokasi.length === 0);
             }
 
+            $.validator.addMethod('filesize', function (value, element, param) {
+                return this.optional(element) || (element.files[0].size <= param * 1024);
+            }, 'Ukuran file terlalu besar.');
+
             // Validasi form menggunakan jQuery Validation
             $('#form-laporan').validate({
                 rules: {
@@ -319,14 +324,14 @@
                     foto_laporan: {
                         required: true,
                         extension: "jpg|jpeg|png|gif",
-                        filesize: 4194304
+                        filesize: 2048 // 2MB in KB
                     },
-                    messages: {
-                        foto_laporan: {
-                            extension: "Format file harus berupa .jpg, .jpeg, .png, atau .gif"
-                        }
+                    deskripsi: {
+                        required: true,
+                        minlength: 5
                     }
                 },
+                // Messages should be outside the rules object
                 messages: {
                     fasilitas_id: "Silakan pilih fasilitas.",
                     unit_id: "Silakan pilih unit.",
@@ -337,11 +342,14 @@
                     foto_laporan: {
                         required: "Silakan unggah foto laporan.",
                         extension: "Hanya file JPG, JPEG, PNG, dan PDF yang diperbolehkan.",
-                        filesize: "Ukuran file tidak boleh lebih dari 4 MB."
+                        filesize: "Ukuran file tidak boleh lebih dari 2 MB."
+                    },
+                    deskripsi: {
+                        required: "Silakan isi deskripsi kerusakan.",
+                        minlength: "Deskripsi harus terdiri dari minimal 5 karakter."
                     }
                 }
             });
-
             // Event saat form disubmit
             $('#form-laporan').on('submit', function (e) {
                 e.preventDefault(); // cegah form submit standar
@@ -353,10 +361,8 @@
                     data: formData,
                     processData: false,
                     contentType: false,
-                    beforeSend: function () {
-                        // opsional: tampilkan loading
-                    },
                     success: function (response) {
+                        console.log(response);
                         Swal.fire({
                             icon: 'success',
                             title: 'Berhasil!',
@@ -376,49 +382,6 @@
                 });
             });
 
-
-            // Event setelah semua file diunggah
-            // myDropzone.on("queuecomplete", function () {
-            //     Swal.fire({
-            //         icon: 'success',
-            //         title: 'Berhasil',
-            //         text: 'Laporan dan file berhasil disimpan!'
-            //     }).then(() => {
-            //         window.location.reload();
-            //     });
-            // });
         });
     </script>
-
-    {{--
-    <script>
-        Dropzone.autoDiscover = false;
-
-        const myDropzone = new Dropzone("#my-dropzone", {
-            url: "{{ route('laporan.store') }}", // Ganti dengan rute upload yang kamu miliki
-            paramName: "foto_laporan",
-            maxFiles: 1,
-            maxFilesize: 4,
-            addRemoveLinks: true,
-            dictRemoveFile: "Hapus",
-            acceptedFiles: ".jpg,.jpeg,.png,.pdf",
-            autoProcessQueue: false,
-            headers: {
-                'X-CSRF-TOKEN': "{{ csrf_token() }}"
-            },
-            init: function () {
-                this.on("maxfilesexceeded", function (file) {
-                    if (this.files[1] != null) {
-                        this.removeFile(this.files[0]); // Hapus file pertama
-                    }
-                });
-            },
-            success: function (file, response) {
-                console.log("Upload berhasil:", response);
-            },
-            error: function (file, response) {
-                console.log("Upload gagal:", response);
-            }
-        });
-    </script> --}}
 @endpush

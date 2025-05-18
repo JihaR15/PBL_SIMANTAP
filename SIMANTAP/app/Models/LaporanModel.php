@@ -70,4 +70,10 @@ class LaporanModel extends Model
     {
         return $this->hasOne(PerbaikanModel::class, 'laporan_id', 'laporan_id');
     }
+
+    public function notifikasi()
+    {
+        return $this->hasMany(NotifikasiModel::class, 'laporan_id');
+    }
+
 }
