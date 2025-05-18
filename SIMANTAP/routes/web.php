@@ -97,15 +97,14 @@ Route::middleware(['auth'])->group(function () {
         Route::delete('unit/{id}/delete/', [UnitController::class,'destroy'])->name('unit.delete');
 
         // Tempat
-        // Route::get('tempat/{unit_id}', [TempatController::class,'index'])->name('tempat.index');
-        // Route::post('tempat/{unit_id}/list', [TempatController::class,'list'])->name('tempat.list');
-        // Route::get('tempat/{unit_id}/create', [TempatController::class,'create'])->name('tempat.create');
-        // Route::post('tempat/{unit_id}/store', [TempatController::class,'store'])->name('tempat.store');
-        // Route::get('tempat/{tempat_id}/show/', [TempatController::class,'show'])->name('tempat.show');
-        // Route::get('tempat/{tempat_id}/edit/', [TempatController::class,'edit'])->name('tempat.edit');
-        // Route::put('tempat/{tempat_id}/update/', [TempatController::class,'update'])->name('tempat.update');
-        // Route::get('tempat/{tempat_id}/delete/', [TempatController::class,'confirmDelete'])->name('tempat.confirmDelete');
-        // Route::delete('tempat/{tempat_id}/delete/', [TempatController::class,'destroy'])->name('tempat.delete');
+        Route::get('tempat/{unit_id}/popup', [TempatController::class, 'popup']);
+        Route::get('tempat/{unit_id}/show/{tempat_id}', [TempatController::class, 'show']);
+        Route::get('tempat/{unit_id}/create', [TempatController::class, 'create']);
+        Route::post('tempat/{unit_id}/store', [TempatController::class, 'store']);
+        Route::get('tempat/{unit_id}/edit/{tempat_id}', [TempatController::class, 'edit']);
+        Route::put('tempat/{unit_id}/update/{tempat_id}', [TempatController::class, 'update']);
+        Route::get('tempat/{unit_id}/delete/{tempat_id}', [TempatController::class, 'confirmDelete']);
+        Route::delete('tempat/{unit_id}/delete/{tempat_id}', [TempatController::class, 'destroy']);
 
         // Jenis Barang
         Route::get('jenisbarang', [JenisBarangController::class,'index'])->name('jenisbarang.index');

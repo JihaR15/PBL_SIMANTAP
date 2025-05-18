@@ -5,6 +5,7 @@ use Illuminate\Http\Request;
 use App\Models\UnitModel;
 use App\Models\FasilitasModel;
 use App\Models\TempatModel;
+use App\Models\BarangLokasiModel;
 use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Support\Facades\Validator;
 
@@ -41,17 +42,17 @@ class UnitController extends Controller
                 // Untuk Fasilitas Gedung (Tersedia button edit)
                 $detailBtn = '<button onclick="modalAction(\'' . url('/unit/' . $unit->unit_id . '/show') . '\')" class="btn btn-sm btn-primary flex-fill">Detail</button>';
                 $editBtn = '<button onclick="modalAction(\'' . url('/unit/' . $unit->unit_id . '/edit') . '\')" class="btn btn-sm btn-warning flex-fill">Edit</button>';
-                $deleteBtn = '<button onclick="modalAction(\'' . url('/unit/' . $unit->unit_id . '/delete') . '\')" class="btn btn-sm btn-danger flex-fill">Delete</button>';
+                $deleteBtn = '<button onclick="modalAction(\'' . url('/unit/' . $unit->unit_id . '/delete') . '\')" class="btn btn-sm btn-danger flex-fill">Hapus</button>';
                 return '<div class="d-flex gap-1 justify-content-center" style="min-width:180px;">' . $detailBtn . $editBtn . $deleteBtn . '</div>';
             } else {
                 // Untuk Fasum (Button edit tidak tersedia)
                 $detailBtn = '<button onclick="modalAction(\'' . url('/unit/' . $unit->unit_id . '/show') . '\')" class="btn btn-sm btn-primary w-50">Detail</button>';
-                $deleteBtn = '<button onclick="modalAction(\'' . url('/unit/' . $unit->unit_id . '/delete') . '\')" class="btn btn-sm btn-danger w-50">Delete</button>';
+                $deleteBtn = '<button onclick="modalAction(\'' . url('/unit/' . $unit->unit_id . '/delete') . '\')" class="btn btn-sm btn-danger w-50">Hapus</button>';
                 return '<div class="d-flex gap-1 justify-content-center" style="min-width:180px;">' . $detailBtn . $deleteBtn . '</div>';
     }
             })
             ->addColumn('tempat', function ($unit) {
-                return '<button onclick="window.location.href=\'' . url('/tempat/' . $unit->unit_id) . '\'" class="btn btn-sm btn-success">Kelola Ruang</button>';
+                return '<button onclick="modalAction(\'' . url('/tempat/' . $unit->unit_id . '/popup') . '\')" class="btn btn-sm btn-success">Kelola Ruang</button>';
             })
             ->rawColumns(['action', 'tempat'])
             ->make(true);
