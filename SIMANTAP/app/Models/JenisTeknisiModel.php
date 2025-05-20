@@ -14,7 +14,7 @@ class JenisTeknisiModel extends Model
 
     public $timestamps = false;
 
-    protected $fillable = ['nama_jenis'];
+    protected $fillable = ['nama_jenis_teknisi'];
 
     public function teknisi()
     {
