@@ -1,4 +1,4 @@
-<form action="{{ url('/role/store') }}" method="POST" id="form-create" enctype="multipart/form-data">
+<form action="{{ url('/jenisteknisi/store') }}" method="POST" id="form-create" enctype="multipart/form-data">
     @csrf
     <div id="modal-master" class="modal-dialog modal-md" role="document">
         <div class="modal-content">

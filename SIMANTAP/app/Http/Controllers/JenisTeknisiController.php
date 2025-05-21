@@ -9,6 +9,7 @@ use App\Models\TeknisiModel;
 use App\Models\JenisTeknisiModel;
 use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\DB;
 
 class JenisTeknisiController extends Controller
 {
@@ -117,23 +118,41 @@ class JenisTeknisiController extends Controller
 
     public function destroy($id)
     {
-        $jenisteknisi = JenisTeknisiModel::findOrFail($id);
-        $jenisteknisi->delete();
-        $teknisi = TeknisiModel::where('jenis_teknisi_id', $id)->first();
-        if ($teknisi) {
-            $teknisi->delete();
-        }
-        $user = UserModel::where('jenis_teknisi_id', $id)->first();
-        if ($user) {
-            $user->delete();
-        }
-        if (request()->ajax() || request()->wantsJson()) {
-            return response()->json([
-                'status' => true,
-                'message' => 'Jenis Teknisi deleted successfully.',
-            ]);
-        }
-        return redirect()->route('jenisteknisi.index')->with('success', 'Jenis Teknisi deleted successfully.');
-    }
+        // Gunakan transaksi agar aman jika terjadi error
+        DB::beginTransaction();
+        try {
+            $jenisteknisi = JenisTeknisiModel::findOrFail($id);
 
+            // Ambil semua teknisi yang punya jenis_teknisi_id = $id
+            $teknisis = TeknisiModel::where('jenis_teknisi_id', $id)->get();
+
+            foreach ($teknisis as $teknisi) {
+                // Hapus user yang terkait (via user_id)
+                $user = UserModel::find($teknisi->user_id);
+                if ($user) {
+                    $user->delete();
+                }
+
+                // Hapus teknisinya
+                $teknisi->delete();
+            }
+
+            // Hapus jenis teknisinya
+            $jenisteknisi->delete();
+
+            DB::commit();
+
+            if (request()->ajax() || request()->wantsJson()) {
+                return response()->json([
+                    'status' => true,
+                    'message' => 'Jenis Teknisi dan teknisi serta user terkait berhasil dihapus.',
+                ]);
+            }
+
+            return redirect()->route('jenisteknisi.index')->with('success', 'Jenis Teknisi dan teknisi serta user terkait berhasil dihapus.');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return back()->with('error', 'Gagal menghapus data: ' . $e->getMessage());
+        }
+    }
 }
