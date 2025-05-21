@@ -141,12 +141,13 @@ Route::middleware(['auth'])->group(function () {
 
     Route::middleware(['authorize:ADM,SRN'])->group(function () {
         // Verif Laporan
-        Route::get('verifikasi', [VerifikasiController::class,'index'])->name('verifikasi.index');
-        Route::post('verifikasi/list', [VerifikasiController::class,'list'])->name('verifikasi.list');
-        Route::get('/verifikasi/{laporan_id}/show', [VerifikasiController::class, 'show'])->name('verifikasi.show');
-        Route::post('/verifikasi/{laporan_id}/verify', [VerifikasiController::class, 'verify'])->name('verifikasi.verify');
-        Route::post('/verifikasi/{laporan_id}/reject', [VerifikasiController::class, 'reject'])->name('verifikasi.reject');
-        Route::get('/riwayatverifikasi', [VerifikasiController::class, 'riwayatVerifikasi'])->name('riwayatverifikasi');
-        Route::get('/riwayatverifikasi/{laporan_id}/show', [VerifikasiController::class, 'show'])->name('riwayatverifikasi.show');
+        Route::get('verifikasi', [VerifikasiController::class, 'index'])->name('verifikasi.index');
+        Route::post('verifikasi/list', [VerifikasiController::class, 'list'])->name('verifikasi.list');
+        Route::get('verifikasi/{laporan_id}/show', [VerifikasiController::class, 'show'])->name('verifikasi.show');
+        Route::post('verifikasi/{laporan_id}/verify', [VerifikasiController::class, 'verify'])->name('verifikasi.verify');
+        Route::post('verifikasi/{laporan_id}/reject', [VerifikasiController::class, 'reject'])->name('verifikasi.reject');
+        Route::get('riwayatverifikasi', [VerifikasiController::class, 'riwayatVerifikasi'])->name('riwayatverifikasi');
+        Route::get('/riwayatverifikasi/{laporan_id}/show', [VerifikasiController::class, 'showRiwayatVerif'])->name('riwayatverifikasi.show');
+        Route::get('verifikasi/{laporan_id}/prioritas', [VerifikasiController::class, 'showPrioritas'])->name('verifikasi.prioritas.show');
     });
 });

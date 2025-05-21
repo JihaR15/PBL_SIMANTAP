@@ -2,11 +2,16 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\UserModel;
 use App\Models\LaporanModel;
+use App\Models\TeknisiModel;
 use Illuminate\Http\Request;
+use App\Models\PerbaikanModel;
+use App\Models\PrioritasModel;
 use Illuminate\Support\Carbon;
 use App\Models\NotifikasiModel;
 use Yajra\DataTables\Facades\DataTables;
+use Illuminate\Support\Facades\Validator;
 
 class VerifikasiController extends Controller
 {
@@ -70,12 +75,153 @@ class VerifikasiController extends Controller
         return view('verifikasi.show', compact('laporan'));
     }
 
-    public function verify($laporan_id)
+    public function showPrioritas($laporan_id)
     {
+        $laporan = LaporanModel::findOrFail($laporan_id);
+        $teknisi = TeknisiModel::with(['user', 'jenis_teknisi'])->get();
+
+
+        return view('verifikasi.prioritas', compact('laporan', 'teknisi'));
+    }
+
+    public function verify(Request $request, $laporan_id)
+    {
+        $request->validate([
+            'teknisi_id' => 'required|exists:m_teknisi,teknisi_id',
+            'tingkat_kerusakan' => 'required|integer|min:1|max:5',
+            'dampak_terhadap_aktivitas_akademik' => 'required|integer|min:1|max:5',
+            'frekuensi_penggunaan_fasilitas' => 'required|integer|min:1|max:5',
+            'ketersediaan_barang_pengganti' => 'required|integer|min:1|max:5',
+            'tingkat_risiko_keselamatan' => 'required|integer|min:1|max:5',
+        ]);
+
+        PrioritasModel::updateOrCreate(
+            ['laporan_id' => $laporan_id],
+            [
+                'tingkat_kerusakan' => $request->tingkat_kerusakan,
+                'dampak_terhadap_aktivitas_akademik' => $request->dampak_terhadap_aktivitas_akademik,
+                'frekuensi_penggunaan_fasilitas' => $request->frekuensi_penggunaan_fasilitas,
+                'ketersediaan_barang_pengganti' => $request->ketersediaan_barang_pengganti,
+                'tingkat_risiko_keselamatan' => $request->tingkat_risiko_keselamatan,
+            ]
+        );
+
+        // ambil semua prioritas untuk TOPSIS
+        $allPrioritas = PrioritasModel::all();
+
+        // bobot
+        $bobot = [
+            'tingkat_kerusakan' => 0.25,
+            'dampak_terhadap_aktivitas_akademik' => 0.20,
+            'frekuensi_penggunaan_fasilitas' => 0.20,
+            'ketersediaan_barang_pengganti' => 0.15,
+            'tingkat_risiko_keselamatan' => 0.20,
+        ];
+
+        // data cuma 1, gunakan weighted sum sederhana sebagai nilai topsis
+        if ($allPrioritas->count() == 1) {
+            $p = $allPrioritas->first();
+
+            $skor = (
+                $p->tingkat_kerusakan * $bobot['tingkat_kerusakan'] +
+                $p->dampak_terhadap_aktivitas_akademik * $bobot['dampak_terhadap_aktivitas_akademik'] +
+                $p->frekuensi_penggunaan_fasilitas * $bobot['frekuensi_penggunaan_fasilitas'] +
+                $p->ketersediaan_barang_pengganti * $bobot['ketersediaan_barang_pengganti'] +
+                $p->tingkat_risiko_keselamatan * $bobot['tingkat_risiko_keselamatan']
+            );
+
+            $nilaiTopsis = $skor / 5;
+
+            PrioritasModel::updateOrCreate(
+                ['laporan_id' => $laporan_id],
+                [
+                    'jarak_positif' => 0,
+                    'jarak_negatif' => 0,
+                    'nilai_topsis' => $nilaiTopsis,
+                    'klasifikasi_urgensi' => $this->klasifikasiUrgensi($nilaiTopsis),
+                ]
+            );
+        } else {
+            // Hitung akar jumlah kuadrat tiap kriteria
+            $sumSquares = array_fill_keys(array_keys($bobot), 0);
+            foreach ($allPrioritas as $p) {
+                foreach ($bobot as $kriteria => $w) {
+                    $sumSquares[$kriteria] += pow($p->$kriteria, 2);
+                }
+            }
+            foreach ($sumSquares as $key => $val) {
+                $sumSquares[$key] = sqrt($val);
+                if ($sumSquares[$key] == 0) $sumSquares[$key] = 1;
+            }
+
+            // Normalisasi & bobot
+            $allMatriksTerbobot = [];
+            foreach ($allPrioritas as $p) {
+                $normalisasi = [];
+                foreach ($bobot as $kriteria => $w) {
+                    $normalisasi[$kriteria] = $p->$kriteria / $sumSquares[$kriteria];
+                }
+                $terbobot = [];
+                foreach ($normalisasi as $k => $v) {
+                    $terbobot[$k] = $v * $bobot[$k];
+                }
+                $allMatriksTerbobot[$p->laporan_id] = $terbobot;
+            }
+
+            // Solusi ideal positif & negatif
+            $Apositif = [];
+            $Anegatif = [];
+            foreach ($bobot as $kriteria => $w) {
+                $values = array_column($allMatriksTerbobot, $kriteria);
+                if ($kriteria == 'ketersediaan_barang_pengganti') { //cost
+                    $Apositif[$kriteria] = min($values);
+                    $Anegatif[$kriteria] = max($values);
+                } else { // benefit
+                    $Apositif[$kriteria] = max($values);
+                    $Anegatif[$kriteria] = min($values);
+                }
+            }
+
+            // Hitung jarak Euclidean
+            $matriksTerbobotTarget = $allMatriksTerbobot[$laporan_id];
+            $jarakPositif = 0;
+            $jarakNegatif = 0;
+            foreach ($matriksTerbobotTarget as $k => $v) {
+                $jarakPositif += pow($v - $Apositif[$k], 2);
+                $jarakNegatif += pow($v - $Anegatif[$k], 2);
+            }
+            $jarakPositif = sqrt($jarakPositif);
+            $jarakNegatif = sqrt($jarakNegatif);
+
+            $denominator = $jarakPositif + $jarakNegatif;
+            $nilaiTopsis = $denominator == 0 ? 1 : $jarakNegatif / $denominator;
+
+            PrioritasModel::updateOrCreate(
+                ['laporan_id' => $laporan_id],
+                [
+                    'jarak_positif' => $jarakPositif,
+                    'jarak_negatif' => $jarakNegatif,
+                    'nilai_topsis' => $nilaiTopsis,
+                    'klasifikasi_urgensi' => $this->klasifikasiUrgensi($nilaiTopsis),
+                ]
+            );
+        }
+
+        // simpan penugasan teknisi
+        PerbaikanModel::updateOrCreate(
+            ['laporan_id' => $laporan_id],
+            [
+                'teknisi_id' => $request->teknisi_id,
+                'ditugaskan_pada' => Carbon::now(),
+            ]
+        );
+
+        // update status laporan
         $laporan = LaporanModel::findOrFail($laporan_id);
         $laporan->status_verif = 'diverifikasi';
         $laporan->save();
 
+        // kirim notifikasi
         NotifikasiModel::create([
             'user_id' => $laporan->user_id,
             'laporan_id' => $laporan->laporan_id,
@@ -83,7 +229,25 @@ class VerifikasiController extends Controller
             'is_read' => false,
         ]);
 
-        return response()->json(['success' => true, 'message' => 'Laporan berhasil diverifikasi']);
+        NotifikasiModel::create([
+            'user_id' => $request->teknisi_id,
+            'laporan_id' => $laporan->laporan_id,
+            'isi_notifikasi' => 'Anda telah ditugaskan untuk memperbaiki laporan ID #' . $laporan->laporan_id,
+            'is_read' => false,
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Berhasil Verifikasi dan teknisi berhasil ditugaskan.',
+            'klasifikasi_urgensi' => $this->klasifikasiUrgensi($nilaiTopsis),
+        ]);
+    }
+
+    private function klasifikasiUrgensi($nilaiTopsis)
+    {
+        if ($nilaiTopsis >= 0.6) return 'Mendesak';
+        if ($nilaiTopsis >= 0.4) return 'Biasa';
+        return 'Tidak Mendesak';
     }
 
     public function reject($laporan_id)
@@ -92,7 +256,6 @@ class VerifikasiController extends Controller
         $laporan->status_verif = 'ditolak';
         $laporan->save();
 
-        // Buat notifikasi ke user pelapor
         NotifikasiModel::create([
             'user_id' => $laporan->user_id,
             'laporan_id' => $laporan->laporan_id,
@@ -144,5 +307,15 @@ class VerifikasiController extends Controller
                 ['label' => 'Riwayat Verifikasi', 'url' => '/riwayatverifikasi']
             ],
         ]);
+    }
+
+    public function showRiwayatVerif($laporan_id)
+    {
+        $laporan = LaporanModel::with([
+            'fasilitas', 'unit', 'tempat', 'barangLokasi.jenisBarang',
+            'kategoriKerusakan', 'periode'
+        ])->findOrFail($laporan_id);
+
+        return view('verifikasi.showriwayatverif', compact('laporan'));
     }
 }
