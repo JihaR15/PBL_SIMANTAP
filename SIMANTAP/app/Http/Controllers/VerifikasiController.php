@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\UserModel;
+use App\Models\BobotModel;
 use App\Models\LaporanModel;
 use App\Models\TeknisiModel;
 use Illuminate\Http\Request;
@@ -95,6 +96,35 @@ class VerifikasiController extends Controller
             'tingkat_risiko_keselamatan' => 'required|integer|min:1|max:5',
         ]);
 
+        $bobotRows = BobotModel::all();
+        $map = [
+            'Tingkat Kerusakan' => 'tingkat_kerusakan',
+            'Dampak Terhadap Aktivitas Akademik' => 'dampak_terhadap_aktivitas_akademik',
+            'Frekuensi Penggunaan Fasilitas' => 'frekuensi_penggunaan_fasilitas',
+            'Ketersediaan Barang Pengganti' => 'ketersediaan_barang_pengganti',
+            'Tingkat Resiko Keselamatan' => 'tingkat_risiko_keselamatan',
+        ];
+
+        $bobot = [];
+        foreach ($bobotRows as $row) {
+            if (isset($map[$row->nama_parameter])) {
+                $key = $map[$row->nama_parameter];
+                $bobot[$key] = floatval($row->bobot);
+            }
+        }
+
+        // validasi bobot
+        $requiredKeys = array_values($map);
+        foreach ($requiredKeys as $key) {
+            if (!isset($bobot[$key])) {
+                return response()->json([
+                    'success' => false,
+                    'message' => "Bobot untuk parameter '$key' belum tersedia di database.",
+                ], 400);
+            }
+        }
+
+        // simpan prioritas
         PrioritasModel::updateOrCreate(
             ['laporan_id' => $laporan_id],
             [
@@ -109,16 +139,7 @@ class VerifikasiController extends Controller
         // ambil semua prioritas untuk TOPSIS
         $allPrioritas = PrioritasModel::all();
 
-        // bobot
-        $bobot = [
-            'tingkat_kerusakan' => 0.25,
-            'dampak_terhadap_aktivitas_akademik' => 0.20,
-            'frekuensi_penggunaan_fasilitas' => 0.20,
-            'ketersediaan_barang_pengganti' => 0.15,
-            'tingkat_risiko_keselamatan' => 0.20,
-        ];
-
-        // data cuma 1, gunakan weighted sum sederhana sebagai nilai topsis
+          // data cuma 1, gunakan weighted sum sederhana sebagai nilai topsis
         if ($allPrioritas->count() == 1) {
             $p = $allPrioritas->first();
 
