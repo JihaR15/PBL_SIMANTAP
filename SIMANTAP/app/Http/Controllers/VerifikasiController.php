@@ -81,7 +81,6 @@ class VerifikasiController extends Controller
         $laporan = LaporanModel::findOrFail($laporan_id);
         $teknisi = TeknisiModel::with(['user', 'jenis_teknisi'])->get();
 
-
         return view('verifikasi.prioritas', compact('laporan', 'teknisi'));
     }
 
@@ -112,6 +111,7 @@ class VerifikasiController extends Controller
                 $bobot[$key] = floatval($row->bobot);
             }
         }
+        // dump('Bobot: ' . json_encode($bobot));
 
         // validasi bobot
         $requiredKeys = array_values($map);
@@ -139,7 +139,29 @@ class VerifikasiController extends Controller
         // ambil semua prioritas untuk TOPSIS
         $allPrioritas = PrioritasModel::all();
 
-          // data cuma 1, gunakan weighted sum sederhana sebagai nilai topsis
+        // tipe kriteria benefit atau cost
+        $tipeKriteria = [
+            'tingkat_kerusakan' => 'benefit',
+            'dampak_terhadap_aktivitas_akademik' => 'benefit',
+            'frekuensi_penggunaan_fasilitas' => 'benefit',
+            'ketersediaan_barang_pengganti' => 'cost',
+            'tingkat_risiko_keselamatan' => 'benefit',
+        ];
+
+        // dump data prioritas
+        $dataPrioritasDump = [];
+        foreach ($allPrioritas as $p) {
+            $dataPrioritasDump[$p->laporan_id] = [
+                'tingkat_kerusakan' => $p->tingkat_kerusakan,
+                'dampak_terhadap_aktivitas_akademik' => $p->dampak_terhadap_aktivitas_akademik,
+                'frekuensi_penggunaan_fasilitas' => $p->frekuensi_penggunaan_fasilitas,
+                'ketersediaan_barang_pengganti' => $p->ketersediaan_barang_pengganti,
+                'tingkat_risiko_keselamatan' => $p->tingkat_risiko_keselamatan,
+            ];
+        }
+        // dump('Data Prioritas: ' . json_encode($dataPrioritasDump));
+
+        // data cuma 1, gunakan weighted sum sederhana sebagai nilai topsis
         if ($allPrioritas->count() == 1) {
             $p = $allPrioritas->first();
 
@@ -152,6 +174,7 @@ class VerifikasiController extends Controller
             );
 
             $nilaiTopsis = $skor / 5;
+            // dump("Single data, skor weighted sum: $skor, nilai TOPSIS: $nilaiTopsis");
 
             PrioritasModel::updateOrCreate(
                 ['laporan_id' => $laporan_id],
@@ -163,7 +186,7 @@ class VerifikasiController extends Controller
                 ]
             );
         } else {
-            // Hitung akar jumlah kuadrat tiap kriteria
+            // menghitung akar jumlah kuadrat tiap kriteria
             $sumSquares = array_fill_keys(array_keys($bobot), 0);
             foreach ($allPrioritas as $p) {
                 foreach ($bobot as $kriteria => $w) {
@@ -174,8 +197,9 @@ class VerifikasiController extends Controller
                 $sumSquares[$key] = sqrt($val);
                 if ($sumSquares[$key] == 0) $sumSquares[$key] = 1;
             }
+            // dump('SumSquares (akar jumlah kuadrat): ' . json_encode($sumSquares));
 
-            // Normalisasi & bobot
+            // normalisasi & bobot
             $allMatriksTerbobot = [];
             foreach ($allPrioritas as $p) {
                 $normalisasi = [];
@@ -188,23 +212,27 @@ class VerifikasiController extends Controller
                 }
                 $allMatriksTerbobot[$p->laporan_id] = $terbobot;
             }
+            // dump('Matriks Terbobot Normalisasi: ' . json_encode($allMatriksTerbobot));
 
-            // Solusi ideal positif & negatif
+            // solusi ideal positif & negatif
             $Apositif = [];
             $Anegatif = [];
             foreach ($bobot as $kriteria => $w) {
                 $values = array_column($allMatriksTerbobot, $kriteria);
-                if ($kriteria == 'ketersediaan_barang_pengganti') { //cost
-                    $Apositif[$kriteria] = min($values);
-                    $Anegatif[$kriteria] = max($values);
-                } else { // benefit
+                if ($tipeKriteria[$kriteria] === 'benefit') {
                     $Apositif[$kriteria] = max($values);
                     $Anegatif[$kriteria] = min($values);
+                } else { // cost
+                    $Apositif[$kriteria] = min($values);
+                    $Anegatif[$kriteria] = max($values);
                 }
             }
+            // dump('Solusi Ideal Positif: ' . json_encode($Apositif));
+            // dump('Solusi Ideal Negatif: ' . json_encode($Anegatif));
 
-            // Hitung jarak Euclidean
+            // hitung jarak Euclidean dari solusi ideal positif dan negatif
             $matriksTerbobotTarget = $allMatriksTerbobot[$laporan_id];
+            error_log("Matriks Terbobot Target Laporan $laporan_id: " . json_encode($matriksTerbobotTarget));
             $jarakPositif = 0;
             $jarakNegatif = 0;
             foreach ($matriksTerbobotTarget as $k => $v) {
@@ -213,9 +241,11 @@ class VerifikasiController extends Controller
             }
             $jarakPositif = sqrt($jarakPositif);
             $jarakNegatif = sqrt($jarakNegatif);
+            // dump("Jarak Positif: $jarakPositif, Jarak Negatif: $jarakNegatif");
 
             $denominator = $jarakPositif + $jarakNegatif;
             $nilaiTopsis = $denominator == 0 ? 1 : $jarakNegatif / $denominator;
+            // dump("Nilai TOPSIS: $nilaiTopsis");
 
             PrioritasModel::updateOrCreate(
                 ['laporan_id' => $laporan_id],
@@ -228,7 +258,6 @@ class VerifikasiController extends Controller
             );
         }
 
-        // simpan penugasan teknisi
         PerbaikanModel::updateOrCreate(
             ['laporan_id' => $laporan_id],
             [
@@ -237,12 +266,10 @@ class VerifikasiController extends Controller
             ]
         );
 
-        // update status laporan
         $laporan = LaporanModel::findOrFail($laporan_id);
         $laporan->status_verif = 'diverifikasi';
         $laporan->save();
 
-        // kirim notifikasi
         NotifikasiModel::create([
             'user_id' => $laporan->user_id,
             'laporan_id' => $laporan->laporan_id,
