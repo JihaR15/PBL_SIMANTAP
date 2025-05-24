@@ -24,6 +24,9 @@
 <!-- App js -->
 <script src="{{ asset('assets/js/app.js') }}"></script>
 
+<script src="{{ asset('assets/js/pages/lightbox.js') }}"></script>
+
+
 <script>
     function modalAction(url = ''){
             $('#myModal').load(url,function(){

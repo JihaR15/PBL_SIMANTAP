@@ -14,6 +14,7 @@ use App\Http\Controllers\VerifikasiController;
 use App\Http\Controllers\JenisBarangController;
 use App\Http\Controllers\BarangLokasiController;
 use App\Http\Controllers\JenisTeknisiController;
+use App\Http\Controllers\PerbaikanController;
 
 
 
@@ -149,5 +150,24 @@ Route::middleware(['auth'])->group(function () {
         Route::get('riwayatverifikasi', [VerifikasiController::class, 'riwayatVerifikasi'])->name('riwayatverifikasi');
         Route::get('/riwayatverifikasi/{laporan_id}/show', [VerifikasiController::class, 'showRiwayatVerif'])->name('riwayatverifikasi.show');
         Route::get('verifikasi/{laporan_id}/prioritas', [VerifikasiController::class, 'showPrioritas'])->name('verifikasi.prioritas.show');
+    });
+
+    Route::middleware(['authorize:TKS'])->group(function () {
+        // perbaikan
+        Route::get('perbaikan', [PerbaikanController::class, 'index'])->name('perbaikan.index');
+        Route::post('perbaikan/list', [PerbaikanController::class, 'list'])->name('perbaikan.list');
+        Route::get('perbaikan/{perbaikan_id}/show', [PerbaikanController::class, 'show'])->name('perbaikan.show');
+        Route::put('perbaikan/{id}/kerjakan/', [PerbaikanController::class,'kerjakan'])->name('perbaikan.kerjakan');
+
+        Route::get('dikerjakan', [PerbaikanController::class, 'dikerjakan'])->name('dikerjakan');
+        Route::post('/dikerjakan/list2', [PerbaikanController::class, 'list2'])->name('perbaikan.list2');
+        Route::get('dikerjakan/{perbaikan_id}/show', [PerbaikanController::class, 'showdikerjakan'])->name('dikerjakan.show');
+        Route::get('dikerjakan/{perbaikan_id}/konfirmasi', [PerbaikanController::class, 'konfirmasi'])->name('perbaikan.konfirmasi');
+        Route::put('dikerjakan/{id}/selesai/', [PerbaikanController::class,'selesai'])->name('perbaikan.selesai');
+
+        Route::get('riwayatperbaikan', [PerbaikanController::class, 'riwayatPerbaikan'])->name('riwayatperbaikan');
+        Route::post('/riwayatperbaikan/list', [PerbaikanController::class, 'riwayatList'])->name('perbaikan.riwayatList');
+        Route::get('riwayatperbaikan/{perbaikan_id}/show', [PerbaikanController::class, 'showRiwayatPerbaikan'])->name('riwayatperbaikan.show');
+
     });
 });

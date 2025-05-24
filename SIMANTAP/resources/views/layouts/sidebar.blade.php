@@ -119,12 +119,18 @@
                 @endif
 
                 @if(auth()->check() && auth()->user()->role->kode_role === 'TKS')
-                    <li class="menu-title">Laporan</li>
+                    <li class="menu-title">Perbaikan</li>
 
                     <li>
-                        <a href="{{ url('/laporanmasuk') }}" class="waves-effect">
+                        <a href="{{ url('/perbaikan') }}" class="waves-effect">
                             <i class="ri-inbox-line"></i>
-                            <span>Laporan Masuk</span>
+                            <span>Tugas Perbaikan</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ url('/dikerjakan') }}" class="waves-effect">
+                            <i class="ri-tools-line"></i>
+                            <span>Sedang Dikerjakan</span>
                         </a>
                     </li>
                     <li>
