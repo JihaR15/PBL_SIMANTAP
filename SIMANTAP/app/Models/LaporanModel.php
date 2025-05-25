@@ -71,10 +71,10 @@ class LaporanModel extends Model
         return $this->hasOne(PrioritasModel::class, 'laporan_id', 'laporan_id');
     }
 
-    public function topsisHasil()
-    {
-        return $this->hasOne(TopsisHasilModel::class, 'laporan_id', 'laporan_id');
-    }
+    // public function topsisHasil()
+    // {
+    //     return $this->hasOne(TopsisHasilModel::class, 'laporan_id', 'laporan_id');
+    // }
 
     public function perbaikan()
     {

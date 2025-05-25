@@ -2,8 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\LaporanModel;
 use Illuminate\Http\Request;
 use App\Models\JenisBarangModel;
+use App\Models\BarangLokasiModel;
+use Illuminate\Support\Facades\DB;
 use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Support\Facades\Validator;
 
@@ -122,14 +125,56 @@ class JenisBarangController extends Controller
 
     public function destroy($id)
     {
-        $jenisbarang = JenisBarangModel::findOrFail($id);
-        $jenisbarang->delete();
-        if (request()->ajax() || request()->wantsJson()) {
-            return response()->json([
-                'status' => true,
-                'message' => 'Jenis Barang deleted successfully.'
-            ]);
+        DB::beginTransaction();
+
+        try {
+            $jenisbarang = JenisBarangModel::findOrFail($id);
+            $barangLokasi = BarangLokasiModel::where('jenis_barang_id', $id)->get();
+            $laporans = LaporanModel::whereIn('barang_lokasi_id', $barangLokasi->pluck('barang_lokasi_id'))->get();
+
+            // hapus semua notifikasi
+            foreach ($laporans as $laporan) {
+                $laporan->notifikasi()->delete();
+            }
+
+            // hapus perbaikan
+            foreach ($laporans as $laporan) {
+                $laporan->perbaikan()->delete();
+            }
+
+            // hapus prioritas
+            foreach ($laporans as $laporan) {
+                $laporan->prioritas()->delete();
+            }
+
+            // hapus laporan
+            foreach ($laporans as $laporan) {
+                $laporan->delete();
+            }
+
+            // hapus di barang lokasi
+            foreach ($barangLokasi as $barang) {
+                $barang->delete();
+            }
+
+            // hapus jenis barang
+            $jenisbarang->delete();
+
+            DB::commit();
+
+            if (request()->ajax() || request()->wantsJson()) {
+                return response()->json([
+                    'status' => true,
+                    'message' => 'Jenis Barang Berhasil dihapus.'
+                ]);
+            }
+
+            return redirect()->route('jenisbarang.index')->with('success', 'Jenis Barang Berhasil dihapus.');
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return redirect()->route('jenisbarang.index')->with('error', 'Terjadi kesalahan saat menghapus jenis barang: ' . $e->getMessage());
         }
-        return redirect()->route('jenisbarang.index')->with('success', 'Jenis Barang deleted successfully.');
     }
+
 }

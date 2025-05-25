@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\UnitModel;
 use App\Models\TempatModel;
+use App\Models\LaporanModel;
 use Illuminate\Http\Request;
 use App\Models\JenisBarangModel;
 use App\Models\BarangLokasiModel;
@@ -131,7 +132,30 @@ class BarangLokasiController extends Controller
                                     ->first();
 
         if ($barang) {
+            $laporans = LaporanModel::where('barang_lokasi_id', $barang->barang_lokasi_id)->get();
+
+            // hapus semua notifikasi
+            foreach ($laporans as $laporan) {
+                $laporan->notifikasi()->delete();
+            }
+
+            // hapus perbaikan
+            foreach ($laporans as $laporan) {
+                $laporan->perbaikan()->delete();
+            }
+
+            // hapus prioritas
+            foreach ($laporans as $laporan) {
+                $laporan->prioritas()->delete();
+            }
+
+            // hapus data laporan
+            foreach ($laporans as $laporan) {
+                $laporan->delete();
+            }
+
             $barang->delete();
+
             return redirect()->route('lokasibarang.index')->with('success', 'Fasilitas ' . $namabrg->nama_barang . ' berhasil dihapus dari Lokasi ' . $tempat->nama_tempat);
         }
 
