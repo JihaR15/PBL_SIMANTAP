@@ -9,7 +9,7 @@
                 {{-- <li class="menu-title">Menu</li> --}}
 
                 <li class="{{ $activeMenu == 'dashboard' ? 'mm-active' : '' }}">
-                    <a href="{{ url('/') }}" class="waves-effect " >
+                    <a href="{{ url('/dashboard') }}" class="waves-effect " >
                         <i class="ri-dashboard-line"></i>
                         <span>Dashboard</span>
                     </a>

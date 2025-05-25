@@ -32,6 +32,7 @@ use App\Http\Controllers\PerbaikanController;
 // Route::get('/', function () {
 //     return view('welcome');
 // });
+Route::get('/', [WelcomeController::class,'landing'])->name('landing');
 
 
 Route::get('login', [AuthController::class,'login'])->name('login');
@@ -46,7 +47,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/profile/edit', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
 
-    Route::get('/', [WelcomeController::class,'dashboard'])->name('dashboard');
+    Route::get('/dashboard', [WelcomeController::class,'dashboard'])->name('dashboard');
 
     // notifikasi
     Route::get('/notifikasi', [NotifikasiController::class, 'index'])->name('notifikasi.index');
