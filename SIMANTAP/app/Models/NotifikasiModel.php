@@ -13,6 +13,7 @@ class NotifikasiModel extends Model
     protected $fillable = [
         'user_id',
         'laporan_id',
+        'sender_id',
         'isi_notifikasi',
         'is_read',
     ];
@@ -25,5 +26,10 @@ class NotifikasiModel extends Model
     public function laporan()
     {
         return $this->belongsTo(LaporanModel::class, 'laporan_id', 'laporan_id');
+    }
+
+    public function sender()
+    {
+        return $this->belongsTo(UserModel::class, 'sender_id', 'user_id');
     }
 }

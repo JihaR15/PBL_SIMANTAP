@@ -139,6 +139,8 @@ Route::middleware(['auth'])->group(function () {
         // Route::put('laporan/{id}/update/', [LaporanController::class,'update'])->name('laporan.update');
         Route::get('laporan/{id}/delete/', [LaporanController::class,'confirmDelete'])->name('laporan.confirmDelete');
         Route::delete('laporan/{id}/delete/', [LaporanController::class,'destroy'])->name('laporan.delete');
+        Route::get('/statusperbaikan', [LaporanController::class, 'statusPerbaikan'])->name('statusperbaikan');
+        Route::get('/statusperbaikan/{laporan_id}/show', [LaporanController::class, 'showStatusPerbaikan'])->name('statusperbaikan.show');
     });
 
     Route::middleware(['authorize:ADM,SRN'])->group(function () {

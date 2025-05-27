@@ -79,7 +79,8 @@
         <div class="modal-footer">
             {{-- <button id="btn-verify" class="btn btn-success">Verifikasi</button> --}}
             <button onclick="modalAction('{{ url('verifikasi/'.$laporan->laporan_id.'/prioritas') }}')" class="btn btn-primary" id="btn-verify">Verifikasi</button>
-            <button id="btn-reject" class="btn btn-danger">Tolak</button>
+            {{-- <button id="btn-reject" class="btn btn-danger">Tolak</button> --}}
+            <button id="btn-reject" class="btn btn-danger" data-laporan-id="{{ $laporan->laporan_id }}">Tolak</button>
         </div>
     </div>
 </div>
@@ -130,6 +131,8 @@
 
     $(document).ready(function() {
         $(document).on('click', '#btn-reject', function() {
+            let laporanId = $(this).data('laporan-id');
+            // console.log('Tombol Tolak diklik, laporanId:', laporanId);
             if (!laporanId) {
                 Swal.fire('Error', 'ID laporan tidak ditemukan', 'error');
                 return;

@@ -82,6 +82,7 @@ class LaporanController extends Controller
             // Buat laporan dan simpan
             $laporan = LaporanModel::create($laporanData);
 
+            $sender_id = auth()->id();
             $usersToNotify = UserModel::whereHas('role', function ($query) {
                 $query->whereIn('kode_role', ['ADM', 'SRN']);
             })->get();
@@ -89,8 +90,9 @@ class LaporanController extends Controller
             foreach ($usersToNotify as $user) {
                 NotifikasiModel::create([
                     'user_id' => $user->user_id,
+                    'sender_id' => $sender_id,
                     'laporan_id' => $laporan->laporan_id,
-                    'isi_notifikasi' => "Laporan baru dengan ID #{$laporan->laporan_id} telah dibuat dan menunggu verifikasi.",
+                    'isi_notifikasi' => "Terdapat laporan kerusakan baru dengan ID #{$laporan->laporan_id} dan menunggu verifikasi.",
                     'is_read' => false,
                 ]);
             }
@@ -188,12 +190,87 @@ class LaporanController extends Controller
             'message' => 'Laporan berhasil dihapus.'
         ]);
     } catch (\Exception $e) {
-        
+
         return response()->json([
             'status' => false,
             'message' => 'Terjadi kesalahan saat menghapus laporan.',
             'error' => $e->getMessage()
         ]);
     }
+    }
+
+    public function statusPerbaikan(Request $request)
+    {
+        if ($request->ajax()) {
+            $laporans = LaporanModel::with(['fasilitas', 'unit', 'tempat', 'barangLokasi.jenisBarang', 'perbaikan'])
+                ->select('laporan_id', 'fasilitas_id', 'unit_id', 'tempat_id', 'barang_lokasi_id', 'created_at')
+                ->whereHas('perbaikan')
+                ->where('user_id', auth()->id())
+                ->where('status_verif', 'diverifikasi')
+                ->orderBy('created_at', 'desc')
+                ->get();
+
+            return DataTables::of($laporans)
+                ->addIndexColumn()
+                ->addColumn('barang', function ($laporan) {
+                    return optional($laporan->barangLokasi->jenisBarang)->nama_barang ?? '-';
+                })
+                ->addColumn('tempat', function ($laporan) {
+                    return optional($laporan->tempat)->nama_tempat ?? '-';
+                })
+                ->addColumn('unit', function ($laporan) {
+                    return optional($laporan->unit)->nama_unit ?? '-';
+                })
+                ->addColumn('status_perbaikan', function ($laporan) {
+                    return $laporan->perbaikan ? $laporan->perbaikan->status_perbaikan : '-';
+                })
+                ->addColumn('status_perbaikan', function ($laporan) {
+                    $status = $laporan->perbaikan->status_perbaikan ?? null;
+
+                    if ($status === 'belum') {
+                        return '<span class="badge bg-warning" style="font-size: 12px; padding: 8px 10px; color: #fff; font-weight: 700;">Belum dikerjakan</span>';
+                    } elseif ($status === 'sedang diperbaiki') {
+                        return '<span class="badge bg-primary" style="font-size: 12px; padding: 8px 10px; color: #fff; font-weight: 700;">Sedang dikerjakan</span>';
+                    } elseif ($status === 'selesai') {
+                        return '<span class="badge bg-success" style="font-size: 12px; padding: 8px 10px; color: #fff; font-weight: 700;">Selesai</span>';
+                    } else {
+                        return '<span class="badge bg-secondary" style="font-size: 12px; padding: 8px 10px; color: #fff; font-weight: 700;">-</span>';
+                    }
+                })
+                ->addColumn('created_at', function ($row) {
+                    return Carbon::parse($row->created_at)->format('d M Y');
+                })
+                ->addColumn('action', function ($laporan) {
+                    return '<button onclick="modalAction(\'' . url('/statusperbaikan/' . $laporan->laporan_id . '/show') . '\')" class="btn btn-sm btn-primary">Detail</button>';
+                })
+                ->rawColumns(['status_perbaikan', 'action'])
+                ->make(true);
+        }
+
+        return view('laporan.statusPerbaikan', [
+            'title' => 'Status Perbaikan',
+            'activeMenu' => 'statusperbaikan',
+            'breadcrumbs' => [
+                ['label' => 'Home', 'url' => '/public'],
+                ['label' => 'Status Perbaikan', 'url' => '/statusperbaikan']
+            ],
+        ]);
+    }
+
+    public function showStatusPerbaikan($laporan_id)
+    {
+        $laporan = LaporanModel::with([
+            'fasilitas', 'unit', 'tempat', 'barangLokasi.jenisBarang',
+            'kategoriKerusakan', 'periode', 'perbaikan'
+        ])->findOrFail($laporan_id);
+
+        $laporan->formatted_created_at = Carbon::parse($laporan->created_at)->translatedFormat('d F Y, H:i');
+        if ($laporan->perbaikan && $laporan->perbaikan->ditugaskan_pada) {
+            $laporan->perbaikan->formatted_tanggal_ditugaskan = Carbon::parse($laporan->perbaikan->ditugaskan_pada)->translatedFormat('d F Y, H:i');
+        } else {
+            $laporan->perbaikan->formatted_tanggal_ditugaskan = null;
+        }
+
+        return view('laporan.showStatusPerbaikan', compact('laporan'));
     }
 }

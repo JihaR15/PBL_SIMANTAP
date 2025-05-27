@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Auth;
 
 class UserModel extends Authenticatable
 {
-    
+
     use HasFactory;
 
     protected $table = 'm_users';
@@ -44,6 +44,11 @@ class UserModel extends Authenticatable
     public function hasRole($role)
     {
         return $this->role->kode_role == $role;
+    }
+
+    public function sentNotifications()
+    {
+        return $this->hasMany(NotifikasiModel::class, 'sender_id');
     }
 
     // public function laporan()

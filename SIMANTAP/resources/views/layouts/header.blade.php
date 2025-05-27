@@ -115,16 +115,50 @@
                     <div data-simplebar style="max-height: 230px;">
                         @forelse ($notifikasis as $notif)
                         @php
+                            $statusVerif = $notif->laporan->status_verif ?? null;
+                            $statusPerbaikan = $notif->laporan->perbaikan->status_perbaikan ?? null;
                             $userRole = auth()->user()->role->kode_role ?? null;
-                            $routeLink = in_array($userRole, ['ADM', 'SRN'])
-                                ? route('riwayatverifikasi')
-                                : route('riwayatlaporan');
+                            $laporanId = $notif->laporan_id ?? null;
+                            $teknisiId = auth()->user()->teknisi->teknisi_id ?? null;
+                            $perbaikanId = null;
+
+                            if ($userRole === 'TKS' && $teknisiId) {
+                                $perbaikan = \App\Models\PerbaikanModel::where('laporan_id', $laporanId)->where('teknisi_id', $teknisiId)->first();
+                                if ($perbaikan) {
+                                    $perbaikanId = $perbaikan->perbaikan_id;
+                                }
+                            }
+
+                            $notifIsi = strtolower($notif->isi_notifikasi);
+                            $isVerifikasiNotif = str_contains($notifIsi, 'verifikasi') || str_contains($notifIsi, 'menunggu verifikasi');
+                            $isPerbaikanNotif = str_contains($notifIsi, 'perbaikan') || str_contains($notifIsi, 'sedang dalam proses') || str_contains($notifIsi, 'telah selesai');
+
+                            if (in_array($userRole, ['ADM', 'SRN']) && $statusVerif === 'belum diverifikasi') {
+                                $routeLink = route('verifikasi.index', ['open_id' => $laporanId]);
+                            } elseif (in_array($userRole, ['ADM', 'SRN'])) {
+                                $routeLink = route('riwayatverifikasi', ['open_id' => $laporanId]);
+                            } elseif ($userRole === 'TKS' && $teknisiId) {
+                                $routeLink = route('perbaikan.index', ['open_id' => $perbaikanId ?? $laporanId]);
+                            } elseif (in_array($userRole, ['MHS', 'DSN', 'TDK'])) {
+                                if ($isPerbaikanNotif) {
+                                    // jika notif perbaikan
+                                    $routeLink = route('statusperbaikan', ['open_id' => $laporanId]);
+                                } else {
+                                    // untuk notif bukan perbaikan / tidak mengandung perbaikan
+                                    $routeLink = route('riwayatlaporan', ['open_id' => $laporanId]);
+                                }
+                            } else {
+                                // default
+                                $routeLink = route('riwayatlaporan', ['open_id' => $laporanId]);
+                            }
                         @endphp
 
                         <a href="{{ $routeLink }}" class="text-reset notification-item notif-link" data-id="{{ $notif->notifikasi_id }}">
                             <div class="d-flex">
                                 <div class="flex-1">
-                                    <h6 class="mb-1">{{ $notif->user->name ?? 'User' }}</h6>
+                                    <h6 class="mb-1">
+                                        dari {{ $notif->sender->role->nama_role ?? 'User' }}
+                                    </h6>
                                     <div class="font-size-12 text-muted">
                                         <p class="mb-1">{{ $notif->isi_notifikasi }}</p>
                                         <p class="mb-0"><i class="mdi mdi-clock-outline"></i> {{ $notif->created_at->diffForHumans() }}</p>

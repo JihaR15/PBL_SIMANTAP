@@ -2,13 +2,14 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
+use Carbon\Carbon;
 use App\Models\LaporanModel;
 use App\Models\TeknisiModel;
+use Illuminate\Http\Request;
 use App\Models\PerbaikanModel;
 use App\Models\PrioritasModel;
+use App\Models\NotifikasiModel;
 use Yajra\DataTables\Facades\DataTables;
-use Carbon\Carbon;
 
 class PerbaikanController extends Controller
 {
@@ -104,7 +105,15 @@ class PerbaikanController extends Controller
                 $perbaikan->ditugaskan_pada = now();
                 $perbaikan->save();
 
-                return response()->json(['message' => 'Status berhasil diperbarui.']);
+                NotifikasiModel::create([
+                    'user_id' => $perbaikan->laporan->user_id,
+                    'laporan_id' => $perbaikan->laporan_id,
+                    'sender_id' => auth()->user()->user_id,
+                    'isi_notifikasi' => 'Laporan Anda dengan ID #' . $perbaikan->laporan_id . ' kini sedang dalam proses perbaikan oleh teknisi.',
+                    'is_read' => false,
+                ]);
+
+                return response()->json(['message' => 'Status berhasil diperbarui. Pengerjaan telah dimulai.']);
             } else {
                 return response()->json(['message' => 'Status tidak bisa diperbarui.'], 400);
             }
@@ -210,8 +219,16 @@ class PerbaikanController extends Controller
 
                 $perbaikan->save();
 
+                NotifikasiModel::create([
+                    'user_id' => $perbaikan->laporan->user_id,
+                    'laporan_id' => $perbaikan->laporan_id,
+                    'sender_id' => auth()->user()->user_id,
+                    'isi_notifikasi' => 'Perbaikan kerusakan pada laporan Anda dengan ID #' . $perbaikan->laporan_id . ' telah selesai.',
+                    'is_read' => false,
+                ]);
+
                 return response()->json([
-                    'message' => 'Status dan data perbaikan berhasil diperbarui.',
+                    'message' => 'Status dan data perbaikan berhasil diperbarui. Perbaikan selesai.',
                     'success' => true
                 ]);
             } else {
@@ -291,14 +308,14 @@ class PerbaikanController extends Controller
             ->where('perbaikan_id', $perbaikan_id)
             ->firstOrFail();
 
-        // Format selesai_pada dengan Carbon 
+        // Format selesai_pada dengan Carbon
         if ($perbaikan->selesai_pada) {
             $perbaikan->selesai_pada_formatted = Carbon::parse($perbaikan->selesai_pada)->format('d M Y H:i');
         } else {
             $perbaikan->selesai_pada_formatted = '-';
         }
 
-        // Format ditugaskan_pada dengan Carbon 
+        // Format ditugaskan_pada dengan Carbon
         if ($perbaikan->ditugaskan_pada) {
             $perbaikan->ditugaskan_pada_formatted = Carbon::parse($perbaikan->ditugaskan_pada)->format('d M Y H:i');
         } else {
@@ -308,7 +325,7 @@ class PerbaikanController extends Controller
         return view('perbaikan.showriwayat', compact('perbaikan'));
     }
 
-                
+
 
 
     // public function create()

@@ -10,13 +10,20 @@ class NotifikasiController extends Controller
 {
     public function index()
     {
-        $userId = Auth::user()->user_id;
-        $notifikasis = NotifikasiModel::where('user_id', $userId)
-            ->orderBy('created_at', 'desc')
-            ->take(5)
-            ->paginate(10);
+        $user = Auth::user();
+        $userId = $user->user_id;
+        $userRole = $user->role->kode_role ?? null;
 
-        return view('notifikasi.index', compact('notifikasis'));
+        $query = NotifikasiModel::query();
+        $query->where('user_id', $userId);
+
+        if ($userRole === 'TKS') {
+            $query->orWhere('role', 'TKS');
+        }
+
+        $notifikasis = $query->orderBy('created_at', 'desc')
+                            ->take(5)
+                            ->paginate(10);
     }
 
     public function markRead($id)

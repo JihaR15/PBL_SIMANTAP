@@ -105,6 +105,14 @@
                         searchable: false
                     }
                 ],
+                drawCallback: function () {
+                    const urlParams = new URLSearchParams(window.location.search);
+                    const openId = urlParams.get('open_id');
+                    if (openId) {
+                        modalAction(`{{ url('/verifikasi') }}/${openId}/show`);
+                        history.replaceState(null, null, window.location.pathname);
+                    }
+                }
             });
         });
     </script>

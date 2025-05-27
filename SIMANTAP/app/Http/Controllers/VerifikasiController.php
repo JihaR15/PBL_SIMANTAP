@@ -270,17 +270,28 @@ class VerifikasiController extends Controller
         $laporan->status_verif = 'diverifikasi';
         $laporan->save();
 
+        $teknisi = TeknisiModel::find($request->teknisi_id);
+        if (!$teknisi) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Teknisi tidak ditemukan.'
+            ], 404);
+        }
+        $userIdTeknisi = $teknisi->user_id;
+
         NotifikasiModel::create([
             'user_id' => $laporan->user_id,
             'laporan_id' => $laporan->laporan_id,
+            'sender_id' => auth()->user()->user_id,
             'isi_notifikasi' => 'Laporan Anda dengan ID #' . $laporan->laporan_id . ' telah diverifikasi.',
             'is_read' => false,
         ]);
 
         NotifikasiModel::create([
-            'user_id' => $request->teknisi_id,
+            'user_id' => $userIdTeknisi,
             'laporan_id' => $laporan->laporan_id,
-            'isi_notifikasi' => 'Anda telah ditugaskan untuk memperbaiki laporan ID #' . $laporan->laporan_id,
+            'sender_id' => auth()->user()->user_id,
+            'isi_notifikasi' => 'Anda telah ditugaskan untuk memperbaiki kerusakan dengan laporan ID #' . $laporan->laporan_id,
             'is_read' => false,
         ]);
 

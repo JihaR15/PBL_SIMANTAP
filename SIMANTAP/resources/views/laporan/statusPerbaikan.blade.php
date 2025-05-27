@@ -16,8 +16,8 @@
                         <div class="card-body">
                             <div class="row mb-4">
                                 <div class="col-md-12">
-                                    <h4 class="card-title">Tugas Perbaikan</h4>
-                                    <p class="card-title">Berikut adalah daftar tugas perbaikan yang harus Anda kerjakan. Klik tombol "Detail" untuk melihat dan mengerjakan Tugas.</p>
+                                    <h4 class="card-title">Status Perbaikan Laporan</h4>
+                                    <p class="card-title">Berikut adalah daftar status perbaikan laporan kerusakan yang telah Anda buat. Klik tombol "Detail" untuk melihat informasi lengkap.</p>
                                 </div>
                             </div>
                             <table id="datatable" class="table table-bordered table-striped table-sm dt-responsive nowrap"
@@ -29,12 +29,11 @@
                                         <th>Tempat</th>
                                         <th>Unit</th>
                                         <th>Tanggal</th>
-                                        <th>Prioritas</th>
+                                        <th>Status Perbaikan</th>
                                         <th>Aksi</th>
                                     </tr>
                                 </thead>
                             </table>
-
                         </div>
                     </div>
                 </div>
@@ -42,11 +41,9 @@
 
         </div>
     </div>
+
+    <div id="myModal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true"></div>
 @endsection
-
-@push('css')
-
-@endpush
 
 @push('js')
     <script src="{{ asset('assets/libs/jquery-validation/jquery.validate.min.js') }}"></script>
@@ -64,51 +61,25 @@
                 processing: true,
                 serverSide: true,
                 ajax: {
-                    url: "{{ route('perbaikan.list') }}",
-                    type: "POST",
-                    headers: {
-                        'X-CSRF-TOKEN': "{{ csrf_token() }}"
-                    },
+                    url: "{{ route('statusperbaikan') }}",
+                    type: "GET"
                 },
                 columns: [
-                    {
-                        data: "DT_RowIndex",
-                        className: "text-center"
-                    },
-                    {
-                        data: 'nama_barang',
-                        name: 'nama_barang',
-                    },
-                    {
-                        data: 'nama_tempat',
-                        name: 'nama_tempat'
-                    },
-                    {
-                        data: 'nama_unit',
-                        name: 'nama_unit'
-                    },
-                    {
-                        data: 'created_at',
-                        name: 'created_at'
-                    },
-                    {
-                        data: 'prioritas',
-                        name: 'prioritas',
-                        className: "text-center fw-bold"
-                    },
-                    {
-                        data: 'action',
-                        name: 'action',
-                        orderable: false,
-                        className: "text-center",
-                        searchable: false
-                    }
+                    { data: "DT_RowIndex", className: "text-center" },
+                    { data: 'barang', name: 'barang' },
+                    { data: 'tempat', name: 'tempat' },
+                    { data: 'unit', name: 'unit' },
+                    { data: 'created_at', name: 'created_at' },
+                    { data: 'status_perbaikan', name: 'status_perbaikan', className: "text-center" },
+                    { data: 'action', name: 'action', orderable: false, searchable: false, className: "text-center" }
                 ],
+                order: [[0, 'desc']],
+                
                 drawCallback: function () {
                     const urlParams = new URLSearchParams(window.location.search);
                     const openId = urlParams.get('open_id');
                     if (openId) {
-                        modalAction(`{{ url('/perbaikan') }}/${openId}/show`);
+                        modalAction(`{{ url('/statusperbaikan') }}/${openId}/show`);
                         history.replaceState(null, null, window.location.pathname);
                     }
                 }

@@ -85,6 +85,15 @@
                     { data: 'action', name: 'action', orderable: false, className: "text-center", searchable: false }
                 ],
                 order: [[0, 'desc']],
+
+                drawCallback: function () {
+                    const urlParams = new URLSearchParams(window.location.search);
+                    const openId = urlParams.get('open_id');
+                    if (openId) {
+                        modalAction(`{{ url('/laporan') }}/${openId}/show`);
+                        history.replaceState(null, null, window.location.pathname);
+                    }
+                }
             });
         });
     </script>
