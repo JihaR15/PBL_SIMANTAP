@@ -86,6 +86,14 @@ class VerifikasiController extends Controller
 
     public function verify(Request $request, $laporan_id)
     {
+        $laporan = LaporanModel::findOrFail($laporan_id);
+        if ($laporan->status_verif === 'diverifikasi') {
+            return response()->json([
+                'success' => false,
+                'message' => 'Laporan sudah diverifikasi oleh pengguna lain.',
+            ], 400);
+        }
+
         $request->validate([
             'teknisi_id' => 'required|exists:m_teknisi,teknisi_id',
             'tingkat_kerusakan' => 'required|integer|min:1|max:5',
@@ -266,7 +274,7 @@ class VerifikasiController extends Controller
             ]
         );
 
-        $laporan = LaporanModel::findOrFail($laporan_id);
+        // $laporan = LaporanModel::findOrFail($laporan_id);
         $laporan->status_verif = 'diverifikasi';
         $laporan->save();
 

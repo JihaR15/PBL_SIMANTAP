@@ -132,7 +132,6 @@
     $(document).ready(function() {
         $(document).on('click', '#btn-reject', function() {
             let laporanId = $(this).data('laporan-id');
-            // console.log('Tombol Tolak diklik, laporanId:', laporanId);
             if (!laporanId) {
                 Swal.fire('Error', 'ID laporan tidak ditemukan', 'error');
                 return;

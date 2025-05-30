@@ -42,7 +42,6 @@ class LaporanController extends Controller
         ]);
     }
 
-
     public function store(Request $request)
     {
         // Validasi input
@@ -54,11 +53,26 @@ class LaporanController extends Controller
             'periode_id' => 'required',
             'kategori_kerusakan_id' => 'required',
             'deskripsi' => 'required',
-            'foto_laporan' => 'image|mimes:jpeg,png,jpg|max:2048', // Validasi file gambar
+            'foto_laporan' => 'image|mimes:jpeg,png,jpg|max:2048',
         ]);
 
         try {
-            // Simpan data laporan ke database
+            $existing = LaporanModel::where('barang_lokasi_id', $validated['barang_lokasi_id'])
+                ->where(function ($query) {
+                    $query->where('status_verif', 'belum diverifikasi')
+                        ->orWhereHas('perbaikan', function ($subQuery) {
+                            $subQuery->where('status_perbaikan', 'selesai');
+                        });
+                })
+                ->exists();
+
+            if ($existing) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Barang ini sudah dilaporkan dan sedang dalam proses verifikasi atau perbaikan.'
+                ], 422);
+            }
+
             $laporanData = [
                 'user_id' => auth()->id(),
                 'fasilitas_id' => $validated['fasilitas_id'],
@@ -69,17 +83,14 @@ class LaporanController extends Controller
                 'periode_id' => $validated['periode_id'],
                 'deskripsi' => $validated['deskripsi'],
                 'status_verif' => 'belum diverifikasi',
-                'foto_laporan' => $validated['foto_laporan'],
+                'foto_laporan' => null,
             ];
 
-            // Simpan file jika ada
             if ($request->hasFile('foto_laporan')) {
                 $file = $request->file('foto_laporan');
-                $path = $file->store('uploads', 'public'); // Simpan file di folder 'uploads'
-                $laporanData['foto_laporan'] = $path; // Tambahkan path file ke data laporan
+                $path = $file->store('uploads', 'public');
+                $laporanData['foto_laporan'] = $path;
             }
-
-            // Buat laporan dan simpan
             $laporan = LaporanModel::create($laporanData);
 
             $sender_id = auth()->id();
@@ -97,11 +108,15 @@ class LaporanController extends Controller
                 ]);
             }
 
-            // Kembalikan respons sukses
-            return redirect()->back()->with('success', 'Laporan berhasil dibuat.');
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Laporan berhasil dikirim!'
+            ]);
         } catch (\Exception $e) {
-            // Tangani error jika terjadi masalah saat menyimpan data
-            return redirect()->back()->with('error', 'Laporan gagal dibuat. Silakan coba lagi.');
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Laporan gagal dibuat. Silakan coba lagi.'
+            ], 500);
         }
     }
 

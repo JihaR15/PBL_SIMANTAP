@@ -350,7 +350,7 @@
                     }
                 }
             });
-            // Event saat form disubmit
+
             $('#form-laporan').on('submit', function (e) {
                 e.preventDefault(); // cegah form submit standar
                 let formData = new FormData(this);
@@ -366,17 +366,25 @@
                         Swal.fire({
                             icon: 'success',
                             title: 'Berhasil!',
-                            text: 'Laporan berhasil dikirim!'
+                            text: response.message || 'Laporan berhasil dikirim!'
                         }).then(() => {
-                            location.reload(); // reload jika perlu, atau redirect
+                            location.reload();
                         });
                     },
                     error: function (xhr) {
                         console.log(xhr);
+                        let errorMsg = 'Terjadi kesalahan saat mengirim laporan.';
+
+                        if (xhr.status === 422 && xhr.responseJSON && xhr.responseJSON.message) {
+                            errorMsg = xhr.responseJSON.message;
+                        } else if (xhr.status === 500 && xhr.responseJSON && xhr.responseJSON.message) {
+                            errorMsg = xhr.responseJSON.message;
+                        }
+
                         Swal.fire({
                             icon: 'error',
                             title: 'Gagal!',
-                            text: 'Terjadi kesalahan saat mengirim laporan.'
+                            text: errorMsg
                         });
                     }
                 });
