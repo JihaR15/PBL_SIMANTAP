@@ -48,6 +48,8 @@ Route::middleware(['auth'])->group(function () {
     Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
 
     Route::get('/dashboard', [WelcomeController::class,'dashboard'])->name('dashboard');
+    Route::get('/dashboard/chart-data', [WelcomeController::class, 'chartData'])->name('dashboard.chartData');
+    Route::get('/dashboard/chart-data2', [WelcomeController::class, 'chartData2'])->name('dashboard.chartData2');
 
     // notifikasi
     Route::get('/notifikasi', [NotifikasiController::class, 'index'])->name('notifikasi.index');
