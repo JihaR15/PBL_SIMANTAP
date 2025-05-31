@@ -152,7 +152,7 @@
         </section><!-- /Featured Services Section --> --}}
 
         <!-- Clients Section -->
-        <section id="clients" class="clients section">
+        {{-- <section id="clients" class="clients section">
 
             <div class="container" data-aos="fade-up">
 
@@ -186,10 +186,10 @@
 
             </div>
 
-        </section><!-- /Clients Section -->
+        </section><!-- /Clients Section --> --}}
 
         <!-- About Section -->
-        <section id="about" class="about section" style="padding-top: 20px;">
+        <section id="about" class="about section" style="padding-top: 40px;">
 
             <div class="container">
 

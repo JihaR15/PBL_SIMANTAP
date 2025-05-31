@@ -104,7 +104,7 @@
                                 <div class="form-group mb-3 row">
                                     <div class="col-12">
                                         <input class="form-control" type="text" required="" id="username" name="username"
-                                            placeholder="Username">
+                                            placeholder="Masukkan NIM/NIP/NIDN anda">
                                     </div>
                                 </div>
 
@@ -116,18 +116,22 @@
                                 </div>
 
                                 <div class="form-group mb-3 row">
-                                    <div class="col-12">
+                                    <div class="col-6 pe-1">
                                         <input class="form-control" type="password" id="password" name="password"
                                             required="" placeholder="Password">
                                     </div>
-                                </div>
-
-                                <div class="form-group mb-3 row">
-                                    <div class="col-12">
+                                    <div class="col-6 ps-1">
                                         <input class="form-control" type="password" id="password_confirmation" name="password_confirmation"
                                             required="" placeholder="Konfirmasi Password">
                                     </div>
                                 </div>
+
+                                {{-- <div class="form-group mb-3 row">
+                                    <div class="col-12">
+                                        <input class="form-control" type="password" id="password_confirmation" name="password_confirmation"
+                                            required="" placeholder="Konfirmasi Password">
+                                    </div>
+                                </div> --}}
 
                                 <div class="form-group mb-3 row">
                                     <div class="col-12">
@@ -206,7 +210,7 @@
                     role_id: { required: true }
                 },
                 messages: {
-                    username: "Username wajib diisi",
+                    username: "NIM/NIP/NIDN wajib diisi",
                     name: "Nama wajib diisi",
                     password: "Password wajib diisi, minimal 5 karakter",
                     password_confirmation: "Konfirmasi password tidak sesuai",

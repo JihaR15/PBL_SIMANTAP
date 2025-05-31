@@ -31,7 +31,8 @@ class UserController extends Controller
     public function list(Request $request)
     {
         $users = UserModel::select('user_id', 'username', 'name', 'role_id', 'foto_profile', 'status')
-            ->with('role');
+            ->with('role')
+            ->orderBy('created_at', 'desc');
 
         if ($request->role_id) {
             $users->where('role_id', $request->role_id);

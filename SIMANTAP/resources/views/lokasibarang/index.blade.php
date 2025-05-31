@@ -16,10 +16,10 @@
                 <div class="col-12">
                     <div class="card">
                         <div class="card-body">
-                            <div class="row mb-4">
+                            <div class="row mb-2">
                                 <div class="col-md-8">
                                     <h4 class="card-title">Data Fasilitas</h4>
-                                    <p class="card-title-desc">Daftar fasilitas yang tersedia dalam sistem. Anda dapat mengelola data fasilitas sesuai kebutuhan.</p>
+                                    <p class="card-title-desc mb-0">Daftar fasilitas yang tersedia dalam sistem. Anda dapat mengelola data fasilitas sesuai kebutuhan.</p>
                                 </div>
                                 @if(session('success'))
                                         <div class="alert alert-success" id="alert-success">

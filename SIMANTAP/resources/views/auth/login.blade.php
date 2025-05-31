@@ -107,7 +107,7 @@
                                 <div class="form-group mb-3 row">
                                     <div class="col-12">
                                         <input class="form-control" type="text" required="" id="username" name="username"
-                                            placeholder="Username">
+                                            placeholder="NIM/NIP/NIDN / Akun Polinema">
                                     </div>
                                 </div>
 
@@ -120,10 +120,10 @@
 
                                 <div class="form-group mb-3 row">
                                     <div class="col-12">
-                                        <div class="custom-control custom-checkbox ">
-                                            <input type="checkbox" class="custom-control-input" id="customCheck1">
+                                        {{-- <div class="custom-control custom-checkbox ">
+                                            <input type="checkbox" class="custom-control-input" id="customCheck1" name="remember">
                                             <label class="form-label ms-1" for="customCheck1">Remember me</label>
-                                        </div>
+                                        </div> --}}
                                     </div>
                                 </div>
 
@@ -187,7 +187,7 @@
                     password: { required: true, minlength: 5, maxlength: 20 }
                 },
                 messages: {
-                    username: "Username wajib diisi",
+                    username: "NIM/NIP/NIDN wajib diisi",
                     password: "Password wajib diisi"
                 },
                 submitHandler: function (form) {
