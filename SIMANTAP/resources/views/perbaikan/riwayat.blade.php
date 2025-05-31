@@ -81,20 +81,20 @@
                     },
                     {
                         data: 'nama_tempat',
-                        name: 'nama_tempat' 
+                        name: 'nama_tempat'
                     },
                     {
                         data: 'nama_unit',
-                        name: 'nama_unit' 
+                        name: 'nama_unit'
                     },
                     {
                         data: 'created_at',
-                        name: 'created_at' 
+                        name: 'created_at'
                     },
                     {
                         data: 'prioritas',
                         name: 'prioritas',
-                        className: "text-center fw-bold" 
+                        className: "text-center fw-bold"
                     },
                     {
                         data: 'action',
@@ -104,6 +104,23 @@
                         searchable: false
                     }
                 ],
+                drawCallback: function () {
+                    const urlParams = new URLSearchParams(window.location.search);
+                    const openId = urlParams.get('open_id');
+                    if (openId) {
+                        const pathname = window.location.pathname;
+
+                        if (pathname.includes('/perbaikan')) {
+                            modalAction(`{{ url('/perbaikan') }}/${openId}/show`);
+                        } else if (pathname.includes('/dikerjakan')) {
+                            modalAction(`{{ url('dikerjakan') }}/${openId}/show`);
+                        } else if (pathname.includes('/riwayatperbaikan')) {
+                            modalAction(`{{ url('riwayatperbaikan') }}/${openId}/show`);
+                        }
+
+                        history.replaceState(null, null, window.location.pathname);
+                    }
+                }
             });
         });
     </script>

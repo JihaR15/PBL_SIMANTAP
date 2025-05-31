@@ -138,17 +138,22 @@
                             } elseif (in_array($userRole, ['ADM', 'SRN'])) {
                                 $routeLink = route('riwayatverifikasi', ['open_id' => $laporanId]);
                             } elseif ($userRole === 'TKS' && $teknisiId) {
-                                $routeLink = route('perbaikan.index', ['open_id' => $perbaikanId ?? $laporanId]);
+                                if ($statusPerbaikan === 'belum dikerjakan') {
+                                    $routeLink = route('perbaikan.index', ['open_id' => $perbaikanId ?? $laporanId]);
+                                } elseif ($statusPerbaikan === 'sedang diperbaiki') {
+                                    $routeLink = route('dikerjakan', ['open_id' => $perbaikanId ?? $laporanId]);
+                                } elseif ($statusPerbaikan === 'selesai') {
+                                    $routeLink = route('riwayatperbaikan', ['open_id' => $perbaikanId ?? $laporanId]);
+                                } else {
+                                    $routeLink = route('perbaikan.index', ['open_id' => $perbaikanId ?? $laporanId]);
+                                }
                             } elseif (in_array($userRole, ['MHS', 'DSN', 'TDK'])) {
                                 if ($isPerbaikanNotif) {
-                                    // jika notif perbaikan
                                     $routeLink = route('statusperbaikan', ['open_id' => $laporanId]);
                                 } else {
-                                    // untuk notif bukan perbaikan / tidak mengandung perbaikan
                                     $routeLink = route('riwayatlaporan', ['open_id' => $laporanId]);
                                 }
                             } else {
-                                // default
                                 $routeLink = route('riwayatlaporan', ['open_id' => $laporanId]);
                             }
                         @endphp

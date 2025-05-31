@@ -250,10 +250,10 @@ class LaporanController extends Controller
                         return '<span class="badge rounded-pill bg-opacity-25 bg-secondary text-secondary" style="font-size: 12px; padding: 8px 10px; color: #fff; font-weight: 700;">Belum dikerjakan</span>';
                     } elseif ($status === 'sedang diperbaiki') {
                         // return '<span class="badge bg-info" style="font-size: 12px; padding: 8px 10px; color: #fff; font-weight: 700;">Sedang dikerjakan</span>';
-                        return '<span class="badge rounded-pill bg-opacity-25 bg-info text-info" style="font-size: 12px; padding: 8px 10px; color: #fff; font-weight: 700;">Urgent</span>';
+                        return '<span class="badge rounded-pill bg-opacity-25 bg-info text-info" style="font-size: 12px; padding: 8px 10px; color: #fff; font-weight: 700;">Sedang dikerjakan</span>';
                     } elseif ($status === 'selesai') {
                         // return '<span class="badge bg-success" style="font-size: 12px; padding: 8px 10px; color: #fff; font-weight: 700;">Selesai</span>';
-                        return '<span class="badge rounded-pill bg-opacity-25 bg-success text-success" style="font-size: 12px; padding: 8px 10px; color: #fff; font-weight: 700;">Urgent</span>';
+                        return '<span class="badge rounded-pill bg-opacity-25 bg-success text-success" style="font-size: 12px; padding: 8px 10px; color: #fff; font-weight: 700;">Selesai</span>';
                     } else {
                         // return '<span class="badge bg-secondary" style="font-size: 12px; padding: 8px 10px; color: #fff; font-weight: 700;">-</span>';
                         return '<span class="badge rounded-pill bg-opacity-25 bg-secondary text-secondary" style="font-size: 12px; padding: 8px 10px; color: #fff; font-weight: 700;">-</span>';

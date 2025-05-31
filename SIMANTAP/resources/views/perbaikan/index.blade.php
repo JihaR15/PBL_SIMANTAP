@@ -108,7 +108,16 @@
                     const urlParams = new URLSearchParams(window.location.search);
                     const openId = urlParams.get('open_id');
                     if (openId) {
-                        modalAction(`{{ url('/perbaikan') }}/${openId}/show`);
+                        const pathname = window.location.pathname;
+
+                        if (pathname.includes('/perbaikan')) {
+                            modalAction(`{{ url('/perbaikan') }}/${openId}/show`);
+                        } else if (pathname.includes('/dikerjakan')) {
+                            modalAction(`{{ url('dikerjakan') }}/${openId}/show`);
+                        } else if (pathname.includes('/riwayatperbaikan')) {
+                            modalAction(`{{ url('riwayatperbaikan') }}/${openId}/show`);
+                        }
+
                         history.replaceState(null, null, window.location.pathname);
                     }
                 }
