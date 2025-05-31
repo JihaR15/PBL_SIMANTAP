@@ -52,11 +52,14 @@ class VerifikasiController extends Controller
             })
             ->addColumn('status_verif', function ($laporan) {
                 if ($laporan->status_verif === 'belum diverifikasi') {
-                    return '<span class="badge bg-warning" style="font-size: 12px; padding: 8px 10px; color: #fff; font-weight: 700;">Belum Diverifikasi</span>';
+                    // return '<span class="badge bg-warning" style="font-size: 12px; padding: 8px 10px; color: #fff; font-weight: 700;">Belum Diverifikasi</span>';
+                    return '<span class="badge rounded-pill bg-opacity-25 bg-warning text-warning" style="font-size: 12px; padding: 8px 10px; color: #fff; font-weight: 700;">Belum Diverifikasi</span>';
                 } elseif ($laporan->status_verif === 'diverifikasi') {
-                    return '<span class="badge bg-success" style="font-size: 12px; padding: 8px 10px; color: #fff; font-weight: 700;">Terverifikasi</span>';
+                    // return '<span class="badge bg-success" style="font-size: 12px; padding: 8px 10px; color: #fff; font-weight: 700;">Terverifikasi</span>';
+                    return '<span class="badge rounded-pill bg-opacity-25 bg-success text-success" style="font-size: 12px; padding: 8px 10px; color: #fff; font-weight: 700;">Terverifikasi</span>';
                 } else {
-                    return '<span class="badge bg-danger" style="font-size: 12px; padding: 8px 10px; color: #fff; font-weight: 700;">Ditolak</span>';
+                    // return '<span class="badge bg-danger" style="font-size: 12px; padding: 8px 10px; color: #fff; font-weight: 700;">Ditolak</span>';
+                    return '<span class="badge rounded-pill bg-opacity-25 bg-danger text-danger" style="font-size: 12px; padding: 8px 10px; color: #fff; font-weight: 700;">Ditolak</span>';
                 }
             })
             ->addColumn('created_at', function ($laporan) {
@@ -90,7 +93,7 @@ class VerifikasiController extends Controller
         if ($laporan->status_verif === 'diverifikasi') {
             return response()->json([
                 'success' => false,
-                'message' => 'Laporan sudah diverifikasi oleh pengguna lain.',
+                'message' => 'Laporan sudah diverifikasi oleh pengguna lain. Refresh halaman Anda untuk memperbarui data.',
             ], 400);
         }
 
@@ -352,11 +355,14 @@ class VerifikasiController extends Controller
                 })
                 ->addColumn('status_verif', function ($laporan) {
                     if ($laporan->status_verif === 'belum diverifikasi') {
-                        return '<span class="badge bg-warning" style="font-size: 12px; padding: 8px 10px; color: #fff; font-weight: 700;">Belum Diverifikasi</span>';
+                        // return '<span class="badge bg-warning" style="font-size: 12px; padding: 8px 10px; color: #fff; font-weight: 700;">Belum Diverifikasi</span>';
+                        return '<span class="badge rounded-pill bg-opacity-25 bg-warning text-warning" style="font-size: 12px; padding: 8px 10px; color: #fff; font-weight: 700;">Belum Diverifikasi</span>';
                     } elseif ($laporan->status_verif === 'diverifikasi') {
-                        return '<span class="badge bg-success" style="font-size: 12px; padding: 8px 10px; color: #fff; font-weight: 700;">Terverifikasi</span>';
+                        // return '<span class="badge bg-success" style="font-size: 12px; padding: 8px 10px; color: #fff; font-weight: 700;">Terverifikasi</span>';
+                        return '<span class="badge rounded-pill bg-opacity-25 bg-success text-success" style="font-size: 12px; padding: 8px 10px; color: #fff; font-weight: 700;">Terverifikasi</span>';
                     } else {
-                        return '<span class="badge bg-danger" style="font-size: 12px; padding: 8px 10px; color: #fff; font-weight: 700;">Ditolak</span>';
+                        // return '<span class="badge bg-danger" style="font-size: 12px; padding: 8px 10px; color: #fff; font-weight: 700;">Ditolak</span>';
+                        return '<span class="badge rounded-pill bg-opacity-25 bg-danger text-danger" style="font-size: 12px; padding: 8px 10px; color: #fff; font-weight: 700;">Ditolak</span>';
                     }
                 })
                 ->addColumn('created_at', function ($laporan) {
@@ -380,8 +386,16 @@ class VerifikasiController extends Controller
     {
         $laporan = LaporanModel::with([
             'fasilitas', 'unit', 'tempat', 'barangLokasi.jenisBarang',
-            'kategoriKerusakan', 'periode'
+            'kategoriKerusakan', 'periode', 'perbaikan'
         ])->findOrFail($laporan_id);
+
+        if ($laporan->perbaikan) {
+            if ($laporan->perbaikan->ditugaskan_pada) {
+                $laporan->perbaikan->formatted_tanggal_ditugaskan = Carbon::parse($laporan->perbaikan->ditugaskan_pada)->format('d M Y');
+            } else {
+                $laporan->perbaikan->formatted_tanggal_ditugaskan = null;
+            }
+        }
 
         return view('verifikasi.showriwayatverif', compact('laporan'));
     }

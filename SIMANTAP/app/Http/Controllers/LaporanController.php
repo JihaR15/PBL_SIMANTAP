@@ -60,16 +60,16 @@ class LaporanController extends Controller
             $existing = LaporanModel::where('barang_lokasi_id', $validated['barang_lokasi_id'])
                 ->where(function ($query) {
                     $query->where('status_verif', 'belum diverifikasi')
-                        ->orWhereHas('perbaikan', function ($subQuery) {
-                            $subQuery->where('status_perbaikan', 'selesai');
-                        });
+                    ->orWhereHas('perbaikan', function ($subQuery) {
+                        $subQuery->where('status_perbaikan', '!=', 'selesai');
+                    });
                 })
                 ->exists();
 
             if ($existing) {
                 return response()->json([
                     'status' => 'error',
-                    'message' => 'Barang ini sudah dilaporkan dan sedang dalam proses verifikasi atau perbaikan.'
+                    'message' => 'Fasilitas ini sudah dilaporkan dan sedang dalam proses verifikasi atau perbaikan.'
                 ], 422);
             }
 
@@ -140,15 +140,18 @@ class LaporanController extends Controller
             })
             ->addColumn('status_verif', function ($row) {
                 if ($row->status_verif === 'belum diverifikasi') {
-                    return '<span class="badge bg-warning" style="font-size: 12px; padding: 8px 10px; color: #fff; font-weight: 700;">Belum Diverifikasi</span>';
+                    // return '<span class="badge bg-warning" style="font-size: 12px; padding: 8px 10px; color: #fff; font-weight: 700;">Belum Diverifikasi</span>';
+                    return '<span class="badge rounded-pill bg-opacity-25 bg-warning text-warning" style="font-size: 12px; padding: 8px 10px; color: #fff; font-weight: 700;">Belum Diverifikasi</span>';
                 } elseif ($row->status_verif === 'diverifikasi') {
-                    return '<span class="badge bg-success" style="font-size: 12px; padding: 8px 10px; color: #fff; font-weight: 700;">Terverifikasi</span>';
+                    // return '<span class="badge bg-success" style="font-size: 12px; padding: 8px 10px; color: #fff; font-weight: 700;">Terverifikasi</span>';
+                    return '<span class="badge rounded-pill bg-opacity-25 bg-success text-success" style="font-size: 12px; padding: 8px 10px; color: #fff; font-weight: 700;">Terverifikasi</span>';
                 } else {
-                    return '<span class="badge bg-danger" style="font-size: 12px; padding: 8px 10px; color: #fff; font-weight: 700;">Ditolak</span>';
+                    // return '<span class="badge bg-danger" style="font-size: 12px; padding: 8px 10px; color: #fff; font-weight: 700;">Ditolak</span>';
+                    return '<span class="badge rounded-pill bg-opacity-25 bg-danger text-danger" style="font-size: 12px; padding: 8px 10px; color: #fff; font-weight: 700;">Ditolak</span>';
                 }
             })
             ->addColumn('created_at', function ($row) {
-                return Carbon::parse($row->created_at)->format('d M Y'); // Format tanggal
+                return Carbon::parse($row->created_at)->format('d M Y');
             })
             ->rawColumns(['action', 'status_verif'])
             ->make(true);
@@ -175,14 +178,14 @@ class LaporanController extends Controller
     public function show($id)
     {
         $laporan = LaporanModel::findOrFail($id);
-        $laporan->formatted_created_at = Carbon::parse($laporan->created_at)->translatedFormat('d F Y, H:i'); // contoh: 14 Mei 2025, 13:45
+        $laporan->formatted_created_at = Carbon::parse($laporan->created_at)->format('d M Y');
         return view('laporan.show', compact('laporan'));
     }
 
     public function confirmDelete($id)
     {
         $laporan = LaporanModel::findOrFail($id);
-        $laporan->formatted_created_at = Carbon::parse($laporan->created_at)->translatedFormat('d F Y, H:i'); // contoh: 14 Mei 2025, 13:45
+        $laporan->formatted_created_at = Carbon::parse($laporan->created_at)->format('d M Y');
         return view('laporan.confirm_delete', compact('laporan'));
     }
     public function destroy($id)
@@ -243,13 +246,17 @@ class LaporanController extends Controller
                     $status = $laporan->perbaikan->status_perbaikan ?? null;
 
                     if ($status === 'belum') {
-                        return '<span class="badge bg-warning" style="font-size: 12px; padding: 8px 10px; color: #fff; font-weight: 700;">Belum dikerjakan</span>';
+                        // return '<span class="badge bg-secondary" style="font-size: 12px; padding: 8px 10px; color: #fff; font-weight: 700;">Belum dikerjakan</span>';
+                        return '<span class="badge rounded-pill bg-opacity-25 bg-secondary text-secondary" style="font-size: 12px; padding: 8px 10px; color: #fff; font-weight: 700;">Belum dikerjakan</span>';
                     } elseif ($status === 'sedang diperbaiki') {
-                        return '<span class="badge bg-primary" style="font-size: 12px; padding: 8px 10px; color: #fff; font-weight: 700;">Sedang dikerjakan</span>';
+                        // return '<span class="badge bg-info" style="font-size: 12px; padding: 8px 10px; color: #fff; font-weight: 700;">Sedang dikerjakan</span>';
+                        return '<span class="badge rounded-pill bg-opacity-25 bg-info text-info" style="font-size: 12px; padding: 8px 10px; color: #fff; font-weight: 700;">Urgent</span>';
                     } elseif ($status === 'selesai') {
-                        return '<span class="badge bg-success" style="font-size: 12px; padding: 8px 10px; color: #fff; font-weight: 700;">Selesai</span>';
+                        // return '<span class="badge bg-success" style="font-size: 12px; padding: 8px 10px; color: #fff; font-weight: 700;">Selesai</span>';
+                        return '<span class="badge rounded-pill bg-opacity-25 bg-success text-success" style="font-size: 12px; padding: 8px 10px; color: #fff; font-weight: 700;">Urgent</span>';
                     } else {
-                        return '<span class="badge bg-secondary" style="font-size: 12px; padding: 8px 10px; color: #fff; font-weight: 700;">-</span>';
+                        // return '<span class="badge bg-secondary" style="font-size: 12px; padding: 8px 10px; color: #fff; font-weight: 700;">-</span>';
+                        return '<span class="badge rounded-pill bg-opacity-25 bg-secondary text-secondary" style="font-size: 12px; padding: 8px 10px; color: #fff; font-weight: 700;">-</span>';
                     }
                 })
                 ->addColumn('created_at', function ($row) {
@@ -279,9 +286,9 @@ class LaporanController extends Controller
             'kategoriKerusakan', 'periode', 'perbaikan'
         ])->findOrFail($laporan_id);
 
-        $laporan->formatted_created_at = Carbon::parse($laporan->created_at)->translatedFormat('d F Y, H:i');
+        $laporan->formatted_created_at = Carbon::parse($laporan->created_at)->format('d M Y');
         if ($laporan->perbaikan && $laporan->perbaikan->ditugaskan_pada) {
-            $laporan->perbaikan->formatted_tanggal_ditugaskan = Carbon::parse($laporan->perbaikan->ditugaskan_pada)->translatedFormat('d F Y, H:i');
+            $laporan->perbaikan->formatted_tanggal_ditugaskan = Carbon::parse($laporan->perbaikan->ditugaskan_pada)->format('d M Y');
         } else {
             $laporan->perbaikan->formatted_tanggal_ditugaskan = null;
         }
