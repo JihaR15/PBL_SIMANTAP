@@ -358,6 +358,190 @@
                     </div>
 
                 @endif
+                @if(auth()->check() && in_array(auth()->user()->role->kode_role, ['MHS', 'DSN','TDK']))
+
+                    <div class="col-xl-4">
+                        <div class="card shadow-sm rounded-lg d-flex flex-row align-items-center h-75" style="min-height: 100px;">
+                            <div class="ms-4 d-flex align-items-center">
+                                <a href="{{ route('laporan.index') }}" class="btn bg-success bg-opacity-50 text-dark btn-lg">
+                                    <i class="ri-add-line me-1" style="font-size: 2rem;"></i>
+                                </a>
+                            </div>
+                            <div class="card-body d-flex flex-column justify-content-center flex-grow-1">
+                                <p class="text-truncate font-size-14 mb-2">Laporan Baru</p>
+                                <h4 class="mb-2">Buat Laporan</h4>
+                                <p class="text-muted mb-0">
+                                    <span class="text-secondary fw-bold font-size-12 me-2">
+                                        <i class="ri-file-list-3-line me-1 align-middle"></i>
+                                        Laporkan Kerusakan Sedetail Mungkin!
+                                    </span>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-xl-4">
+                        <div class="card shadow-sm rounded-lg d-flex flex-row align-items-center h-75" style="min-height: 100px;">
+                            <div class="ms-4 d-flex align-items-center ">
+                                <a href="{{ route('riwayatlaporan') }}" class="btn bg-info bg-opacity-50 text-dark btn-lg">
+                                    <i class="ri-article-line me-1" style="font-size: 2rem;"></i>
+                                </a>
+                            </div>
+                            <div class="card-body d-flex flex-column justify-content-center flex-grow-1">
+                                <p class="text-truncate font-size-14 mb-2">Total Laporan Anda</p>
+                                <h4 class="mb-2">{{ $laporanUserCount }}</h4>
+                                <p class="text-muted mb-0">
+                                    <span class="text-success fw-bold font-size-12 me-2">
+                                        <i class="ri-article-line me-1 align-middle"></i>
+                                        {{ $laporanUserTerbaru?->created_at->diffForHumans() ?? '-' }}
+                                        <span class="text-secondary"> Laporan terbaru Anda</span>
+                                    </span>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-xl-4">
+                        <div class="card shadow-sm rounded-lg d-flex flex-row align-items-center h-75" style="min-height: 100px;">
+                            <div class="ms-4 d-flex align-items-center ">
+                                <a href="{{ route('statusperbaikan') }}" class="btn bg-warning bg-opacity-50 text-dark btn-lg">
+                                    <i class="ri-tools-line me-1" style="font-size: 2rem;"></i>
+                                </a>
+                            </div>
+                            <div class="card-body d-flex flex-column justify-content-center flex-grow-1">
+                                <p class="text-truncate font-size-14 mb-2">Total Perbaikan Anda</p>
+                                <h4 class="mb-2">{{ $perbaikanUserCount }}</h4>
+                                <p class="text-muted mb-0">
+                                    <span class="text-success fw-bold font-size-12 me-2">
+                                        <i class="ri-tools-line me-1 align-middle"></i>
+                                        {{ $perbaikanUserTerbaru?->created_at->diffForHumans() ?? '-' }}
+                                        <span class="text-secondary"> Perbaikan terbaru Anda</span>
+                                    </span>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-xl-6">
+                        <div class="card shadow-sm rounded-lg mb-3">
+                            <div class="card-body">
+                                <h4 class="card-title mb-4">Status Laporan Anda</h4>
+                                <div id="laporanUserChart"></div>
+                            </div>
+                        </div>
+                        <script>
+                            document.addEventListener('DOMContentLoaded', function () {
+                                var userChartOptions = {
+                                    chart: {
+                                        type: 'bar',
+                                        height: 220
+                                    },
+                                    series: [{
+                                        name: 'Jumlah',
+                                        data: [
+                                            {{ $laporanUserBelumDiverifikasiCount ?? 0 }},
+                                            {{ $laporanUserDiverifikasiCount ?? 0 }},
+                                            {{ $laporanUserDitolakCount ?? 0 }}
+                                        ]
+                                    }],
+                                    xaxis: {
+                                        categories: ['Belum Diverifikasi', 'Diverifikasi', 'Ditolak']
+                                    },
+                                    colors: ['#ffbb44', '#6fd088', '#ff4d4f'],
+                                    plotOptions: {
+                                        bar: {
+                                            distributed: true,
+                                            borderRadius: 6,
+                                            columnWidth: '40%'
+                                        }
+                                    },
+                                    dataLabels: {
+                                        enabled: true
+                                    },
+                                    fill: {
+                                        type: 'gradient',
+                                        gradient: {
+                                            shade: 'light',
+                                            type: "vertical",
+                                            shadeIntensity: 0.5,
+                                            gradientToColors: ['#ffe29e', '#a8eec1', '#ffb3b3'],
+                                            inverseColors: false,
+                                            opacityFrom: 0.9,
+                                            opacityTo: 1,
+                                            stops: [0, 100]
+                                        }
+                                    }
+                                };
+                                if (typeof ApexCharts !== 'undefined') {
+                                    var userChart = new ApexCharts(document.querySelector("#laporanUserChart"), userChartOptions);
+                                    userChart.render();
+                                }
+                            });
+                        </script>
+                    </div>
+
+                    <div class="col-xl-6">
+                        <div class="card shadow-sm rounded-lg mb-3">
+                            <div class="card-body">
+                                <h4 class="card-title mb-4">Status Perbaikan Anda</h4>
+                                <div id="perbaikanUserChart"></div>
+                            </div>
+                        </div>
+                        <script>
+                            document.addEventListener('DOMContentLoaded', function () {
+                                var perbaikanUserChartOptions = {
+                                    chart: {
+                                        type: 'bar',
+                                        height: 220
+                                    },
+                                    series: [{
+                                        name: 'Jumlah',
+                                        data: [
+                                            {{ $perbaikanUserBelumCount ?? 0 }},
+                                            {{ $perbaikanUserBerjalanCount ?? 0 }},
+                                            {{ $perbaikanUserSelesaiCount ?? 0 }}
+                                        ]
+                                    }],
+                                    xaxis: {
+                                        categories: ['Belum', 'Berjalan', 'Selesai']
+                                    },
+                                    colors: ['#ff4d4f', '#ffbb44', '#6fd088'],
+                                    plotOptions: {
+                                        bar: {
+                                            distributed: true,
+                                            borderRadius: 6,
+                                            columnWidth: '40%'
+                                        }
+                                    },
+                                    dataLabels: {
+                                        enabled: true
+                                    },
+                                    fill: {
+                                        type: 'gradient',
+                                        gradient: {
+                                            shade: 'light',
+                                            type: "vertical",
+                                            shadeIntensity: 0.5,
+                                            gradientToColors: ['#ffb3b3', '#ffe29e', '#a8eec1'],
+                                            inverseColors: false,
+                                            opacityFrom: 0.9,
+                                            opacityTo: 1,
+                                            stops: [0, 100]
+                                        }
+                                    }
+                                };
+                                if (typeof ApexCharts !== 'undefined') {
+                                    var perbaikanUserChart = new ApexCharts(document.querySelector("#perbaikanUserChart"), perbaikanUserChartOptions);
+                                    perbaikanUserChart.render();
+                                }
+                            });
+                        </script>
+                    </div>
+
+
+
+                @endif
+
 
 
             </div>

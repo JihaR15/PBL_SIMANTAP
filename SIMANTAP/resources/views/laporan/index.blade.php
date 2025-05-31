@@ -355,6 +355,16 @@
                 e.preventDefault(); // cegah form submit standar
                 let formData = new FormData(this);
 
+                // Tampilkan loading sebelum AJAX
+                Swal.fire({
+                    title: 'Mengirim...',
+                    text: 'Mohon tunggu sebentar.',
+                    allowOutsideClick: false,
+                    didOpen: () => {
+                        Swal.showLoading();
+                    }
+                });
+
                 $.ajax({
                     url: $(this).attr('action'),
                     method: $(this).attr('method'),
@@ -368,7 +378,7 @@
                             title: 'Berhasil!',
                             text: response.message || 'Laporan berhasil dikirim!'
                         }).then(() => {
-                            location.reload();
+                            window.location.href = "{{ route('riwayatlaporan') }}";
                         });
                     },
                     error: function (xhr) {

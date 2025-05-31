@@ -42,7 +42,38 @@ class WelcomeController extends Controller
             $q->where('kode_role', 'TKS');
         })->count();
 
+        $laporanUserCount = LaporanModel::where('user_id', $user->user_id)->count();
 
+        $laporanUserBelumDiverifikasiCount = LaporanModel::where('user_id', $user->user_id)
+            ->where('status_verif', 'belum diverifikasi')
+            ->count();
+
+        $laporanUserDiverifikasiCount = LaporanModel::where('user_id', $user->user_id)
+            ->where('status_verif', 'diverifikasi')
+            ->count();
+
+        $laporanUserDitolakCount = LaporanModel::where('user_id', $user->user_id)
+            ->where('status_verif', 'ditolak')
+            ->count();
+
+        $perbaikanUserCount = PerbaikanModel::whereHas('laporan', function ($q) use ($user) {
+            $q->where('user_id', $user->user_id);
+        })->count();
+
+        $perbaikanUserSelesaiCount = PerbaikanModel::where('status_perbaikan', 'selesai')
+            ->whereHas('laporan', function ($q) use ($user) {
+            $q->where('user_id', $user->user_id);
+            })->count();
+
+        $perbaikanUserBerjalanCount = PerbaikanModel::where('status_perbaikan', 'sedang diperbaiki')
+            ->whereHas('laporan', function ($q) use ($user) {
+            $q->where('user_id', $user->user_id);
+            })->count();
+
+        $perbaikanUserBelumCount = PerbaikanModel::where('status_perbaikan', 'belum')
+            ->whereHas('laporan', function ($q) use ($user) {
+            $q->where('user_id', $user->user_id);
+            })->count();
 
         $periodeTahun = LaporanModel::with('periode')
             ->get()
@@ -126,11 +157,23 @@ class WelcomeController extends Controller
             'laporanDitolakCount' => $laporanDitolakCount,
             'perbaikanTerbaru' => PerbaikanModel::latest('created_at')->first(),
             'laporanCount' => $laporanCount,
+            'laporanUserCount' => $laporanUserCount,
+            'laporanUserTerbaru' => LaporanModel::where('user_id', $user->user_id)->latest('created_at')->first(),
+            'laporanUserDiverifikasiCount' => $laporanUserDiverifikasiCount,
+            'laporanUserBelumDiverifikasiCount' => $laporanUserBelumDiverifikasiCount,
+            'laporanUserDitolakCount' => $laporanUserDitolakCount,
             'perbaikan' => PerbaikanModel::count(),
             'perbaikanCount' => $perbaikanCount,
             'perbaikanBelumCount' => $perbaikanBelumCount,
             'perbaikanSelesaiCount' => $perbaikanSelesaiCount,
             'perbaikanBerjalanCount' => $perbaikanBerjalanCount,
+            'perbaikanUserCount' => $perbaikanUserCount,
+            'perbaikanUserTerbaru' => PerbaikanModel::whereHas('laporan', function ($q) use ($user) {
+                $q->where('user_id', $user->user_id);
+            })->latest('created_at')->first(),
+            'perbaikanUserSelesaiCount' => $perbaikanUserSelesaiCount,
+            'perbaikanUserBerjalanCount' => $perbaikanUserBerjalanCount,
+            'perbaikanUserBelumCount' => $perbaikanUserBelumCount,
             'periodeTahun' => $periodeTahun,
             'tahunDipilih' => $tahunDipilih,
             'unitTerbaru' => UnitModel::latest('created_at')->first(),
