@@ -16,6 +16,8 @@ use App\Http\Controllers\BarangLokasiController;
 use App\Http\Controllers\JenisTeknisiController;
 use App\Http\Controllers\PerbaikanController;
 use App\Http\Controllers\PeriodeController;
+use App\Http\Controllers\KategoriKerusakanController;
+use App\Http\Controllers\BobotController;
 
 
 
@@ -131,6 +133,12 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/lokasibarang/{tempat_id}/confirmDelete/{jenis_barang_id}', [BarangLokasiController::class, 'confirmDelete'])->name('lokasibarang.confirmDelete');
         Route::delete('/lokasibarang/{tempat_id}/delete/{jenis_barang_id}', [BarangLokasiController::class, 'delete'])->name('lokasibarang.delete');
 
+        // Bobot 
+        Route::get('bobot', [BobotController::class, 'index'])->name('bobot.index');
+        Route::post('bobot/list', [BobotController::class, 'list'])->name('bobot.list');
+        Route::get('bobot/edit', [BobotController::class, 'edit'])->name('bobot.edit');
+        Route::post('bobot/update-all', [BobotController::class, 'updateAll'])->name('bobot.updateAll');
+
         // Periode
         Route::get('periode', [PeriodeController::class, 'index'])->name('periode.index');
         Route::post('periode/list', [PeriodeController::class, 'list'])->name('periode.list');
@@ -141,6 +149,17 @@ Route::middleware(['auth'])->group(function () {
         Route::get('periode/{id}/show', [PeriodeController::class, 'show'])->name('periode.show');
         Route::get('periode/{id}/delete', [PeriodeController::class, 'confirmDelete'])->name('periode.confirmDelete');
         Route::delete('periode/{id}/delete', [PeriodeController::class, 'destroy'])->name('periode.delete');
+
+        // Kategori Kerusakan
+        Route::get('kategoriKerusakan', [KategoriKerusakanController::class, 'index'])->name('jenisKerusakan.index');
+        Route::post('kategoriKerusakan/list', [KategoriKerusakanController::class, 'list'])->name('jenisKerusakan.list');
+        Route::get('kategoriKerusakan/create', [KategoriKerusakanController::class, 'create'])->name('jenisKerusakan.create');
+        Route::post('kategoriKerusakan/store', [KategoriKerusakanController::class, 'store'])->name('jenisKerusakan.store');
+        Route::get('kategoriKerusakan/{id}/edit', [KategoriKerusakanController::class, 'edit'])->name('jenisKerusakan.edit');
+        Route::put('kategoriKerusakan/{id}/update', [KategoriKerusakanController::class, 'update'])->name('jenisKerusakan.update');
+        Route::get('kategoriKerusakan/{id}/show', [KategoriKerusakanController::class, 'show'])->name('jenisKerusakan.show');
+        Route::get('kategoriKerusakan/{id}/delete', [KategoriKerusakanController::class, 'confirmDelete'])->name('jenisKerusakan.confirmDelete');
+        Route::delete('kategoriKerusakan/{id}/delete', [KategoriKerusakanController::class, 'destroy'])->name('jenisKerusakan.delete');
 
     });
 

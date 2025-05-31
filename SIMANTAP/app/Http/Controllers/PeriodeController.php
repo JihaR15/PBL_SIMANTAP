@@ -7,10 +7,10 @@ use App\Models\LaporanModel;
 use Illuminate\Http\Request;
 use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Support\Facades\Validator;
-use DB;
 
 class PeriodeController extends Controller
 {
+
     public function index()
     {
         $activeMenu = 'periode';

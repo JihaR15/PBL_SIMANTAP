@@ -71,6 +71,12 @@
                             <span>Data Periode</span>
                         </a>
                     </li>
+                    <li>
+                        <a href="{{ url('/kategoriKerusakan') }}" class="waves-effect">
+                            <i class="ri-tools-line"></i>
+                            <span>Data Kategori Kerusakan</span>
+                        </a>
+                    </li>
                 @endif
 
                 @if(auth()->check() && auth()->user()->role->kode_role === 'SRN')
