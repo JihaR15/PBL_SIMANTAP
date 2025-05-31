@@ -60,7 +60,13 @@
                         </a>
                     </li>
                     <li>
-                        <a href="index.html" class="waves-effect">
+                        <a href="{{ url('/bobot') }}" class="waves-effect">
+                            <i class="ri-building-line"></i>
+                            <span>Data Prioritas Perbaikan</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ url('/periode') }}" class="waves-effect">
                             <i class="ri-calendar-line"></i>
                             <span>Data Periode</span>
                         </a>

@@ -15,6 +15,7 @@ use App\Http\Controllers\JenisBarangController;
 use App\Http\Controllers\BarangLokasiController;
 use App\Http\Controllers\JenisTeknisiController;
 use App\Http\Controllers\PerbaikanController;
+use App\Http\Controllers\PeriodeController;
 
 
 
@@ -129,6 +130,18 @@ Route::middleware(['auth'])->group(function () {
         Route::post('lokasibarang/{tempat_id}/store', [BarangLokasiController::class, 'store'])->name('lokasibarang.store');
         Route::get('/lokasibarang/{tempat_id}/confirmDelete/{jenis_barang_id}', [BarangLokasiController::class, 'confirmDelete'])->name('lokasibarang.confirmDelete');
         Route::delete('/lokasibarang/{tempat_id}/delete/{jenis_barang_id}', [BarangLokasiController::class, 'delete'])->name('lokasibarang.delete');
+
+        // Periode
+        Route::get('periode', [PeriodeController::class, 'index'])->name('periode.index');
+        Route::post('periode/list', [PeriodeController::class, 'list'])->name('periode.list');
+        Route::get('periode/create', [PeriodeController::class, 'create'])->name('periode.create');
+        Route::post('periode/store', [PeriodeController::class, 'store'])->name('periode.store');
+        Route::get('periode/{id}/edit', [PeriodeController::class, 'edit'])->name('periode.edit');
+        Route::put('periode/{id}/update', [PeriodeController::class, 'update'])->name('periode.update');
+        Route::get('periode/{id}/show', [PeriodeController::class, 'show'])->name('periode.show');
+        Route::get('periode/{id}/delete', [PeriodeController::class, 'confirmDelete'])->name('periode.confirmDelete');
+        Route::delete('periode/{id}/delete', [PeriodeController::class, 'destroy'])->name('periode.delete');
+
     });
 
     Route::middleware(['authorize:MHS,DSN,TDK'])->group(function () {
