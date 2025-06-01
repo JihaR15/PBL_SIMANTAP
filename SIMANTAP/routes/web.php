@@ -132,11 +132,11 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/lokasibarang/{tempat_id}/confirmDelete/{jenis_barang_id}', [BarangLokasiController::class, 'confirmDelete'])->name('lokasibarang.confirmDelete');
         Route::delete('/lokasibarang/{tempat_id}/delete/{jenis_barang_id}', [BarangLokasiController::class, 'delete'])->name('lokasibarang.delete');
 
-        // Bobot
-        // Route::get('bobot', [BobotController::class, 'index'])->name('bobot.index');
-        // Route::post('bobot/list', [BobotController::class, 'list'])->name('bobot.list');
-        // Route::get('bobot/edit', [BobotController::class, 'edit'])->name('bobot.edit');
-        // Route::post('bobot/update-all', [BobotController::class, 'updateAll'])->name('bobot.updateAll');
+        // Bobot 
+        Route::get('bobot', [BobotController::class, 'index'])->name('bobot.index');
+        Route::post('bobot/list', [BobotController::class, 'list'])->name('bobot.list');
+        Route::get('bobot/edit', [BobotController::class, 'edit'])->name('bobot.edit');
+        Route::post('bobot/update-all', [BobotController::class, 'updateAll'])->name('bobot.updateAll');
 
         // Periode
         Route::get('periode', [PeriodeController::class, 'index'])->name('periode.index');
