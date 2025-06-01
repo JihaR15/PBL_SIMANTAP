@@ -7,7 +7,7 @@
         <div class="modal-body">
             <p>Anda yakin ingin menghapus <strong>{{ $barang->jenisBarang->nama_barang }}</strong> dari fasilitas <strong>{{ $tempat->nama_tempat }}</strong>?</p>
 
-            <form action="{{ url('/lokasibarang/' . $tempat->tempat_id . '/delete/' . $barang->jenis_barang_id) }}" method="POST">
+            <form id="form-delete" action="{{ url('/lokasibarang/' . $tempat->tempat_id . '/delete/' . $barang->jenis_barang_id) }}" method="POST">
                 @csrf
                 @method('DELETE')
                 <div class="modal-footer">

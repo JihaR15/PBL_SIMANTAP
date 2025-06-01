@@ -88,7 +88,10 @@ class BarangLokasiController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return redirect()->back()->withErrors($validator)->withInput();
+            return response()->json([
+                'status' => 'error',
+                'message' => $validator->errors()->first(),
+            ], 422);
         }
 
         $tempat = TempatModel::findOrFail($tempat_id);
@@ -102,7 +105,11 @@ class BarangLokasiController extends Controller
             $barangLokasi->save();
         }
 
-        return redirect()->route('lokasibarang.index')->with('success', 'Fasilitas berhasil ditambahkan di Lokasi ' . $tempat->nama_tempat);
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Fasilitas berhasil ditambahkan di Lokasi ' . $tempat->nama_tempat,
+            'redirect' => route('lokasibarang.index')
+        ]);
     }
 
     public function confirmDelete($tempat_id, $jenis_barang_id)
@@ -123,7 +130,7 @@ class BarangLokasiController extends Controller
     }
 
     // menghapus barang
-    public function delete($tempat_id, $jenis_barang_id)
+    public function delete(Request $request, $tempat_id, $jenis_barang_id)
     {
         $tempat = TempatModel::findOrFail($tempat_id);
         $namabrg = JenisBarangModel::findOrFail($jenis_barang_id);
@@ -132,33 +139,33 @@ class BarangLokasiController extends Controller
                                     ->first();
 
         if ($barang) {
+            // hapus semua relasi yang terkait
             $laporans = LaporanModel::where('barang_lokasi_id', $barang->barang_lokasi_id)->get();
-
-            // hapus semua notifikasi
             foreach ($laporans as $laporan) {
                 $laporan->notifikasi()->delete();
-            }
-
-            // hapus perbaikan
-            foreach ($laporans as $laporan) {
                 $laporan->perbaikan()->delete();
-            }
-
-            // hapus prioritas
-            foreach ($laporans as $laporan) {
                 $laporan->prioritas()->delete();
-            }
-
-            // hapus data laporan
-            foreach ($laporans as $laporan) {
                 $laporan->delete();
             }
-
             $barang->delete();
 
-            return redirect()->route('lokasibarang.index')->with('success', 'Fasilitas ' . $namabrg->nama_barang . ' berhasil dihapus dari Lokasi ' . $tempat->nama_tempat);
+            if ($request->ajax()) {
+                return response()->json([
+                    'status' => 'success',
+                    'message' => 'Fasilitas ' . $namabrg->nama_barang . ' berhasil dihapus dari Lokasi ' . $tempat->nama_tempat,
+                ]);
+            }
+
+            return redirect()->route('lokasibarang.index')->with('success', 'Fasilitas berhasil dihapus');
         }
 
-        return redirect()->route('lokasibarang.index')->with('error', 'Fasilitas ' . $namabrg->nama_barang . ' tidak ditemukan di Lokasi ' . $tempat->nama_tempat);
+        if ($request->ajax()) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Fasilitas ' . $namabrg->nama_barang . ' tidak ditemukan di Lokasi ' . $tempat->nama_tempat,
+            ], 404);
+        }
+
+        return redirect()->route('lokasibarang.index');
     }
 }

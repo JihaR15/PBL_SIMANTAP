@@ -65,16 +65,16 @@
                     type: "GET"
                 },
                 columns: [
-                    { data: "DT_RowIndex", className: "text-center" },
+                    { data: "DT_RowIndex", className: "text-center", width: "5%" },
                     { data: 'barang', name: 'barang' },
                     { data: 'tempat', name: 'tempat' },
                     { data: 'unit', name: 'unit' },
                     { data: 'created_at', name: 'created_at' },
                     { data: 'status_perbaikan', name: 'status_perbaikan', className: "text-center" },
-                    { data: 'action', name: 'action', orderable: false, searchable: false, className: "text-center" }
+                    { data: 'action', name: 'action', orderable: false, searchable: false, className: "text-center", width: "8%" }
                 ],
                 order: [[0, 'desc']],
-                
+
                 drawCallback: function () {
                     const urlParams = new URLSearchParams(window.location.search);
                     const openId = urlParams.get('open_id');

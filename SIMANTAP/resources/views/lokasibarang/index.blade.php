@@ -106,6 +106,7 @@
                 {
                     data: "DT_RowIndex",
                     className: "text-center",
+                    width: "5%",
                     orderable: false,
                     searchable: false
                 }, {
@@ -121,6 +122,7 @@
                 }, {
                     data: "action",
                     className: "text-center",
+                    width: "10%",
                     orderable: false,
                     searchable: false
                 }

@@ -75,7 +75,7 @@
                     },
                 },
                 columns: [
-                    { data: "DT_RowIndex", className: "text-center"},
+                    { data: "DT_RowIndex", className: "text-center", width: "5%" },
                     { data: 'fasilitas.nama_fasilitas', name: 'fasilitas.nama_fasilitas' },
                     { data: 'unit.nama_unit', name: 'unit.nama_unit' },
                     { data: 'tempat.nama_tempat', name: 'tempat.nama_tempat' },

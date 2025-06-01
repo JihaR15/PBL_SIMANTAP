@@ -14,7 +14,7 @@
 
             <div class="row">
                 <div class="col-12">
-                    <div class="card">                        
+                    <div class="card">
                         <div class="card-body">
                             <div class="row mb-4">
                                 <div class="col-md-8">
@@ -60,15 +60,15 @@
 <script src="{{ asset('assets/libs/sweetalert2/sweetalert2.all.min.js') }}"></script>
 
 <script>
-    function modalAction(url = ''){ 
-        $('#myModal').load(url,function(){ 
-            $('#myModal').modal('show'); 
-        }); 
+    function modalAction(url = ''){
+        $('#myModal').load(url,function(){
+            $('#myModal').modal('show');
+        });
     }
 
     var dataUser;
     $(document).ready(function () {
-        dataUser = $('#datatable').DataTable({ 
+        dataUser = $('#datatable').DataTable({
             serverSide: true,
             ajax: {
                 "url": "{{ url('role/list') }}",
@@ -80,15 +80,16 @@
                 }
             },
             columns: [
-                {   
+                {
                     data: "DT_RowIndex",
                     className: "text-center",
+                    width: "5%",
                     orderable: false,
                     searchable: false
                 }, {
                     data: "kode_role",
-                    className: "",  
-                    orderable: true, 
+                    className: "",
+                    orderable: true,
                     searchable: true
                 }, {
                     data: "nama_role",
@@ -98,10 +99,11 @@
                 }, {
                     data: "action",
                     className: "text-center",
+                    width: "15%",
                     orderable: false,
                     searchable: false
                 }
             ]
         });
-    }); 
+    });
 </script>

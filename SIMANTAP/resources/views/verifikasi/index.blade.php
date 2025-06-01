@@ -74,7 +74,8 @@
                 columns: [
                     {
                         data: "DT_RowIndex",
-                        className: "text-center"
+                        className: "text-center",
+                        width: "5%",
                     },
                     {
                         data: 'fasilitas.nama_fasilitas',
@@ -102,6 +103,7 @@
                         name: 'action',
                         orderable: false,
                         className: "text-center",
+                        width: "8%",
                         searchable: false
                     }
                 ],

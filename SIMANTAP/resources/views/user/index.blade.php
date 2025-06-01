@@ -97,6 +97,7 @@
                 {
                     data: "DT_RowIndex",
                     className: "text-center",
+                    width: "5%",
                     orderable: false,
                     searchable: false
                 }, {
@@ -117,11 +118,13 @@
                 }, {
                     data: "status_switch",
                     className: "text-center",
+                    width: "6%",
                     orderable: false,
                     searchable: false
                 }, {
                     data: "action",
                     className: "text-center",
+                    width: "15%",
                     orderable: false,
                     searchable: false
                 }
@@ -142,7 +145,7 @@
             type: 'POST',
             data: {
                 id: userId,
-                _token: $('meta[name="csrf_token"]').attr('content') 
+                _token: $('meta[name="csrf_token"]').attr('content')
             },
             success: function (response) {
                 if (response.status) {

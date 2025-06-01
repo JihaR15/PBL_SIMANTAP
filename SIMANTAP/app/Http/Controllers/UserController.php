@@ -42,7 +42,7 @@ class UserController extends Controller
             ->addIndexColumn()
             ->addColumn('status_switch', function ($user) {
                 $checked = $user->status == 1 ? 'checked' : '';
-                return '<div class="form-check form-switch">
+                return '<div class="form-check form-switch" style="width: fit-content; margin: 0 auto;">
                             <input class="form-check-input toggle-status" type="checkbox" data-id="' . $user->user_id . '" ' . $checked . '>
                         </div>';
             })
@@ -60,7 +60,7 @@ class UserController extends Controller
         $user = UserModel::findOrFail($request->id);
         $user->status = $user->status == 1 ? 0 : 1; // Toggle status
         $user->save();
-    
+
         return response()->json([
             'status' => true,
             'message' => 'Status berhasil diperbarui.',
@@ -96,16 +96,16 @@ class UserController extends Controller
                 'status' => false,
                 'message' => 'Validasi gagal.',
                 'msgField' => $validator->errors()
-            ]); 
+            ]);
         }
-        
+
         $user = new UserModel();
         $user->role_id = $request->role_id;
         $user->username = $request->username;
         $user->name = $request->name;
         $user->password = bcrypt($request->password);
         $user->save();
-        
+
         // simpan teknisi
         $role = RoleModel::find($request->role_id);
         if (strtolower($role->nama_role) === 'teknisi') {
@@ -114,7 +114,7 @@ class UserController extends Controller
             $teknisi->jenis_teknisi_id = $request->jenis_teknisi_id;
             $teknisi->save();
         }
-        
+
         if ($request->hasFile('foto_profile')) {
             $file = $request->file('foto_profile');
             $filename = 'profile-' . $user->user_id . '.' . $file->getClientOriginalExtension();
@@ -122,7 +122,7 @@ class UserController extends Controller
             $user->foto_profile = $filename;
             $user->save();
         }
-        
+
         if ($request->ajax() || $request->wantsJson()) {
             return response()->json([
                 'status' => true,
@@ -158,7 +158,7 @@ class UserController extends Controller
                 'status' => false,
                 'message' => 'Validasi gagal.',
                 'msgField' => $validator->errors()
-            ]); 
+            ]);
         }
 
         $user = UserModel::findOrFail($id);
@@ -232,9 +232,9 @@ class UserController extends Controller
                 unlink($filePath);
             }
         }
-        
+
         $user->delete();
-        
+
         if (request()->ajax() || request()->wantsJson()) {
             return response()->json([
                 'status' => true,

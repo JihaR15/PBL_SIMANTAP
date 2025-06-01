@@ -67,9 +67,9 @@
             <table class="table table-bordered table-sm mt-4">
                 <thead>
                     <tr class="text-bold">
-                        <th>No</th>
+                        <th style="width: 5%;">No</th>
                         <th>Nama Barang</th>
-                        <th class="text-center">Aksi</th>
+                        <th class="text-center" style="width: 10%;">Aksi</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -98,5 +98,81 @@
         } else {
             dropdown.style.display = "none";
         }
+    });
+
+    document.querySelector('#dropdown-container form').addEventListener('submit', function(e) {
+        e.preventDefault();
+
+        const form = this;
+        const url = form.action;
+        const formData = new FormData(form);
+
+        fetch(url, {
+            method: 'POST',
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest',
+                'X-CSRF-TOKEN': form.querySelector('input[name=_token]').value
+            },
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'success') {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Sukses',
+                    html: data.message,
+                    timer: 1500,
+                    showConfirmButton: true,
+                    didClose: () => {
+                        if(data.redirect) {
+                            window.location.href = data.redirect;
+                        } else {
+                            window.location.reload();
+                        }
+                    }
+                });
+            } else {
+                Swal.fire('Error', data.message || 'Terjadi kesalahan.', 'error');
+            }
+        })
+        .catch(() => {
+            Swal.fire('Error', 'Terjadi kesalahan saat menambah fasilitas.', 'error');
+        });
+    });
+
+    $(document).on('submit', '#form-delete', function(e) {
+        e.preventDefault();
+
+        let form = $(this);
+        let url = form.attr('action');
+        let data = form.serialize();
+
+        $.ajax({
+            url: url,
+            method: 'POST',
+            data: data,
+            success: function(res) {
+                if (res.status === 'success') {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Berhasil',
+                        text: res.message,
+                        timer: 1500,
+                        showConfirmButton: true
+                    }).then(() => {
+                        $('#myModal').modal('hide');
+                        location.reload();
+                    });
+                } else {
+                    Swal.fire('Error', res.message || 'Gagal menghapus data', 'error');
+                }
+            },
+            error: function(xhr) {
+                let msg = 'Gagal menghapus data.';
+                if (xhr.responseJSON && xhr.responseJSON.message) msg = xhr.responseJSON.message;
+                Swal.fire('Error', msg, 'error');
+            }
+        });
     });
 </script>
