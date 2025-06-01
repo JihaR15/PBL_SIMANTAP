@@ -1,4 +1,10 @@
-<div id="modal-master" class="modal-dialog modal-lg" role="document">
+@php
+    $statusVerif = strtolower($laporan->status_verif ?? '');
+    $isDitolak = ($statusVerif === 'ditolak');
+    $colInfo = ($isDitolak && $laporan->foto_laporan) ? 'col-md-8' : ($laporan->foto_laporan ? 'col-md-6' : 'col-md-12');
+@endphp
+
+<div id="modal-master" class="modal-dialog {{ $isDitolak ? 'modal-lg' : 'modal-xl' }}" role="document">
     <div class="modal-content">
         <div class="modal-header">
             <h5 class="modal-title">Detail Laporan</h5>
@@ -11,7 +17,7 @@
                 </div>
                 <div class="card-body">
                     <div class="row">
-                        <div class="{{ $laporan->foto_laporan ? 'col-md-8' : 'col-md-12' }}">
+                        <div class="{{ $colInfo }}">
                             <div class="row mb-2">
                                 <div class="col-sm-4 fw-bold">Fasilitas</div>
                                 <div class="col-sm-8">: {{ $laporan->fasilitas->nama_fasilitas ?? '-' }}</div>
@@ -92,39 +98,67 @@
                             </div>
                         </div>
 
-                        @if ($laporan->foto_laporan || ($laporan->perbaikan && $laporan->perbaikan->foto_perbaikan))
-                            <div class="col-md-4">
-                                @if ($laporan->foto_laporan)
+                        @if (!$isDitolak)
+                            @if ($laporan->foto_laporan || ($laporan->perbaikan && $laporan->perbaikan->foto_perbaikan))
+                                <div class="col-md-6 d-flex align-items-start" style="gap: 2rem;">
+                                    @if ($laporan->foto_laporan)
+                                        <div style="flex: 1;">
+                                            <p><strong>Foto Laporan</strong></p>
+                                            <div class="img-hover-dark mb-3" style="height: 180px;">
+                                                <a href="{{ asset('storage/' . $laporan->foto_laporan) }}" data-lightbox="laporan" data-title="Foto Laporan">
+                                                    <img src="{{ asset('storage/' . $laporan->foto_laporan) }}" alt="Foto Laporan" class="img-fluid" style="width: 100%; height: 100%; object-fit: cover;">
+                                                    <i class="ri-search-line icon-search"></i>
+                                                </a>
+                                            </div>
+                                        </div>
+                                    @endif
+                                    <div style="flex: 1;">
+                                        <p><strong>Foto Perbaikan</strong></p>
+                                        @if ($laporan->perbaikan && $laporan->perbaikan->foto_perbaikan)
+                                            <div class="img-hover-dark" style="height: 180px;">
+                                                <a href="{{ asset('storage/' . $laporan->perbaikan->foto_perbaikan) }}" data-lightbox="perbaikan" data-title="Foto Perbaikan">
+                                                    <img src="{{ asset('storage/' . $laporan->perbaikan->foto_perbaikan) }}" alt="Foto Perbaikan" class="img-fluid" style="width: 100%; height: 100%; object-fit: cover;">
+                                                    <i class="ri-search-line icon-search"></i>
+                                                </a>
+                                            </div>
+                                        @else
+                                            <p><em>Foto perbaikan belum tersedia (perbaikan belum selesai).</em></p>
+                                        @endif
+                                    </div>
+                                </div>
+                            @endif
+                            <div class="col-md-6 mt-3">
+                                <p><strong>Deskripsi Laporan:</strong></p>
+                                <div class="border p-2 rounded bg-light">
+                                    {{ $laporan->deskripsi ?? 'Tidak ada deskripsi tersedia.' }}
+                                </div>
+                            </div>
+                            <div class="col-md-6 mt-3">
+                                <p><strong>Deskripsi Perbaikan:</strong></p>
+                                <div class="border p-2 rounded bg-light">
+                                    {{ $laporan->perbaikan->catatan_perbaikan ?? 'Tidak ada deskripsi tersedia.' }}
+                                </div>
+                            </div>
+                        @else
+                            @if ($laporan->foto_laporan)
+                                <div class="col-md-4">
                                     <p><strong>Foto Laporan</strong></p>
-                                    <div class="img-hover-dark mb-3">
+                                    <div class="img-hover-dark" style="max-width: 200px; height: auto;">
                                         <a href="{{ asset('storage/' . $laporan->foto_laporan) }}" data-lightbox="laporan" data-title="Foto Laporan">
-                                            <img src="{{ asset('storage/' . $laporan->foto_laporan) }}" alt="Foto Laporan" class="img-fluid" style="max-width: 100%;">
+                                            <img src="{{ asset('storage/' . $laporan->foto_laporan) }}" alt="Foto Laporan" class="img-fluid" style="width: 100%; height: auto; object-fit: contain;">
                                             <i class="ri-search-line icon-search"></i>
                                         </a>
                                     </div>
-                                @endif
-
-                                @if ($laporan->perbaikan && $laporan->perbaikan->foto_perbaikan)
-                                    <p><strong>Foto Perbaikan</strong></p>
-                                    <div class="img-hover-dark">
-                                        <a href="{{ asset('storage/' . $laporan->perbaikan->foto_perbaikan) }}" data-lightbox="perbaikan" data-title="Foto Perbaikan">
-                                            <img src="{{ asset('storage/' . $laporan->perbaikan->foto_perbaikan) }}" alt="Foto Perbaikan" class="img-fluid" style="max-width: 100%;">
-                                            <i class="ri-search-line icon-search"></i>
-                                        </a>
-                                    </div>
-                                @else
-                                    <p><strong>Foto Perbaikan</strong></p>
-                                    <p><em>Foto perbaikan belum tersedia (perbaikan belum selesai).</em></p>
-                                @endif
+                                </div>
+                            @endif
+                            <div class="col-md-12 mt-3">
+                                <p><strong>Deskripsi Laporan:</strong></p>
+                                <div class="border p-2 rounded bg-light">
+                                    {{ $laporan->deskripsi ?? 'Tidak ada deskripsi tersedia.' }}
+                                </div>
                             </div>
                         @endif
 
-                        <div class="col-md-12 mt-3">
-                            <p><strong>Deskripsi:</strong></p>
-                            <div class="border p-2 rounded bg-light">
-                                {{ $laporan->deskripsi ?? 'Tidak ada deskripsi tersedia.' }}
-                            </div>
-                        </div>
                     </div>
                 </div>
             </div>
@@ -140,12 +174,16 @@
         position: relative;
         display: inline-block;
         overflow: hidden;
+        width: 100%;
+        height: 180px;
     }
 
     .img-hover-dark img {
         display: block;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
         transition: filter 0.3s ease;
-        max-width: 100%;
     }
 
     .img-hover-dark:hover img {

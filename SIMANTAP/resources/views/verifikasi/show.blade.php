@@ -83,7 +83,7 @@
                         @endif
 
                         <div class="col-md-12 mt-3">
-                            <p><strong>Deskripsi:</strong></p>
+                            <p><strong>Deskripsi Laporan:</strong></p>
                             <div class="border p-2 rounded bg-light">
                                 {{ $laporan->deskripsi ?? 'Tidak ada deskripsi tersedia.' }}
                             </div>
