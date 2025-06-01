@@ -18,8 +18,7 @@ use App\Http\Controllers\PerbaikanController;
 use App\Http\Controllers\PeriodeController;
 use App\Http\Controllers\KategoriKerusakanController;
 use App\Http\Controllers\BobotController;
-
-
+use App\Http\Controllers\FeedbackController;
 
 /*
 |--------------------------------------------------------------------------
@@ -175,6 +174,15 @@ Route::middleware(['auth'])->group(function () {
         Route::delete('laporan/{id}/delete/', [LaporanController::class,'destroy'])->name('laporan.delete');
         Route::get('/statusperbaikan', [LaporanController::class, 'statusPerbaikan'])->name('statusperbaikan');
         Route::get('/statusperbaikan/{laporan_id}/show', [LaporanController::class, 'showStatusPerbaikan'])->name('statusperbaikan.show');
+        
+        // Feedback
+        Route::get('feedback', [FeedbackController::class, 'index'])->name('feedback.index');
+        Route::get('feedback/list', [FeedbackController::class, 'list'])->name('feedback.list');
+        Route::get('/feedback/{id}/show', [FeedbackController::class, 'show'])->name('feedback.show');
+        Route::post('feedback/{id}/store', [FeedbackController::class, 'store'])->name('feedback.store');
+        Route::put('feedback/{id}/update', [FeedbackController::class, 'update'])->name('feedback.update');
+
+
     });
 
     Route::middleware(['authorize:ADM,SRN'])->group(function () {

@@ -86,4 +86,9 @@ class LaporanModel extends Model
         return $this->hasMany(NotifikasiModel::class, 'laporan_id');
     }
 
+    public function feedback()
+    {
+        return $this->hasMany(FeedbackModel::class, 'laporan_id', 'laporan_id');
+    }
+
 }
