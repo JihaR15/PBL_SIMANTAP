@@ -9,6 +9,7 @@ use App\Models\PerbaikanModel;
 use App\Models\UnitModel;
 use App\Models\TempatModel;
 use App\Models\FasilitasModel;
+use App\Models\TeknisiModel;
 use App\Models\JenisBarangModel;
 use Illuminate\Support\Facades\DB;
 
@@ -62,17 +63,17 @@ class WelcomeController extends Controller
 
         $perbaikanUserSelesaiCount = PerbaikanModel::where('status_perbaikan', 'selesai')
             ->whereHas('laporan', function ($q) use ($user) {
-            $q->where('user_id', $user->user_id);
+                $q->where('user_id', $user->user_id);
             })->count();
 
         $perbaikanUserBerjalanCount = PerbaikanModel::where('status_perbaikan', 'sedang diperbaiki')
             ->whereHas('laporan', function ($q) use ($user) {
-            $q->where('user_id', $user->user_id);
+                $q->where('user_id', $user->user_id);
             })->count();
 
         $perbaikanUserBelumCount = PerbaikanModel::where('status_perbaikan', 'belum')
             ->whereHas('laporan', function ($q) use ($user) {
-            $q->where('user_id', $user->user_id);
+                $q->where('user_id', $user->user_id);
             })->count();
 
         $periodeTahun = LaporanModel::with('periode')
@@ -111,17 +112,17 @@ class WelcomeController extends Controller
 
         $perbaikanBelumCount = PerbaikanModel::where('status_perbaikan', 'belum')
             ->whereHas('laporan.periode', function ($q) use ($tahunDipilih) {
-            $q->where('nama_periode', $tahunDipilih);
+                $q->where('nama_periode', $tahunDipilih);
             })->count();
 
         $perbaikanSelesaiCount = PerbaikanModel::where('status_perbaikan', 'selesai')
             ->whereHas('laporan.periode', function ($q) use ($tahunDipilih) {
-            $q->where('nama_periode', $tahunDipilih);
+                $q->where('nama_periode', $tahunDipilih);
             })->count();
 
         $perbaikanBerjalanCount = PerbaikanModel::where('status_perbaikan', 'sedang diperbaiki')
             ->whereHas('laporan.periode', function ($q) use ($tahunDipilih) {
-            $q->where('nama_periode', $tahunDipilih);
+                $q->where('nama_periode', $tahunDipilih);
             })->count();
 
 
@@ -143,7 +144,108 @@ class WelcomeController extends Controller
             ->limit(3)
             ->get();
 
-        return view('welcome', [
+        // $teknisi = TeknisiModel::where('user_id', $user->user_id)->first();
+
+        // $perbaikanTeknisi = PerbaikanModel::with(['laporan', 'teknisi'])
+        //     ->where('status_perbaikan', '=', 'belum')
+        //     ->where('teknisi_id', $teknisi->teknisi_id)
+        //     ->get()
+        //     ->sortByDesc(function ($perbaikan) {
+        //         return optional($perbaikan->laporan->prioritas)->nilai_topsis ?? 0;
+        //     })
+        //     ->values();
+
+        // $perbaikanTeknisiCount = $perbaikanTeknisi->count();
+        // $perbaikanTeknisiTerbaru = $perbaikanTeknisi->first();
+        // $perbaikanTeknisiTop3 = $perbaikanTeknisi->take(3);
+
+        // $perbaikanTeknisiSudah = PerbaikanModel::with(['laporan', 'teknisi'])
+        //     ->where('status_perbaikan', '=', 'selesai')
+        //     ->where('teknisi_id', $teknisi->teknisi_id)
+        //     ->get()
+        //     ->sortByDesc(function ($perbaikan) {
+        //         return optional($perbaikan->laporan->prioritas)->nilai_topsis ?? 0;
+        //     })
+        //     ->values();
+
+        // $perbaikanTeknisiBelum = PerbaikanModel::with(['laporan', 'teknisi'])
+        //     ->where('status_perbaikan', '=', 'belum')
+        //     ->where('teknisi_id', $teknisi->teknisi_id)
+        //     ->get()
+        //     ->sortByDesc(function ($perbaikan) {
+        //         return optional($perbaikan->laporan->prioritas)->nilai_topsis ?? 0;
+        //     })
+        //     ->values();
+
+        // $perbaikanTeknisiSedangdikerjakan = PerbaikanModel::with(['laporan', 'teknisi'])
+        //     ->where('status_perbaikan', '=', 'sedang diperbaiki')
+        //     ->where('teknisi_id', $teknisi->teknisi_id)
+        //     ->get()
+        //     ->sortByDesc(function ($perbaikan) {
+        //         return optional($perbaikan->laporan->prioritas)->nilai_topsis ?? 0;
+        //     })
+        //     ->values();
+
+        if (auth()->check() && $user->role && $user->role->kode_role === 'TKS') {
+            $teknisi = TeknisiModel::where('user_id', $user->user_id)->first();
+
+            $perbaikanTeknisi = PerbaikanModel::with(['laporan', 'teknisi'])
+                ->where('status_perbaikan', '=', 'belum')
+                ->where('teknisi_id', $teknisi->teknisi_id)
+                ->get()
+                ->sortByDesc(function ($perbaikan) {
+                    return optional($perbaikan->laporan->prioritas)->nilai_topsis ?? 0;
+                })
+                ->values();
+
+            $perbaikanTeknisiCount = $perbaikanTeknisi->count();
+            $perbaikanTeknisiTerbaru = $perbaikanTeknisi->first();
+            $perbaikanTeknisiTop3 = $perbaikanTeknisi->take(3);
+
+            $perbaikanTeknisiSudah = PerbaikanModel::with(['laporan', 'teknisi'])
+                ->where('status_perbaikan', '=', 'selesai')
+                ->where('teknisi_id', $teknisi->teknisi_id)
+                ->get()
+                ->sortByDesc(function ($perbaikan) {
+                    return optional($perbaikan->laporan->prioritas)->nilai_topsis ?? 0;
+                })
+                ->values();
+
+            $perbaikanTeknisiBelum = PerbaikanModel::with(['laporan', 'teknisi'])
+                ->where('status_perbaikan', '=', 'belum')
+                ->where('teknisi_id', $teknisi->teknisi_id)
+                ->get()
+                ->sortByDesc(function ($perbaikan) {
+                    return optional($perbaikan->laporan->prioritas)->nilai_topsis ?? 0;
+                })
+                ->values();
+
+            $perbaikanTeknisiSedangdikerjakan = PerbaikanModel::with(['laporan', 'teknisi'])
+                ->where('status_perbaikan', '=', 'sedang diperbaiki')
+                ->where('teknisi_id', $teknisi->teknisi_id)
+                ->get()
+                ->sortByDesc(function ($perbaikan) {
+                    return optional($perbaikan->laporan->prioritas)->nilai_topsis ?? 0;
+                })
+                ->values();
+
+            // Tambahkan ke array data yang dikirim ke view
+            $data['perbaikanTeknisi'] = $perbaikanTeknisi;
+            $data['perbaikanTeknisiCount'] = $perbaikanTeknisiCount;
+            $data['perbaikanTeknisiTerbaru'] = $perbaikanTeknisiTerbaru;
+            $data['perbaikanTeknisiTop3'] = $perbaikanTeknisiTop3;
+            $data['perbaikanTeknisiSudah'] = $perbaikanTeknisiSudah;
+            $data['perbaikanTeknisiBelum'] = $perbaikanTeknisiBelum;
+            $data['perbaikanTeknisiSedangdikerjakan'] = $perbaikanTeknisiSedangdikerjakan;
+            $data['perbaikanTeknisiBelumCount'] = $perbaikanTeknisiBelum->count();
+            $data['perbaikanTeknisiSedangdikerjakanCount'] = $perbaikanTeknisiSedangdikerjakan->count();
+            $data['perbaikanTeknisiSudahCount'] = $perbaikanTeknisiSudah->count();
+            $data['perbaikanTeknisiSudahTerbaru'] = $perbaikanTeknisiSudah->first();
+        }
+
+
+
+        return view('welcome', array_merge([
             'user' => $user,
             'teknisiCount' => $teknisiCount,
             'teknisiTerbaru' => UserModel::whereHas('role', function ($q) {
@@ -190,7 +292,7 @@ class WelcomeController extends Controller
                 ['label' => 'Simantap', 'url' => '/dashboard'],
                 ['label' => 'Dashboard']
             ]
-        ]);
+        ], $data ?? []));
     }
 
 
@@ -229,7 +331,7 @@ class WelcomeController extends Controller
 
         if ($tahun !== 'all') {
             $query->whereHas('laporan.periode', function ($q) use ($tahun) {
-            $q->where('nama_periode', $tahun);
+                $q->where('nama_periode', $tahun);
             });
         }
 

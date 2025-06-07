@@ -7,9 +7,8 @@
         <div class="modal-body">
             <div class="row align-items-center">
                 <div class="col-12 col-md-auto text-center mb-3 mb-md-0">
-                    <img src="{{ $user->foto_profile ? asset('images/' . $user->foto_profile) : asset('profile_placeholder.png') }} ? {{ now() }}"
-                        alt="Foto Profil" class="rounded-circle img-fluid"
-                        style="width: 150px; height: 150px; object-fit: cover;">
+                    <img src="{{ $user->foto_profile ? asset('images/' . $user->foto_profile) : asset('profile_placeholder.png') }}?{{ now() }}"
+                        alt="Profile Picture" class="rounded-circle" style="width: 150px; height: 150px; object-fit: cover;">
                 </div>
 
                 <div class="col-12 col-md">

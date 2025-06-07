@@ -4,7 +4,7 @@
             <!-- LOGO -->
             <div class="navbar-brand-box">
 
-                <a href="index.html" class="logo logo-light d-flex" style="font-size: 1.5rem;">
+                <a href="{{ route('dashboard') }}" class="logo logo-light d-flex" style="font-size: 1.5rem;">
                     <span class="logo-sm">
                         <div class="d-flex align-items-center">
                             <i class="ri-tools-line me-2 text-dark" style="font-size: 2rem;"></i>

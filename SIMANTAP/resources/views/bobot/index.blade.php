@@ -22,11 +22,11 @@
                                     Daftar bobot setiap parameter. Anda dapat mengubah nilai bobot.
                                 </p>
                             </div>
-                            <div class="d-flex justify-content-end mb-2">
+                            <div class="col-md-4 text-end">
                                 <button type="button" class="btn btn-warning" onclick="modalAction('{{ route('bobot.edit') }}')">
                                     <i class="mdi mdi-tune"></i> Edit Bobot
                                 </button>
-                            </div>>
+                            </div>
                         </div>
 
                         <table id="datatable" class="table table-sm table-striped table-bordered dt-responsive nowrap"

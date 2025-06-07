@@ -84,7 +84,7 @@
                         </div>
                         <div class="text-center mt-4">
                             <div class="mb-3">
-                                <a href="index.html" class="auth-logo text-center">
+                                <a href="{{ route('landing') }}" class="auth-logo text-center">
                                     {{-- <img src="assets/images/logo-dark.png" height="30" class="logo-dark mx-auto" alt=""> --}}
                                     <span class="logo-lg">
                                         <div class="d-flex align-items-center justify-content-center">
@@ -176,7 +176,7 @@
     <script>
         $.ajaxSetup({
             headers: {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                'X-CSRF-TOKEN': $('meta[name="csrf_token"]').attr('content')
             }
         });
 

@@ -14,7 +14,7 @@
 
             <div class="row">
                 <div class="col-12">
-                    <div class="card shadow-sm rounded-lg">
+                    <div class="card shadow-lg rounded-lg">
                         <div class="card-body">
                             <h3 class="mb-1">Selamat datang, {{ Auth::user()->name }}!</h3>
                             <p class="mt-2 mb-0">
@@ -40,7 +40,7 @@
                 @if(auth()->check() && in_array(auth()->user()->role->kode_role, ['ADM', 'SRN']))
                     @if(Auth::user()->role->kode_role == 'ADM')
                         <div class="col-md-4">
-                            <div class="card shadow-sm rounded-lg">
+                            <div class="card shadow-lg rounded-lg" style="height: 90%;">
                                 <div class="card-body">
                                     <div class="d-flex">
                                         <div class="flex-grow-1">
@@ -64,7 +64,7 @@
                             </div>
                         </div>
                         <div class="col-md-4">
-                            <div class="card shadow-sm rounded-lg">
+                            <div class="card shadow-lg rounded-lg" style="height: 90%;">
                                 <div class="card-body">
                                     <div class="d-flex">
                                         <div class="flex-grow-1">
@@ -88,7 +88,7 @@
                             </div>
                         </div>
                         <div class="col-md-4">
-                            <div class="card shadow-sm rounded-lg">
+                            <div class="card shadow-lg rounded-lg" style="height: 90%;">
                                 <div class="card-body">
                                     <div class="d-flex">
                                         <div class="flex-grow-1">
@@ -114,7 +114,7 @@
                     @endif
 
                     <div class="col-md-4">
-                        <div class="card shadow-sm rounded-lg">
+                        <div class="card shadow-lg rounded-lg" style="height: 90%;">
                             <div class="card-body">
                                 <div class="d-flex">
                                     <div class="flex-grow-1">
@@ -139,7 +139,7 @@
                     </div>
 
                     <div class="col-md-4">
-                        <div class="card shadow-sm rounded-lg">
+                        <div class="card shadow-lg rounded-lg" style="height: 90%;">
                             <div class="card-body">
                                 <div class="d-flex">
                                     <div class="flex-grow-1">
@@ -163,7 +163,7 @@
                         </div>
                     </div>
                     <div class="col-md-4">
-                        <div class="card shadow-sm rounded-lg">
+                        <div class="card shadow-lg rounded-lg" style="height: 90%;">
                             <div class="card-body">
                                 <div class="d-flex">
                                     <div class="flex-grow-1">
@@ -289,7 +289,7 @@
                         </div><!-- end card -->
                     </div>
                     <div class="col-xl-6">
-                        <div class="card shadow-sm rounded-lg">
+                        <div class="card shadow-lg rounded-lg" style="height: 90%;">
                             <div class="card-body">
                                 <h4 class="card-title mb-4">Top 3 Fasilitas Terlapor</h4>
                                 <div class="table-responsive">
@@ -307,7 +307,7 @@
                                                     <td class="text-center">{{ $i + 1 }}</td>
                                                     <td>{{ $item->nama_barang }}</td>
                                                     <td class="text-center">
-                                                        <span class="badge bg-info">{{ $item->jumlah_laporan ?? 0 }}</span>
+                                                        <span class="badge bg-info bg-opacity-10 text-info" style="font-size: 1rem;">{{ $item->jumlah_laporan ?? 0 }}</span>
                                                     </td>
                                                 </tr>
                                             @empty
@@ -322,9 +322,9 @@
                         </div>
                     </div>
                     <div class="col-xl-6">
-                        <div class="card shadow-sm rounded-lg">
+                        <div class="card shadow-lg rounded-lg" style="height: 90%;">
                             <div class="card-body">
-                                <h4 class="card-title mb-4">Top 3 Tempat Terlapor, Nomer 4 Bikin Kaget!!!</h4>
+                                <h4 class="card-title mb-4">Top 3 Tempat yang Sering dilaporkan</h4>
                                 <div class="table-responsive">
                                     <table class="table table-sm mb-0 table-hover">
                                         <thead class="table-light">
@@ -342,7 +342,7 @@
                                                     <td>{{ $item->unit->nama_unit ?? '-' }}</td>
                                                     <td>{{ $item->tempat->nama_tempat ?? '-' }}</td>
                                                     <td class="text-center">
-                                                        <span class="badge bg-info">{{ $item->jumlah_laporan ?? 0 }}</span>
+                                                        <span class="badge bg-info bg-opacity-10 text-info" style="font-size: 1rem;">{{ $item->jumlah_laporan ?? 0 }}</span>
                                                     </td>
                                                 </tr>
                                             @empty
@@ -358,10 +358,11 @@
                     </div>
 
                 @endif
-                @if(auth()->check() && in_array(auth()->user()->role->kode_role, ['MHS', 'DSN','TDK']))
+                @if(auth()->check() && in_array(auth()->user()->role->kode_role, ['MHS', 'DSN', 'TDK']))
 
                     <div class="col-xl-4">
-                        <div class="card shadow-sm rounded-lg d-flex flex-row align-items-center h-75" style="min-height: 100px;">
+                        <div class="card shadow-lg rounded-lg d-flex flex-row align-items-center h-75"
+                            style="min-height: 100px;">
                             <div class="ms-4 d-flex align-items-center">
                                 <a href="{{ route('laporan.index') }}" class="btn bg-success bg-opacity-50 text-dark btn-lg">
                                     <i class="ri-add-line me-1" style="font-size: 2rem;"></i>
@@ -381,7 +382,8 @@
                     </div>
 
                     <div class="col-xl-4">
-                        <div class="card shadow-sm rounded-lg d-flex flex-row align-items-center h-75" style="min-height: 100px;">
+                        <div class="card shadow-lg rounded-lg d-flex flex-row align-items-center h-75"
+                            style="min-height: 100px;">
                             <div class="ms-4 d-flex align-items-center ">
                                 <a href="{{ route('riwayatlaporan') }}" class="btn bg-info bg-opacity-50 text-dark btn-lg">
                                     <i class="ri-article-line me-1" style="font-size: 2rem;"></i>
@@ -402,7 +404,8 @@
                     </div>
 
                     <div class="col-xl-4">
-                        <div class="card shadow-sm rounded-lg d-flex flex-row align-items-center h-75" style="min-height: 100px;">
+                        <div class="card shadow-lg rounded-lg d-flex flex-row align-items-center h-75"
+                            style="min-height: 100px;">
                             <div class="ms-4 d-flex align-items-center ">
                                 <a href="{{ route('statusperbaikan') }}" class="btn bg-warning bg-opacity-50 text-dark btn-lg">
                                     <i class="ri-tools-line me-1" style="font-size: 2rem;"></i>
@@ -423,7 +426,7 @@
                     </div>
 
                     <div class="col-xl-6">
-                        <div class="card shadow-sm rounded-lg mb-3">
+                        <div class="card shadow-lg rounded-lg mb-3">
                             <div class="card-body">
                                 <h4 class="card-title mb-4">Status Laporan Anda</h4>
                                 <div id="laporanUserChart"></div>
@@ -439,8 +442,8 @@
                                     series: [{
                                         name: 'Jumlah',
                                         data: [
-                                            {{ $laporanUserBelumDiverifikasiCount ?? 0 }},
-                                            {{ $laporanUserDiverifikasiCount ?? 0 }},
+                                                            {{ $laporanUserBelumDiverifikasiCount ?? 0 }},
+                                                            {{ $laporanUserDiverifikasiCount ?? 0 }},
                                             {{ $laporanUserDitolakCount ?? 0 }}
                                         ]
                                     }],
@@ -481,7 +484,7 @@
                     </div>
 
                     <div class="col-xl-6">
-                        <div class="card shadow-sm rounded-lg mb-3">
+                        <div class="card shadow-lg rounded-lg mb-3">
                             <div class="card-body">
                                 <h4 class="card-title mb-4">Status Perbaikan Anda</h4>
                                 <div id="perbaikanUserChart"></div>
@@ -497,8 +500,8 @@
                                     series: [{
                                         name: 'Jumlah',
                                         data: [
-                                            {{ $perbaikanUserBelumCount ?? 0 }},
-                                            {{ $perbaikanUserBerjalanCount ?? 0 }},
+                                                            {{ $perbaikanUserBelumCount ?? 0 }},
+                                                            {{ $perbaikanUserBerjalanCount ?? 0 }},
                                             {{ $perbaikanUserSelesaiCount ?? 0 }}
                                         ]
                                     }],
@@ -540,6 +543,187 @@
 
 
 
+                @endif
+                @if(auth()->check() && in_array(auth()->user()->role->kode_role, ['TKS']))
+                <div class="row d-flex align-items-stretch">
+                    <div class="col-xl-8">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="card shadow-lg rounded-lg">
+                                    <div class="card-body">
+                                        <div class="d-flex">
+                                            <div class="flex-grow-1">
+                                                <p class="text-truncate font-size-14 mb-2">Total Perbaikan yang Ditugaskan</p>
+                                                <h4 class="mb-2">{{ $perbaikanTeknisiCount }}</h4>
+                                                <p class="text-muted mb-0">
+                                                    <span class="text-success fw-bold font-size-12 me-2">
+                                                        <i class="ri-user-settings-line me-1 align-middle"></i>
+                                                        {{ $perbaikanTeknisiTerbaru?->created_at->diffForHumans() ?? '-' }}
+                                                    </span>
+                                                    Perbaikan terbaru
+                                                </p>
+                                            </div>
+                                            <div class="avatar-sm">
+                                                <span class="avatar-title bg-warning bg-opacity-25 text-warning rounded-3">
+                                                    <i class="ri-task-line font-size-24"></i>
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+        
+                            <div class="col-md-6">
+                                <div class="card shadow-lg rounded-lg">
+                                    <div class="card-body">
+                                        <div class="d-flex">
+                                            <div class="flex-grow-1">
+                                                <p class="text-truncate font-size-14 mb-2">Total Perbaikan yang Selesai</p>
+                                                <h4 class="mb-2">{{ $perbaikanTeknisiSudahCount }}</h4>
+                                                <p class="text-muted mb-0">
+                                                    <span class="text-success fw-bold font-size-12 me-2">
+                                                        <i class="ri-user-settings-line me-1 align-middle"></i>
+                                                        {{ $perbaikanTeknisiSudahTerbaru?->created_at->diffForHumans() ?? '-' }}
+                                                    </span>
+                                                    Perbaikan terbaru
+                                                </p>
+                                            </div>
+                                            <div class="avatar-sm">
+                                                <span class="avatar-title bg-success bg-opacity-25 text-success rounded-3">
+                                                    <i class="ri-tools-line font-size-24"></i>
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+    
+                        <div class="col-xl-12">
+                            <div class="card shadow-lg rounded-lg mb-3">
+                                <div class="card-body">
+                                    <div class="d-flex justify-content-between align-items-center mb-3">
+                                        <h4 class="card-title mb-0">Perbaikan yang Harus Dikerjakan</h4>
+                                    </div>
+                                    <div class="table-responsive">
+                                        <table class="table table-sm mb-0 table-hover">
+                                            <thead class="table-light">
+                                                <tr>
+                                                    <th style="width: 5%;">No.</th>
+                                                    <th>Fasilitas</th>
+                                                    <th>Tempat</th>
+                                                    <th>Status</th>
+                                                    <th>Tanggal</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @forelse($perbaikanTeknisiTop3 as $i => $item)
+                                                    <tr>
+                                                        <td class="text-center">{{ $i + 1 }}</td>
+                                                        <td>{{ ($item->laporan->barangLokasi->jenisBarang)->nama_barang ?? '-' }}</td>
+                                                        <td>{{ ($item->laporan->tempat)->nama_tempat ?? '-' }}</td>
+                                                        <td>
+                                                            @php
+                                                                $nilaiTopsis = $item->laporan->prioritas->nilai_topsis ?? null;
+                                                            @endphp
+                                                            @if($nilaiTopsis !== null)
+                                                                @if($nilaiTopsis >= 0.6)
+                                                                    <span
+                                                                        class="badge rounded-pill bg-opacity-25 bg-danger text-danger">Urgent</span>
+                                                                @elseif($nilaiTopsis >= 0.4)
+                                                                    <span
+                                                                        class="badge rounded-pill bg-opacity-25 bg-success text-success">Biasa</span>
+                                                                @else
+                                                                    <span
+                                                                        class="badge rounded-pill bg-opacity-25 bg-secondary text-secondary">Tidak
+                                                                        Mendesak</span>
+                                                                @endif
+                                                            @else
+                                                                <span class="badge bg-light text-dark">-</span>
+                                                            @endif
+                                                        </td>
+                                                        <td>{{ $item->created_at ? $item->created_at->format('d F Y') : '-' }}</td>
+                                                    </tr>
+                                                @empty
+                                                    <tr>
+                                                        <td colspan="5" class="text-center">Tidak ada perbaikan yang harus dikerjakan
+                                                        </td>
+                                                    </tr>
+                                                @endforelse
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    <div class="d-flex justify-content-between align-items-center mt-3">
+                                        <p class="text-muted mb-0">
+                                            Menampilkan 3 data perbaikan terbaru yang harus dikerjakan.
+                                        </p>
+                                        <a href="{{ route('perbaikan.index') }}" class="btn btn-sm btn-primary">Selengkapnya &gt;</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-4">
+                        <div class="card shadow-lg rounded-lg" style="height: 96%;">
+                            <div class="card-body">
+                                <h4 class="card-title mb-4">Status Perbaikan Anda</h4>
+                                <div class="justify-content-center align-items-center">
+                                    <div id="perbaikanTeknisiChart"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <script>
+                            document.addEventListener('DOMContentLoaded', function () {
+                                var perbaikanTeknisiChartOptions = {
+                                    chart: {
+                                        type: 'bar',
+                                        height: 290
+                                    },
+                                    series: [{
+                                        name: 'Jumlah',
+                                        data: [
+                                            {{ $perbaikanTeknisiBelumCount ?? 0 }},
+                                            {{ $perbaikanTeknisiSedangdikerjakanCount ?? 0 }},
+                                            {{ $perbaikanTeknisiSudahCount ?? 0 }}
+                                        ]
+                                    }],
+                                    xaxis: {
+                                        categories: ['Belum', 'Berjalan', 'Selesai']
+                                    },
+                                    colors: ['#ff4d4f', '#ffbb44', '#6fd088'],
+                                    plotOptions: {
+                                        bar: {
+                                            distributed: true,
+                                            borderRadius: 6,
+                                            columnWidth: '40%'
+                                        }
+                                    },
+                                    dataLabels: {
+                                        enabled: true
+                                    },
+                                    fill: {
+                                        type: 'gradient',
+                                        gradient: {
+                                            shade: 'light',
+                                            type: "vertical",
+                                            shadeIntensity: 0.5,
+                                            gradientToColors: ['#ffb3b3', '#ffe29e', '#a8eec1'],
+                                            inverseColors: false,
+                                            opacityFrom: 0.9,
+                                            opacityTo: 1,
+                                            stops: [0, 100]
+                                        }
+                                    }
+                                };
+                                if (typeof ApexCharts !== 'undefined') {
+                                    var perbaikanTeknisiChart = new ApexCharts(document.querySelector("#perbaikanTeknisiChart"), perbaikanTeknisiChartOptions);
+                                    perbaikanTeknisiChart.render();
+                                }
+                            });
+                        </script>
+                    </div>
+
+                </div>
                 @endif
 
 
@@ -607,8 +791,8 @@
             series: [{
                 name: 'Jumlah',
                 data: [
-                                {{ $laporanBelumDiverifikasiCount }},
-                                {{ $laporanDiverifikasiCount }},
+                                        {{ $laporanBelumDiverifikasiCount }},
+                                        {{ $laporanDiverifikasiCount }},
                     {{ $laporanDitolakCount }}
                 ]
             }],
@@ -636,8 +820,8 @@
             series: [{
                 name: 'Jumlah',
                 data: [
-                        {{ $perbaikanBelumCount }},
-                        {{ $perbaikanBerjalanCount }},
+                                {{ $perbaikanBelumCount }},
+                                {{ $perbaikanBerjalanCount }},
                     {{ $perbaikanSelesaiCount }}
                 ]
             }],
