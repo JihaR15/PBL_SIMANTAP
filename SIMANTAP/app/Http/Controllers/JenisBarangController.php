@@ -147,8 +147,9 @@ class JenisBarangController extends Controller
                 $laporan->prioritas()->delete();
             }
 
-            // hapus laporan
+            // hapus laporan & feedback
             foreach ($laporans as $laporan) {
+                $laporan->feedback()->delete();
                 $laporan->delete();
             }
 
@@ -156,6 +157,7 @@ class JenisBarangController extends Controller
             foreach ($barangLokasi as $barang) {
                 $barang->delete();
             }
+            
 
             // hapus jenis barang
             $jenisbarang->delete();

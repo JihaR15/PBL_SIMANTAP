@@ -32,7 +32,7 @@
                 </div>
                 <div class="d-flex align-items-start align-items-center">
                     <div class="me-4">
-                        <img src="{{ $user->foto_profile ? asset('images/' . $user->foto_profile) : asset('profile_placeholder.png') }} ? {{ now() }}"
+                        <img src="{{ $user->foto_profile ? asset('images/' . $user->foto_profile) : asset('profile_placeholder.png') }}?{{ now() }}"
                         alt="Foto Profil" class="rounded-circle"
                         style="width: 150px; height: 150px; object-fit: cover;">
                     </div>
