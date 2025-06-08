@@ -172,6 +172,31 @@
     </div>
     <div style="clear: both;"></div>
 
+    <table class="table-teknisi" style="margin-top: 10px">
+        <thead>
+                <tr>
+                    <th>Nama Verifikator</th>
+                    <th>Jumlah Verifikasi</th>
+                    <th>Diverifikasi</th>
+                    <th>Ditolak</th>
+                </tr>
+            </thead>
+            <tbody>
+                @forelse ($verifikatorStats as $namaVerifikator => $stat)
+                    <tr>
+                        <td>{{ $namaVerifikator }}</td>
+                        <td>{{ $stat['total_dilaporkan'] }}</td>
+                        <td>{{ $stat['jumlah_diverifikasi'] }}</td>
+                        <td>{{ $stat['jumlah_ditolak'] }}</td>
+                    </tr>
+                @empty
+                    <tr>
+                        <td colspan="3" style="text-align:center;">Data tidak ditemukan</td>
+                    </tr>
+                @endforelse
+            </tbody>
+    </table>
+
     <table class="border-all" style="margin-top: 10px">
         <thead>
             <tr>
@@ -181,6 +206,7 @@
                 <th>Tanggal dibuat</th>
                 <th>Tanggal Diverif</th>
                 <th>Status Verifikasi</th>
+                <th>Verifikator</th>
                 <th>Teknisi</th>
                 <th>Status Perbaikan</th>
                 <th>Tanggal Selesai</th>
@@ -199,6 +225,7 @@
                     <td>{{ \Carbon\Carbon::parse($l->updated_at)->locale('id')->translatedFormat('d F Y') ?? '-' }}</td>
 
                     <td>{{ $l->status_verif ?? '-' }}</td>
+                    <td>{{ $l->verifikator->name ?? '-' }}</td>
                     <td>{{ $l->perbaikan->teknisi->user->name ?? '-' }}</td>
                     <td>{{ $l->perbaikan->status_perbaikan ?? '-' }}</td>
                     <td>{{ optional($l->perbaikan)->selesai_pada ? \Carbon\Carbon::parse($l->perbaikan->selesai_pada)->locale('id')->translatedFormat('d F Y') : '-' }}

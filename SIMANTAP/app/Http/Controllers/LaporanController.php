@@ -334,7 +334,8 @@ class LaporanController extends Controller
             'barangLokasi.jenisBarang',
             'perbaikan.teknisi.user',
             'periode',
-            'feedback'
+            'feedback',
+            'verifikator'
         ]);
 
         // Filter berdasarkan tahun (periode)
@@ -355,7 +356,18 @@ class LaporanController extends Controller
             $query->where('status_verif', $request->status);
         }
 
-        $laporan = $query->orderBy('tempat_id', 'asc')->get();
+        // Urutan default
+        if ($request->sort_by === 'tempat_asc') {
+            $query->orderBy('tempat_id', 'asc');
+        } elseif ($request->sort_by === 'tanggal_desc') {
+            $query->orderBy('created_at', 'desc'); 
+        } elseif ($request->sort_by === 'tanggal_asc') {
+            $query->orderBy('created_at', 'asc');
+        } else {
+            $query->orderBy('tempat_id', 'asc'); // default
+        }
+
+        $laporan = $query->get();
 
         // Ambil info periode terpilih (optional, untuk ditampilkan di PDF)
         $periode_terpilih = PeriodeModel::where('nama_periode', $request->tahun)->first();
@@ -413,6 +425,18 @@ class LaporanController extends Controller
                 ];
             })->sortByDesc('jumlah_perbaikan');
 
+        $verifikatorStats = $laporan
+            ->whereNotNull('verifikator_id')
+            ->groupBy(fn($l) => optional($l->verifikator)->name)
+            ->map(function ($group) {
+                return [
+                    'total_dilaporkan' => $group->count(),
+                    'jumlah_diverifikasi' => $group->where('status_verif', 'diverifikasi')->count(),
+                    'jumlah_ditolak' => $group->where('status_verif', 'ditolak')->count(),
+                ];
+            });
+
+
         // Kirim ke blade
         $pdf = Pdf::loadView('laporan.laporanadmin', [
             'laporan' => $laporan,
@@ -431,6 +455,7 @@ class LaporanController extends Controller
             'totalBiaya' => $totalBiaya,
 
             'teknisiStats' => $teknisiStats,
+            'verifikatorStats' => $verifikatorStats,
         ])
             ->setPaper('A4', 'landscape')
             ->setOptions(['defaultFont' => 'sans-serif'])

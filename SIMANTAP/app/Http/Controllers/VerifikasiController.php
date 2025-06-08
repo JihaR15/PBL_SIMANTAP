@@ -279,6 +279,7 @@ class VerifikasiController extends Controller
 
         // $laporan = LaporanModel::findOrFail($laporan_id);
         $laporan->status_verif = 'diverifikasi';
+        $laporan->verifikator_id = auth()->user()->user_id; // set verifikator ke user yang login
         $laporan->save();
 
         $teknisi = TeknisiModel::find($request->teknisi_id);

@@ -23,6 +23,7 @@ class LaporanModel extends Model
         'status_verif',
         'deskripsi',
         'foto_laporan',
+        'verifikator_id',
     ];
 
     // Relasi ke User
@@ -89,6 +90,11 @@ class LaporanModel extends Model
     public function feedback()
     {
         return $this->hasMany(FeedbackModel::class, 'laporan_id', 'laporan_id');
+    }
+
+    public function verifikator()
+    {
+        return $this->belongsTo(UserModel::class, 'verifikator_id', 'user_id');
     }
 
 }

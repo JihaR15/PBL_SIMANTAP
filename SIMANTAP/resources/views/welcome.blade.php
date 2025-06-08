@@ -195,9 +195,17 @@
                                 <div class="card-body d-flex align-items-center justify-content-between">
                                     <div>
                                         <h4 class="card-title">Generate Data Laporan</h4>
-                                        <p class="card-desc">Pilih Filter, lalu Detail dan Rangkuman Laporan akan muncul dalam bentuk PDF</p>
+                                        <p class="card-desc">Pilih Filter, lalu Detail dan Rangkuman Laporan akan muncul dalam
+                                            bentuk PDF</p>
                                         <form action="{{ route('laporan.laporanadmin') }}" method="GET"
                                             class="d-flex align-items-center gap-2" target="_blank">
+                                            <select name="sort_by" id="sort_by" class="form-select form-select-sm me-2" style="width: auto;">
+                                                <option value="" disabled selected>Urutkan Berdasarkan</option>
+                                                <option value="tempat_asc" {{ request('sort_by') == 'tempat_asc' ? 'selected' : '' }}>
+                                                    Tempat (A-Z)</option>
+                                                <option value="tanggal_desc" {{ request('sort_by') == 'tanggal_desc' ? 'selected' : '' }}>Tanggal Terbaru</option>
+                                                <option value="tanggal_asc" {{ request('sort_by') == 'tanggal_asc' ? 'selected' : '' }}>Tanggal Terlama</option>
+                                            </select>
                                             <select name="tahun" class="form-select form-select-sm me-2" style="width: auto;">
                                                 <option value="">Semua Periode</option>
                                                 @foreach($periodeTahun as $tahun)
@@ -513,8 +521,8 @@
                                     series: [{
                                         name: 'Jumlah',
                                         data: [
-                                            {{ $laporanUserBelumDiverifikasiCount ?? 0 }},
-                                            {{ $laporanUserDiverifikasiCount ?? 0 }},
+                                                    {{ $laporanUserBelumDiverifikasiCount ?? 0 }},
+                                                    {{ $laporanUserDiverifikasiCount ?? 0 }},
                                             {{ $laporanUserDitolakCount ?? 0 }}
                                         ]
                                     }],
@@ -571,8 +579,8 @@
                                     series: [{
                                         name: 'Jumlah',
                                         data: [
-                                            {{ $perbaikanUserBelumCount ?? 0 }},
-                                            {{ $perbaikanUserBerjalanCount ?? 0 }},
+                                                    {{ $perbaikanUserBelumCount ?? 0 }},
+                                                    {{ $perbaikanUserBerjalanCount ?? 0 }},
                                             {{ $perbaikanUserSelesaiCount ?? 0 }}
                                         ]
                                     }],
@@ -740,7 +748,7 @@
                             </div>
                         </div>
                         <div class="col-xl-4 me-0 pe-0">
-                            <div class="card shadow-lg rounded-lg" >
+                            <div class="card shadow-lg rounded-lg">
                                 <div class="card-body">
                                     <h4 class="card-title mb-4">Status Perbaikan Anda</h4>
                                     <div class="justify-content-center align-items-center">
@@ -758,8 +766,8 @@
                                         series: [{
                                             name: 'Jumlah',
                                             data: [
-                                                {{ $perbaikanTeknisiBelumCount ?? 0 }},
-                                                {{ $perbaikanTeknisiSedangdikerjakanCount ?? 0 }},
+                                                        {{ $perbaikanTeknisiBelumCount ?? 0 }},
+                                                        {{ $perbaikanTeknisiSedangdikerjakanCount ?? 0 }},
                                                 {{ $perbaikanTeknisiSudahCount ?? 0 }}
                                             ]
                                         }],
@@ -867,8 +875,8 @@
             series: [{
                 name: 'Jumlah',
                 data: [
-                                                        {{ $laporanBelumDiverifikasiCount }},
-                                                        {{ $laporanDiverifikasiCount }},
+                                                            {{ $laporanBelumDiverifikasiCount }},
+                                                            {{ $laporanDiverifikasiCount }},
                     {{ $laporanDitolakCount }}
                 ]
             }],
@@ -896,8 +904,8 @@
             series: [{
                 name: 'Jumlah',
                 data: [
-                                                {{ $perbaikanBelumCount }},
-                                                {{ $perbaikanBerjalanCount }},
+                                                    {{ $perbaikanBelumCount }},
+                                                    {{ $perbaikanBerjalanCount }},
                     {{ $perbaikanSelesaiCount }}
                 ]
             }],
