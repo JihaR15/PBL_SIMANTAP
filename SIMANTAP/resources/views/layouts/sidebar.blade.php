@@ -79,7 +79,9 @@
                     </li>
                 @endif
 
-                @if(auth()->check() && auth()->user()->role->kode_role === 'SRN')
+                {{-- @if(auth()->check() && auth()->user()->role->kode_role === 'SRN') --}}
+                @if(auth()->check() && in_array(auth()->user()->role->kode_role, ['ADM','SRN']))
+
                 <li class="menu-title">LAYANAN PELAPORAN</li>
                 <li>
                     <a href="{{ url('/verifikasi') }}" class="waves-effect">

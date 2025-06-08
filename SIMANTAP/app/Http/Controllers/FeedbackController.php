@@ -94,7 +94,7 @@ class FeedbackController extends Controller
                 })
                 ->where('user_id', auth()->id())
                 ->where('status_verif', 'diverifikasi')
-                ->orderBy('created_at', 'desc')
+                ->orderBy('created_at', 'asc')
                 ->get();
 
             return DataTables::of($laporans)

@@ -195,6 +195,8 @@ Route::middleware(['auth'])->group(function () {
         Route::get('riwayatverifikasi', [VerifikasiController::class, 'riwayatVerifikasi'])->name('riwayatverifikasi');
         Route::get('/riwayatverifikasi/{laporan_id}/show', [VerifikasiController::class, 'showRiwayatVerif'])->name('riwayatverifikasi.show');
         Route::get('verifikasi/{laporan_id}/prioritas', [VerifikasiController::class, 'showPrioritas'])->name('verifikasi.prioritas.show');
+
+        Route::get('laporan/laporanadmin', [LaporanController::class, 'laporanadmin'])->name('laporan.laporanadmin'); // laporan pdf admin
     });
 
     Route::middleware(['authorize:TKS'])->group(function () {

@@ -15,6 +15,8 @@ use App\Models\BarangLokasiModel;
 use App\Models\KategoriKerusakanModel;
 use Illuminate\Support\Facades\Storage;
 use Yajra\DataTables\Facades\DataTables;
+use Barryvdh\DomPDF\Facade\Pdf;
+
 
 class LaporanController extends Controller
 {
@@ -44,6 +46,19 @@ class LaporanController extends Controller
 
     public function store(Request $request)
     {
+        $messages = [
+            'fasilitas_id.required' => 'Silakan pilih fasilitas terlebih dahulu.',
+            'unit_id.required' => 'Silakan pilih unit terlebih dahulu.',
+            'tempat_id.required' => 'Silakan pilih tempat terlebih dahulu.',
+            'barang_lokasi_id.required' => 'Silakan pilih barang terlebih dahulu.',
+            'periode_id.required' => 'Silakan pilih periode terlebih dahulu.',
+            'kategori_kerusakan_id.required' => 'Silakan pilih kategori kerusakan terlebih dahulu.',
+            'deskripsi.required' => 'Silakan isi deskripsi kerusakan terlebih dahulu.',
+            'foto_laporan.image' => 'File harus berupa gambar.',
+            'foto_laporan.mimes' => 'Format gambar harus jpeg, png, atau jpg.',
+            'foto_laporan.max' => 'Ukuran gambar maksimal 2MB.',
+        ];
+
         // Validasi input
         $validated = $request->validate([
             'fasilitas_id' => 'required',
@@ -54,15 +69,15 @@ class LaporanController extends Controller
             'kategori_kerusakan_id' => 'required',
             'deskripsi' => 'required',
             'foto_laporan' => 'image|mimes:jpeg,png,jpg|max:2048',
-        ]);
+        ], $messages);
 
         try {
             $existing = LaporanModel::where('barang_lokasi_id', $validated['barang_lokasi_id'])
                 ->where(function ($query) {
                     $query->where('status_verif', 'belum diverifikasi')
-                    ->orWhereHas('perbaikan', function ($subQuery) {
-                        $subQuery->where('status_perbaikan', '!=', 'selesai');
-                    });
+                        ->orWhereHas('perbaikan', function ($subQuery) {
+                            $subQuery->where('status_perbaikan', '!=', 'selesai');
+                        });
                 })
                 ->exists();
 
@@ -191,30 +206,30 @@ class LaporanController extends Controller
     public function destroy($id)
     {
         try {
-        $laporan = LaporanModel::findOrFail($id);
+            $laporan = LaporanModel::findOrFail($id);
 
-        $laporan->notifikasi()->delete();
+            $laporan->notifikasi()->delete();
 
-        // Hapus file jika ada
-        if ($laporan->foto_laporan && Storage::exists('public/' . $laporan->foto_laporan)) {
-            Storage::delete('public/' . $laporan->foto_laporan);
+            // Hapus file jika ada
+            if ($laporan->foto_laporan && Storage::exists('public/' . $laporan->foto_laporan)) {
+                Storage::delete('public/' . $laporan->foto_laporan);
+            }
+
+            // Hapus laporan
+            $laporan->delete();
+
+            return response()->json([
+                'status' => true,
+                'message' => 'Laporan berhasil dihapus.'
+            ]);
+        } catch (\Exception $e) {
+
+            return response()->json([
+                'status' => false,
+                'message' => 'Terjadi kesalahan saat menghapus laporan.',
+                'error' => $e->getMessage()
+            ]);
         }
-
-        // Hapus laporan
-        $laporan->delete();
-
-        return response()->json([
-            'status' => true,
-            'message' => 'Laporan berhasil dihapus.'
-        ]);
-    } catch (\Exception $e) {
-
-        return response()->json([
-            'status' => false,
-            'message' => 'Terjadi kesalahan saat menghapus laporan.',
-            'error' => $e->getMessage()
-        ]);
-    }
     }
 
     public function statusPerbaikan(Request $request)
@@ -225,7 +240,7 @@ class LaporanController extends Controller
                 ->whereHas('perbaikan')
                 ->where('user_id', auth()->id())
                 ->where('status_verif', 'diverifikasi')
-                ->orderBy('created_at', 'desc')
+                ->orderBy('created_at', 'asc')
                 ->get();
 
             return DataTables::of($laporans)
@@ -282,8 +297,13 @@ class LaporanController extends Controller
     public function showStatusPerbaikan($laporan_id)
     {
         $laporan = LaporanModel::with([
-            'fasilitas', 'unit', 'tempat', 'barangLokasi.jenisBarang',
-            'kategoriKerusakan', 'periode', 'perbaikan'
+            'fasilitas',
+            'unit',
+            'tempat',
+            'barangLokasi.jenisBarang',
+            'kategoriKerusakan',
+            'periode',
+            'perbaikan'
         ])->findOrFail($laporan_id);
 
         $laporan->formatted_created_at = Carbon::parse($laporan->created_at)->format('d M Y');
@@ -294,5 +314,131 @@ class LaporanController extends Controller
         }
 
         return view('laporan.showStatusPerbaikan', compact('laporan'));
+    }
+
+    public function laporanadmin(Request $request)
+    {
+
+        // Ambil hanya tahun-tahun dari periode yang punya laporan
+        $periodeTahun = PeriodeModel::whereHas('laporan')
+            ->pluck('nama_periode')
+            ->unique()
+            ->sort()
+            ->values();
+
+        // Query dasar laporan
+        $query = LaporanModel::with([
+            'fasilitas',
+            'unit',
+            'tempat',
+            'barangLokasi.jenisBarang',
+            'perbaikan.teknisi.user',
+            'periode',
+            'feedback'
+        ]);
+
+        // Filter berdasarkan tahun (periode)
+        if ($request->filled('tahun')) {
+            $query->whereHas('periode', function ($q) use ($request) {
+                $q->where('nama_periode', $request->tahun);
+            });
+        }
+
+        if ($request->status === 'diverifikasi' && $request->filled('status_perbaikan')) {
+            $query->whereHas('perbaikan', function ($q) use ($request) {
+                $q->where('status_perbaikan', $request->status_perbaikan);
+            });
+        }
+
+        // Filter berdasarkan status verifikasi
+        if ($request->filled('status')) {
+            $query->where('status_verif', $request->status);
+        }
+
+        $laporan = $query->orderBy('tempat_id', 'asc')->get();
+
+        // Ambil info periode terpilih (optional, untuk ditampilkan di PDF)
+        $periode_terpilih = PeriodeModel::where('nama_periode', $request->tahun)->first();
+
+
+        // ---------- PERHITUNGAN STATISTIK ----------
+
+        $totalLaporan = $laporan->count();
+
+        $jumlahVerif = $laporan->where('status_verif', 'diverifikasi')->count();
+        $jumlahTolak = $laporan->where('status_verif', 'ditolak')->count();
+        $jumlahBelum = $laporan->where('status_verif', 'belum diverifikasi')->count();
+
+        // Fasilitas yang paling sering dilaporkan
+        $fasilitasTerbanyak = $laporan
+            ->groupBy(fn($l) => optional($l->barangLokasi->jenisBarang)->nama_barang)
+            ->sortByDesc(fn($group) => $group->count())
+            ->keys()
+            ->first() ?? '-';
+
+        // Tempat yang paling sering dilaporkan
+        $tempatTerbanyak = $laporan
+            ->groupBy(fn($l) => optional($l->tempat)->nama_tempat)
+            ->sortByDesc(fn($group) => $group->count())
+            ->keys()
+            ->first() ?? '-';
+
+        // Jumlah perbaikan yang selesai
+        $jumlahPerbaikanSelesai = $laporan->filter(function ($l) {
+            return $l->perbaikan && $l->perbaikan->status_perbaikan === 'selesai';
+        })->count();
+
+        // Total biaya perbaikan
+        $totalBiaya = $laporan->sum(fn($l) => $l->perbaikan->biaya ?? 0);
+
+        $teknisiStats = $laporan->filter(fn($l) => $l->perbaikan && $l->perbaikan->teknisi)
+            ->groupBy(fn($l) => optional($l->perbaikan->teknisi->user)->name) // misal teknisi->user->name
+            ->map(function ($group) {
+                $jumlahPerbaikan = $group->count();
+                $totalBiayaTeknisi = $group->sum(fn($l) => $l->perbaikan->biaya ?? 0);
+
+                // Ambil semua rating dari feedback
+                $allRatings = $group
+                    ->flatMap(fn($l) => optional($l->feedback)->pluck('rating_id') ?? collect())
+                    ->filter(); // hilangkan null jika ada
+
+                $avgRating = $allRatings->count() > 0
+                    ? round($allRatings->avg(), 2)
+                    : null;
+
+                return [
+                    'jumlah_perbaikan' => $jumlahPerbaikan,
+                    'total_biaya' => $totalBiayaTeknisi,
+                    'rata_rata_rating' => $avgRating ?? '-',
+                ];
+            })->sortByDesc('jumlah_perbaikan');
+
+        // Kirim ke blade
+        $pdf = Pdf::loadView('laporan.laporanadmin', [
+            'laporan' => $laporan,
+            'periode_terpilih' => $periode_terpilih,
+            'status_terpilih' => $request->status,
+            'status_perbaikan_terpilih' => $request->status_perbaikan ?? null,
+
+            // Statistik tambahan
+            'totalLaporan' => $totalLaporan,
+            'jumlahVerif' => $jumlahVerif,
+            'jumlahTolak' => $jumlahTolak,
+            'jumlahBelum' => $jumlahBelum,
+            'fasilitasTerbanyak' => $fasilitasTerbanyak,
+            'tempatTerbanyak' => $tempatTerbanyak,
+            'jumlahPerbaikanSelesai' => $jumlahPerbaikanSelesai,
+            'totalBiaya' => $totalBiaya,
+
+            'teknisiStats' => $teknisiStats,
+        ])
+            ->setPaper('A4', 'landscape')
+            ->setOptions(['defaultFont' => 'sans-serif'])
+            ->setOptions([
+                'isRemoteEnabled' => true,
+                'isHtml5ParserEnabled' => true
+            ]);
+
+        return $pdf->stream('Laporan Admin ' . Carbon::now()->format('Y-m-d_H-i-s') . '.pdf');
     }
 }

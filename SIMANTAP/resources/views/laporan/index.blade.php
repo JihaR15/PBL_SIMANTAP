@@ -386,35 +386,20 @@
                         let errorMsg = 'Terjadi kesalahan saat mengirim laporan.';
 
                         if (xhr.status === 422 && xhr.responseJSON && xhr.responseJSON.errors) {
-                            // Map field ke pesan yang kamu inginkan
-                            let customMessages = {
-                                fasilitas_id: "Silakan pilih fasilitas terlebih dahulu.",
-                                unit_id: "Silakan pilih unit terlebih dahulu.",
-                                tempat_id: "Silakan pilih tempat terlebih dahulu.",
-                                barang_lokasi_id: "Silakan pilih barang terlebih dahulu.",
-                                kategori_kerusakan_id: "Silakan pilih kategori kerusakan terlebih dahulu.",
-                                periode_id: "Silakan pilih periode terlebih dahulu.",
-                                foto_laporan: "Silakan unggah foto laporan terlebih dahulu.",
-                                deskripsi: "Silakan isi deskripsi kerusakan terlebih dahulu."
-                            };
-
-                            // Ambil semua pesan dari response dan konversi ke pesan custom
+                            // Ambil semua pesan langsung dari Laravel (sudah custom di Controller)
                             let messages = [];
                             for (let field in xhr.responseJSON.errors) {
-                                if (customMessages[field]) {
-                                    messages.push(customMessages[field]);
-                                } else {
-                                    messages.push(xhr.responseJSON.errors[field][0]); // fallback jika tidak ada custom
-                                }
+                                messages.push(xhr.responseJSON.errors[field][0]);
                             }
-
-                            errorMsg = messages.join('\n');
+                            errorMsg = messages.join('<br>');
+                        } else if (xhr.responseJSON && xhr.responseJSON.message) {
+                            errorMsg = xhr.responseJSON.message;
                         }
 
                         Swal.fire({
                             icon: 'error',
                             title: 'Gagal!',
-                            text: errorMsg.replace(/\n/g, '\n') // agar pesan bisa multiline
+                            html: errorMsg
                         });
                     }
                 });

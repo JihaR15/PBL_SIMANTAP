@@ -111,6 +111,7 @@
                                 </div>
                             </div>
                         </div>
+
                     @endif
 
                     <div class="col-md-4">
@@ -188,6 +189,75 @@
                     </div>
                 @endif
                 @if(Auth::user()->role->kode_role == 'ADM' || Auth::user()->role->kode_role == 'SRN')
+                    @if(Auth::user()->role->kode_role == 'ADM')
+                        <div class="col-md-12">
+                            <div class="card shadow-lg rounded-lg" style="height: 90%;">
+                                <div class="card-body d-flex align-items-center justify-content-between">
+                                    <div>
+                                        <h4 class="card-title">Generate Data Laporan</h4>
+                                        <p class="card-desc">Pilih Filter, lalu Detail dan Rangkuman Laporan akan muncul dalam bentuk PDF</p>
+                                        <form action="{{ route('laporan.laporanadmin') }}" method="GET"
+                                            class="d-flex align-items-center gap-2" target="_blank">
+                                            <select name="tahun" class="form-select form-select-sm me-2" style="width: auto;">
+                                                <option value="">Semua Periode</option>
+                                                @foreach($periodeTahun as $tahun)
+                                                    <option value="{{ $tahun }}">{{ $tahun }}</option>
+                                                @endforeach
+                                            </select>
+                                            <select name="status" id="statusFilter" class="form-select form-select-sm me-2"
+                                                style="width: auto;">
+                                                <option value="">Semua Status</option>
+                                                <option value="belum diverifikasi" {{ request('status') == 'belum diverifikasi' ? 'selected' : '' }}>Belum
+                                                    Diverifikasi</option>
+                                                <option value="diverifikasi" {{ request('status') == 'diverifikasi' ? 'selected' : '' }}>
+                                                    Diverifikasi</option>
+                                                <option value="ditolak" {{ request('status') == 'ditolak' ? 'selected' : '' }}>Ditolak
+                                                </option>
+                                            </select>
+                                            <select name="status_perbaikan" id="statusPerbaikanFilter"
+                                                class="form-select form-select-sm me-2" style="width: auto; display: none;">
+                                                <option value="">Semua Perbaikan</option>
+                                                <option value="belum" {{ request('status_perbaikan') == 'belum' ? 'selected' : '' }}>
+                                                    Belum</option>
+                                                <option value="sedang diperbaiki" {{ request('status_perbaikan') == 'sedang diperbaiki' ? 'selected' : '' }}>Sedang Diperbaiki</option>
+                                                <option value="selesai" {{ request('status_perbaikan') == 'selesai' ? 'selected' : '' }}>
+                                                    Selesai</option>
+                                            </select>
+                                            <button type="submit" class="btn btn-info btn-sm">
+                                                <i class="ri-file-download-line me-1"></i> Buat Laporan
+                                            </button>
+                                        </form>
+
+                                        <script>
+                                            document.addEventListener('DOMContentLoaded', function () {
+                                                const statusSelect = document.getElementById('statusFilter');
+                                                const perbaikanSelect = document.getElementById('statusPerbaikanFilter');
+
+                                                function togglePerbaikanFilter() {
+                                                    if (statusSelect.value === 'diverifikasi') {
+                                                        perbaikanSelect.style.display = 'inline-block';
+                                                    } else {
+                                                        perbaikanSelect.style.display = 'none';
+                                                        perbaikanSelect.value = '';
+                                                    }
+                                                }
+
+                                                statusSelect.addEventListener('change', togglePerbaikanFilter);
+
+                                                // Jalankan saat pertama kali
+                                                togglePerbaikanFilter();
+                                            });
+                                        </script>
+                                    </div>
+                                    <div class="avatar-sm">
+                                        <span class="avatar-title bg-light text-info rounded-3">
+                                            <i class="ri-file-list-3-line font-size-24"></i>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    @endif
                     <div class="col-xl-6">
                         <div class="card">
                             <div class="card-body">
@@ -234,7 +304,6 @@
                                 <!-- end row -->
 
                                 <div id="laporanChart"></div>
-
                             </div>
                         </div><!-- end card -->
                     </div>
@@ -307,7 +376,8 @@
                                                     <td class="text-center">{{ $i + 1 }}</td>
                                                     <td>{{ $item->nama_barang }}</td>
                                                     <td class="text-center">
-                                                        <span class="badge bg-info bg-opacity-10 text-info" style="font-size: 1rem;">{{ $item->jumlah_laporan ?? 0 }}</span>
+                                                        <span class="badge bg-info bg-opacity-10 text-info"
+                                                            style="font-size: 1rem;">{{ $item->jumlah_laporan ?? 0 }}</span>
                                                     </td>
                                                 </tr>
                                             @empty
@@ -342,7 +412,8 @@
                                                     <td>{{ $item->unit->nama_unit ?? '-' }}</td>
                                                     <td>{{ $item->tempat->nama_tempat ?? '-' }}</td>
                                                     <td class="text-center">
-                                                        <span class="badge bg-info bg-opacity-10 text-info" style="font-size: 1rem;">{{ $item->jumlah_laporan ?? 0 }}</span>
+                                                        <span class="badge bg-info bg-opacity-10 text-info"
+                                                            style="font-size: 1rem;">{{ $item->jumlah_laporan ?? 0 }}</span>
                                                     </td>
                                                 </tr>
                                             @empty
@@ -442,8 +513,8 @@
                                     series: [{
                                         name: 'Jumlah',
                                         data: [
-                                                            {{ $laporanUserBelumDiverifikasiCount ?? 0 }},
-                                                            {{ $laporanUserDiverifikasiCount ?? 0 }},
+                                            {{ $laporanUserBelumDiverifikasiCount ?? 0 }},
+                                            {{ $laporanUserDiverifikasiCount ?? 0 }},
                                             {{ $laporanUserDitolakCount ?? 0 }}
                                         ]
                                     }],
@@ -500,8 +571,8 @@
                                     series: [{
                                         name: 'Jumlah',
                                         data: [
-                                                            {{ $perbaikanUserBelumCount ?? 0 }},
-                                                            {{ $perbaikanUserBerjalanCount ?? 0 }},
+                                            {{ $perbaikanUserBelumCount ?? 0 }},
+                                            {{ $perbaikanUserBerjalanCount ?? 0 }},
                                             {{ $perbaikanUserSelesaiCount ?? 0 }}
                                         ]
                                     }],
@@ -545,185 +616,190 @@
 
                 @endif
                 @if(auth()->check() && in_array(auth()->user()->role->kode_role, ['TKS']))
-                <div class="row d-flex align-items-stretch">
-                    <div class="col-xl-8">
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="card shadow-lg rounded-lg">
-                                    <div class="card-body">
-                                        <div class="d-flex">
-                                            <div class="flex-grow-1">
-                                                <p class="text-truncate font-size-14 mb-2">Total Perbaikan yang Ditugaskan</p>
-                                                <h4 class="mb-2">{{ $perbaikanTeknisiCount }}</h4>
-                                                <p class="text-muted mb-0">
-                                                    <span class="text-success fw-bold font-size-12 me-2">
-                                                        <i class="ri-user-settings-line me-1 align-middle"></i>
-                                                        {{ $perbaikanTeknisiTerbaru?->created_at->diffForHumans() ?? '-' }}
+                    <div class="row me-0 pe-0 ">
+                        <div class="col-xl-8 pe-0">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="card shadow-lg rounded-lg">
+                                        <div class="card-body">
+                                            <div class="d-flex">
+                                                <div class="flex-grow-1">
+                                                    <p class="text-truncate font-size-14 mb-2">Total Perbaikan yang Ditugaskan
+                                                    </p>
+                                                    <h4 class="mb-2">{{ $perbaikanTeknisiCount }}</h4>
+                                                    <p class="text-muted mb-0">
+                                                        <span class="text-success fw-bold font-size-12 me-2">
+                                                            <i class="ri-user-settings-line me-1 align-middle"></i>
+                                                            {{ $perbaikanTeknisiTerbaru?->created_at->diffForHumans() ?? '-' }}
+                                                        </span>
+                                                        Perbaikan terbaru
+                                                    </p>
+                                                </div>
+                                                <div class="avatar-sm">
+                                                    <span class="avatar-title bg-warning bg-opacity-25 text-warning rounded-3">
+                                                        <i class="ri-task-line font-size-24"></i>
                                                     </span>
-                                                    Perbaikan terbaru
-                                                </p>
-                                            </div>
-                                            <div class="avatar-sm">
-                                                <span class="avatar-title bg-warning bg-opacity-25 text-warning rounded-3">
-                                                    <i class="ri-task-line font-size-24"></i>
-                                                </span>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-        
-                            <div class="col-md-6">
-                                <div class="card shadow-lg rounded-lg">
-                                    <div class="card-body">
-                                        <div class="d-flex">
-                                            <div class="flex-grow-1">
-                                                <p class="text-truncate font-size-14 mb-2">Total Perbaikan yang Selesai</p>
-                                                <h4 class="mb-2">{{ $perbaikanTeknisiSudahCount }}</h4>
-                                                <p class="text-muted mb-0">
-                                                    <span class="text-success fw-bold font-size-12 me-2">
-                                                        <i class="ri-user-settings-line me-1 align-middle"></i>
-                                                        {{ $perbaikanTeknisiSudahTerbaru?->created_at->diffForHumans() ?? '-' }}
-                                                    </span>
-                                                    Perbaikan terbaru
-                                                </p>
-                                            </div>
-                                            <div class="avatar-sm">
-                                                <span class="avatar-title bg-success bg-opacity-25 text-success rounded-3">
-                                                    <i class="ri-tools-line font-size-24"></i>
-                                                </span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-    
-                        <div class="col-xl-12">
-                            <div class="card shadow-lg rounded-lg mb-3">
-                                <div class="card-body">
-                                    <div class="d-flex justify-content-between align-items-center mb-3">
-                                        <h4 class="card-title mb-0">Perbaikan yang Harus Dikerjakan</h4>
-                                    </div>
-                                    <div class="table-responsive">
-                                        <table class="table table-sm mb-0 table-hover">
-                                            <thead class="table-light">
-                                                <tr>
-                                                    <th style="width: 5%;">No.</th>
-                                                    <th>Fasilitas</th>
-                                                    <th>Tempat</th>
-                                                    <th>Status</th>
-                                                    <th>Tanggal</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                @forelse($perbaikanTeknisiTop3 as $i => $item)
-                                                    <tr>
-                                                        <td class="text-center">{{ $i + 1 }}</td>
-                                                        <td>{{ ($item->laporan->barangLokasi->jenisBarang)->nama_barang ?? '-' }}</td>
-                                                        <td>{{ ($item->laporan->tempat)->nama_tempat ?? '-' }}</td>
-                                                        <td>
-                                                            @php
-                                                                $nilaiTopsis = $item->laporan->prioritas->nilai_topsis ?? null;
-                                                            @endphp
-                                                            @if($nilaiTopsis !== null)
-                                                                @if($nilaiTopsis >= 0.6)
-                                                                    <span
-                                                                        class="badge rounded-pill bg-opacity-25 bg-danger text-danger">Urgent</span>
-                                                                @elseif($nilaiTopsis >= 0.4)
-                                                                    <span
-                                                                        class="badge rounded-pill bg-opacity-25 bg-success text-success">Biasa</span>
-                                                                @else
-                                                                    <span
-                                                                        class="badge rounded-pill bg-opacity-25 bg-secondary text-secondary">Tidak
-                                                                        Mendesak</span>
-                                                                @endif
-                                                            @else
-                                                                <span class="badge bg-light text-dark">-</span>
-                                                            @endif
-                                                        </td>
-                                                        <td>{{ $item->created_at ? $item->created_at->format('d F Y') : '-' }}</td>
-                                                    </tr>
-                                                @empty
-                                                    <tr>
-                                                        <td colspan="5" class="text-center">Tidak ada perbaikan yang harus dikerjakan
-                                                        </td>
-                                                    </tr>
-                                                @endforelse
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                    <div class="d-flex justify-content-between align-items-center mt-3">
-                                        <p class="text-muted mb-0">
-                                            Menampilkan 3 data perbaikan terbaru yang harus dikerjakan.
-                                        </p>
-                                        <a href="{{ route('perbaikan.index') }}" class="btn btn-sm btn-primary">Selengkapnya &gt;</a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-xl-4">
-                        <div class="card shadow-lg rounded-lg" style="height: 96%;">
-                            <div class="card-body">
-                                <h4 class="card-title mb-4">Status Perbaikan Anda</h4>
-                                <div class="justify-content-center align-items-center">
-                                    <div id="perbaikanTeknisiChart"></div>
-                                </div>
-                            </div>
-                        </div>
-                        <script>
-                            document.addEventListener('DOMContentLoaded', function () {
-                                var perbaikanTeknisiChartOptions = {
-                                    chart: {
-                                        type: 'bar',
-                                        height: 290
-                                    },
-                                    series: [{
-                                        name: 'Jumlah',
-                                        data: [
-                                            {{ $perbaikanTeknisiBelumCount ?? 0 }},
-                                            {{ $perbaikanTeknisiSedangdikerjakanCount ?? 0 }},
-                                            {{ $perbaikanTeknisiSudahCount ?? 0 }}
-                                        ]
-                                    }],
-                                    xaxis: {
-                                        categories: ['Belum', 'Berjalan', 'Selesai']
-                                    },
-                                    colors: ['#ff4d4f', '#ffbb44', '#6fd088'],
-                                    plotOptions: {
-                                        bar: {
-                                            distributed: true,
-                                            borderRadius: 6,
-                                            columnWidth: '40%'
-                                        }
-                                    },
-                                    dataLabels: {
-                                        enabled: true
-                                    },
-                                    fill: {
-                                        type: 'gradient',
-                                        gradient: {
-                                            shade: 'light',
-                                            type: "vertical",
-                                            shadeIntensity: 0.5,
-                                            gradientToColors: ['#ffb3b3', '#ffe29e', '#a8eec1'],
-                                            inverseColors: false,
-                                            opacityFrom: 0.9,
-                                            opacityTo: 1,
-                                            stops: [0, 100]
-                                        }
-                                    }
-                                };
-                                if (typeof ApexCharts !== 'undefined') {
-                                    var perbaikanTeknisiChart = new ApexCharts(document.querySelector("#perbaikanTeknisiChart"), perbaikanTeknisiChartOptions);
-                                    perbaikanTeknisiChart.render();
-                                }
-                            });
-                        </script>
-                    </div>
 
-                </div>
+                                <div class="col-md-6">
+                                    <div class="card shadow-lg rounded-lg">
+                                        <div class="card-body">
+                                            <div class="d-flex">
+                                                <div class="flex-grow-1">
+                                                    <p class="text-truncate font-size-14 mb-2">Total Perbaikan yang Selesai</p>
+                                                    <h4 class="mb-2">{{ $perbaikanTeknisiSudahCount }}</h4>
+                                                    <p class="text-muted mb-0">
+                                                        <span class="text-success fw-bold font-size-12 me-2">
+                                                            <i class="ri-user-settings-line me-1 align-middle"></i>
+                                                            {{ $perbaikanTeknisiSudahTerbaru?->created_at->diffForHumans() ?? '-' }}
+                                                        </span>
+                                                        Perbaikan terbaru
+                                                    </p>
+                                                </div>
+                                                <div class="avatar-sm">
+                                                    <span class="avatar-title bg-success bg-opacity-25 text-success rounded-3">
+                                                        <i class="ri-tools-line font-size-24"></i>
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-12">
+                                <div class="card shadow-lg rounded-lg mb-3">
+                                    <div class="card-body">
+                                        <div class="d-flex justify-content-between align-items-center mb-3">
+                                            <h4 class="card-title mb-0">Perbaikan yang Harus Dikerjakan</h4>
+                                        </div>
+                                        <div class="table-responsive">
+                                            <table class="table table-sm mb-0 table-hover">
+                                                <thead class="table-light">
+                                                    <tr>
+                                                        <th style="width: 5%;">No.</th>
+                                                        <th>Fasilitas</th>
+                                                        <th>Tempat</th>
+                                                        <th>Status</th>
+                                                        <th>Tanggal</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    @forelse($perbaikanTeknisiTop3 as $i => $item)
+                                                        <tr>
+                                                            <td class="text-center">{{ $i + 1 }}</td>
+                                                            <td>{{ ($item->laporan->barangLokasi->jenisBarang)->nama_barang ?? '-' }}
+                                                            </td>
+                                                            <td>{{ ($item->laporan->tempat)->nama_tempat ?? '-' }}</td>
+                                                            <td>
+                                                                @php
+                                                                    $nilaiTopsis = $item->laporan->prioritas->nilai_topsis ?? null;
+                                                                @endphp
+                                                                @if($nilaiTopsis !== null)
+                                                                    @if($nilaiTopsis >= 0.6)
+                                                                        <span
+                                                                            class="badge rounded-pill bg-opacity-25 bg-danger text-danger">Urgent</span>
+                                                                    @elseif($nilaiTopsis >= 0.4)
+                                                                        <span
+                                                                            class="badge rounded-pill bg-opacity-25 bg-success text-success">Biasa</span>
+                                                                    @else
+                                                                        <span
+                                                                            class="badge rounded-pill bg-opacity-25 bg-secondary text-secondary">Tidak
+                                                                            Mendesak</span>
+                                                                    @endif
+                                                                @else
+                                                                    <span class="badge bg-light text-dark">-</span>
+                                                                @endif
+                                                            </td>
+                                                            <td>{{ $item->created_at ? $item->created_at->format('d F Y') : '-' }}
+                                                            </td>
+                                                        </tr>
+                                                    @empty
+                                                        <tr>
+                                                            <td colspan="5" class="text-center">Tidak ada perbaikan yang harus
+                                                                dikerjakan
+                                                            </td>
+                                                        </tr>
+                                                    @endforelse
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                        <div class="d-flex justify-content-between align-items-center mt-3">
+                                            <p class="text-muted mb-0">
+                                                Menampilkan 3 data perbaikan terbaru yang harus dikerjakan.
+                                            </p>
+                                            <a href="{{ route('perbaikan.index') }}" class="btn btn-sm btn-primary">Selengkapnya
+                                                &gt;</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xl-4 me-0 pe-0">
+                            <div class="card shadow-lg rounded-lg" >
+                                <div class="card-body">
+                                    <h4 class="card-title mb-4">Status Perbaikan Anda</h4>
+                                    <div class="justify-content-center align-items-center">
+                                        <div id="perbaikanTeknisiChart"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <script>
+                                document.addEventListener('DOMContentLoaded', function () {
+                                    var perbaikanTeknisiChartOptions = {
+                                        chart: {
+                                            type: 'bar',
+                                            height: 200
+                                        },
+                                        series: [{
+                                            name: 'Jumlah',
+                                            data: [
+                                                {{ $perbaikanTeknisiBelumCount ?? 0 }},
+                                                {{ $perbaikanTeknisiSedangdikerjakanCount ?? 0 }},
+                                                {{ $perbaikanTeknisiSudahCount ?? 0 }}
+                                            ]
+                                        }],
+                                        xaxis: {
+                                            categories: ['Belum', 'Berjalan', 'Selesai']
+                                        },
+                                        colors: ['#ff4d4f', '#ffbb44', '#6fd088'],
+                                        plotOptions: {
+                                            bar: {
+                                                distributed: true,
+                                                borderRadius: 6,
+                                                columnWidth: '40%'
+                                            }
+                                        },
+                                        dataLabels: {
+                                            enabled: true
+                                        },
+                                        fill: {
+                                            type: 'gradient',
+                                            gradient: {
+                                                shade: 'light',
+                                                type: "vertical",
+                                                shadeIntensity: 0.5,
+                                                gradientToColors: ['#ffb3b3', '#ffe29e', '#a8eec1'],
+                                                inverseColors: false,
+                                                opacityFrom: 0.9,
+                                                opacityTo: 1,
+                                                stops: [0, 100]
+                                            }
+                                        }
+                                    };
+                                    if (typeof ApexCharts !== 'undefined') {
+                                        var perbaikanTeknisiChart = new ApexCharts(document.querySelector("#perbaikanTeknisiChart"), perbaikanTeknisiChartOptions);
+                                        perbaikanTeknisiChart.render();
+                                    }
+                                });
+                            </script>
+                        </div>
+
+                    </div>
                 @endif
 
 
@@ -791,8 +867,8 @@
             series: [{
                 name: 'Jumlah',
                 data: [
-                                        {{ $laporanBelumDiverifikasiCount }},
-                                        {{ $laporanDiverifikasiCount }},
+                                                        {{ $laporanBelumDiverifikasiCount }},
+                                                        {{ $laporanDiverifikasiCount }},
                     {{ $laporanDitolakCount }}
                 ]
             }],
@@ -820,8 +896,8 @@
             series: [{
                 name: 'Jumlah',
                 data: [
-                                {{ $perbaikanBelumCount }},
-                                {{ $perbaikanBerjalanCount }},
+                                                {{ $perbaikanBelumCount }},
+                                                {{ $perbaikanBerjalanCount }},
                     {{ $perbaikanSelesaiCount }}
                 ]
             }],
