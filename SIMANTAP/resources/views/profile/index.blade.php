@@ -1,61 +1,5 @@
-{{-- <div class="modal-dialog modal-md">
-    <div class="modal-content">
-        <div class="modal-header">
-            <h5 class="modal-title">Profil Pengguna</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-
-        <div class="modal-body">
-            <div class="row justify-content-center mb-3">
-                <!-- Foto Profil -->
-                <div class="col-md-4">
-                    <img src="{{ $user->foto_profile ? asset('images/' . $user->foto_profile) : asset('profile_placeholder.png') }}?{{ now() }}"
-                        alt="Foto Profil"
-                        class="img-thumbnail rounded-circle shadow"
-                        style="width: 150px; height: 150px; object-fit: cover;">
-                </div>
-            </div>
-            <!-- Data Pengguna -->
-            <div class="row">
-                <div class="col-md-12">
-                    <table class="table table-bordered table-striped table-hover table-sm">
-                        <tr>
-                            <th>Role</th>
-                            <td>{{ $user->role->nama_role ?? 'Tidak ada role' }}</td> <!-- Menampilkan nama_role jika ada -->
-                        </tr>
-                        @if ($user->role->nama_role === 'Teknisi')
-                            <tr>
-                                <th>Jenis Teknisi</th>
-                                <td>{{ $user->teknisi->jenis_teknisi->nama_jenis_teknisi }}</td>
-                            </tr>
-                        @endif
-                        <tr>
-                            <th>Username</th>
-                            <td>{{ $user->username }}</td>
-                        </tr>
-                        <tr>
-                            <th>Nama</th>
-                            <td>{{ $user->name }}</td>
-                        </tr>
-                        <tr>
-                            <th>Password</th>
-                            <td>********</td>
-                        </tr>
-                    </table>
-                </div>
-            </div>
-        </div>
-
-        <div class="modal-footer justify-content-between">
-            <button onclick="modalAction('{{ url('profile/edit') }}')" class="btn btn-primary" data-dismiss="modal" id="btn-edit-profile">Edit Profil</button>
-            <button class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
-        </div>
-    </div>
-</div> --}}
-
 <div class="modal-dialog modal-lg">
     <div class="modal-content border-0" style="overflow: hidden; border-radius: 12px;">
-        <!-- Modal Header with Gradient Background -->
         <div class="modal-header text-white bg-light">
             <div class="d-flex align-items-center w-100">
                 <div class="flex-grow-1">
@@ -70,7 +14,6 @@
 
         <div class="modal-body p-0">
             <div class="row g-0">
-                <!-- Profile Photo Column -->
                 <div class="col-md-4 bg-light" style="background-color: #f8f9fe;">
                     <div class="d-flex flex-column align-items-center justify-content-center p-4 h-100">
                         <div class="position-relative mb-3" style="cursor: pointer;" onclick="showProfilePhoto()">
@@ -108,7 +51,6 @@
                     </div>
                 </div>
 
-                <!-- User Details Column -->
                 <div class="col-md-8">
                     <div class="p-4">
                         <div class="row">
@@ -122,7 +64,6 @@
                                 <hr class="my-2">
                             </div>
 
-                            <!-- Username -->
                             <div class="col-md-6 mb-4">
                                 <div class="card border-0 shadow-sm h-100">
                                     <div class="card-body">
@@ -139,7 +80,6 @@
                                 </div>
                             </div>
 
-                            <!-- Password -->
                             <div class="col-md-6 mb-4">
                                 <div class="card border-0 shadow-sm h-100">
                                     <div class="card-body">
@@ -167,7 +107,6 @@
                                 <hr class="my-2">
                             </div>
 
-                            <!-- Technician Specialty -->
                             <div class="col-md-6 mb-4">
                                 <div class="card border-0 shadow-sm h-100">
                                     <div class="card-body">
@@ -190,7 +129,6 @@
             </div>
         </div>
 
-        <!-- Modal Footer -->
         <div class="modal-footer bg-light">
             <button onclick="modalAction('{{ url('profile/edit') }}')"
                     class="btn btn-primary px-4 rounded-pill shadow-sm"
@@ -205,7 +143,7 @@
     </div>
 </div>
 
-<!-- Enhanced Photo Viewer Modal -->
+<!-- Photo Viewer Modal -->
 <div class="modal fade" id="photoViewerModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content border-0 bg-transparent">
@@ -241,7 +179,6 @@
 </div>
 
 <style>
-    /* Modern Gradient Backgrounds */
     .bg-gradient-primary {
         background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
     }
@@ -252,7 +189,6 @@
         background: linear-gradient(135deg, #43e695 0%, #3bb2b8 100%);
     }
 
-    /* Card Hover Effects */
     .card {
         transition: all 0.3s ease;
         border-radius: 10px !important;
@@ -262,7 +198,6 @@
         box-shadow: 0 10px 20px rgba(0,0,0,0.1) !important;
     }
 
-    /* Profile Photo Effects */
     .profile-photo {
         transition: all 0.3s ease;
     }
@@ -271,13 +206,11 @@
         box-shadow: 0 10px 25px rgba(0,0,0,0.2) !important;
     }
 
-    /* Badge Styles */
     .badge {
         font-weight: 500;
         letter-spacing: 0.5px;
     }
 
-    /* Modal Customizations */
     #photoViewerModal {
         backdrop-filter: blur(5px);
     }
@@ -294,7 +227,6 @@
         transform: scale(1.02);
     }
 
-    /* Button Effects */
     .btn {
         transition: all 0.3s ease;
     }
@@ -305,12 +237,12 @@
     }
 
     /* Text Styles */
-    .text-primary {
+    /* .text-primary {
         color: #6a11cb !important;
     }
     .text-success {
         color: #43e695 !important;
-    }
+    } */
 </style>
 
 <script>

@@ -1,220 +1,239 @@
 @php
     $statusVerif = strtolower($laporan->status_verif ?? '');
     $isDitolak = ($statusVerif === 'ditolak');
-    $colInfo = ($isDitolak && $laporan->foto_laporan) ? 'col-md-8' : ($laporan->foto_laporan ? 'col-md-6' : 'col-md-12');
 @endphp
 
-<div id="modal-master" class="modal-dialog {{ $isDitolak ? 'modal-lg' : 'modal-xl' }}" role="document">
-    <div class="modal-content">
-        <div class="modal-header">
-            <h5 class="modal-title">Detail Laporan</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <div class="modal-body">
-            <div class="card">
-                <div class="card-header">
-                    Laporan ID: {{ $laporan->laporan_id }}
+<div id="modal-master" class="modal-dialog modal-xl" role="document">
+    <div class="modal-content border-0" style="overflow: hidden; border-radius: 12px;">
+        <div class="modal-header text-white bg-light">
+            <div class="d-flex align-items-center w-100">
+                <div class="flex-grow-1">
+                    <h5 class="modal-title mb-0">
+                        <i class="ri-file-text-line me-2"></i>Detail Laporan
+                    </h5>
+                    <p class="mb-0 small opacity-85 mt-1 text-muted">Informasi dan dokumentasi laporan kerusakan</p>
                 </div>
-                <div class="card-body">
-                    <div class="row">
-                        <div class="{{ $colInfo }}">
-                            <div class="row mb-2">
-                                <div class="col-sm-4 fw-bold">Fasilitas</div>
-                                <div class="col-sm-8">: {{ $laporan->fasilitas->nama_fasilitas ?? '-' }}</div>
-                            </div>
-                            <div class="row mb-2">
-                                <div class="col-sm-4 fw-bold">Unit</div>
-                                <div class="col-sm-8">: {{ $laporan->unit->nama_unit ?? '-' }}</div>
-                            </div>
-                            <div class="row mb-2">
-                                <div class="col-sm-4 fw-bold">Tempat</div>
-                                <div class="col-sm-8">: {{ $laporan->tempat->nama_tempat ?? '-' }}</div>
-                            </div>
-                            <div class="row mb-2">
-                                <div class="col-sm-4 fw-bold">Barang</div>
-                                <div class="col-sm-8">: {{ $laporan->barangLokasi->jenisBarang->nama_barang ?? '-' }}</div>
-                            </div>
-                            <div class="row mb-2">
-                                <div class="col-sm-4 fw-bold">Jumlah yang rusak</div>
-                                <div class="col-sm-8">: {{ $laporan->jumlah_barang_rusak ?? '0' }}</div>
-                            </div>
-                            <div class="row mb-2">
-                                <div class="col-sm-4 fw-bold">Kategori Kerusakan</div>
-                                <div class="col-sm-8">: {{ $laporan->kategoriKerusakan->nama_kategori ?? '-' }}</div>
-                            </div>
-                            <div class="row mb-2">
-                                <div class="col-sm-4 fw-bold">Periode</div>
-                                <div class="col-sm-8">: {{ $laporan->periode->nama_periode ?? '-' }}</div>
-                            </div>
+                <button type="button" class="btn-close btn-close-black" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+        </div>
 
-                            {{-- <div class="row mb-2">
-                                <div class="col-sm-4 fw-bold">Status Verifikasi</div>
-                                <div class="col-sm-8">:
-                                    @php
-                                        $status = $laporan->status_verif ?? '';
-                                    @endphp
-                                    @if ($status === 'belum diverifikasi')
-                                        <span class="badge bg-warning" style="color: #fff; font-weight: 700;">Belum Diverifikasi</span>
-                                    @elseif ($status === 'diverifikasi')
-                                        <span class="badge bg-success" style="color: #fff; font-weight: 700;">Terverifikasi</span>
-                                    @elseif ($status === 'ditolak')
-                                        <span class="badge bg-danger" style="color: #fff; font-weight: 700;">Ditolak</span>
-                                    @else
-                                        <span>{{ ucfirst($status) }}</span>
-                                    @endif
+        <div class="modal-body p-4">
+            <div class="d-flex align-items-center mb-4">
+                <div class="flex-shrink-0">
+                    <span class="avatar avatar-lg bg-primary bg-opacity-10 text-primary rounded-circle">
+                        <i class="ri-file-list-line fs-4"></i>
+                    </span>
+                </div>
+                <div class="flex-grow-1 ms-3">
+                    <h4 class="mb-0">Laporan ID: {{ $laporan->laporan_id }}</h4>
+                    <span class="text-muted"><i class="ri-calendar-line me-1"></i> {{ $laporan->formatted_created_at }}</span>
+                </div>
+                <div>
+                    @php
+                        $status = $laporan->status_verif ?? '';
+                        $statusClass = [
+                            'belum diverifikasi' => 'bg-warning bg-opacity-10 text-warning',
+                            'diverifikasi' => 'bg-success bg-opacity-10 text-success',
+                            'ditolak' => 'bg-danger bg-opacity-10 text-danger'
+                        ][$status] ?? 'bg-secondary bg-opacity-10 text-secondary';
+                    @endphp
+                    <span class="badge {{ $statusClass }} rounded-pill py-2 px-3">
+                        <i class="ri-{{ $status === 'diverifikasi' ? 'check' : ($status === 'ditolak' ? 'close' : 'time') }}-line me-1"></i>
+                        {{ ucwords(str_replace('_', ' ', $status)) }}
+                    </span>
+                </div>
+            </div>
+
+            <div class="row align-items-stretch g-4">
+                <div class="col-lg-6 d-flex flex-column">
+                    <div class="card flex-fill h-100">
+                        <div class="card-header bg-light bg-opacity-50">
+                            <h6 class="card-title mb-0"><i class="ri-information-line me-2"></i>Informasi Laporan</h6>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                @foreach([
+                                    ['ri-building-2-line', 'Fasilitas', $laporan->fasilitas->nama_fasilitas ?? '-'],
+                                    ['ri-community-line', 'Unit', $laporan->unit->nama_unit ?? '-'],
+                                    ['ri-map-pin-line', 'Tempat', $laporan->tempat->nama_tempat ?? '-'],
+                                    ['ri-box-3-line', 'Barang', $laporan->barangLokasi->jenisBarang->nama_barang ?? '-'],
+                                    ['ri-error-warning-line', 'Jumlah Rusak', $laporan->jumlah_barang_rusak ?? '0'],
+                                    ['ri-alert-line', 'Kategori Kerusakan', $laporan->kategoriKerusakan->nama_kategori ?? '-'],
+                                    ['ri-calendar-event-line', 'Periode', $laporan->periode->nama_periode ?? '-'],
+                                    [
+                                        'ri-tools-line',
+                                        'Status Perbaikan',
+                                        $laporan->perbaikan && $laporan->perbaikan->status_perbaikan
+                                            ? '<span class="badge ' . (
+                                                $laporan->perbaikan->status_perbaikan === 'selesai' ? 'bg-success bg-opacity-10 text-success' :
+                                                ($laporan->perbaikan->status_perbaikan === 'sedang diperbaiki' ? 'bg-info bg-opacity-10 text-info' :
+                                                'bg-secondary bg-opacity-10 text-secondary')
+                                            ) . ' rounded-pill py-2 px-3">' . ucfirst($laporan->perbaikan->status_perbaikan) . '</span>'
+                                            : '<span class="badge bg-secondary bg-opacity-10 text-secondary rounded-pill py-2 px-3">-</span>'
+                                    ],
+                                ] as [$icon, $label, $value])
+                                <div class="col-md-6 mb-3">
+                                    <div class="d-flex align-items-start">
+                                        <i class="{{ $icon }} text-muted me-2 mt-1"></i>
+                                        <div>
+                                            <label class="form-label text-muted small mb-1">{{ $label }}</label>
+                                            <p class="mb-0 fw-bold">{!! $value !!}</p>
+                                        </div>
+                                    </div>
                                 </div>
-                            </div> --}}
-
-                            <div class="row mb-2">
-                                <div class="col-sm-4 fw-bold">Status Perbaikan</div>
-                                <div class="col-sm-8">:
-                                    @php
-                                        $statusPerbaikan = $laporan->perbaikan->status_perbaikan ?? '';
-                                    @endphp
-                                    @if ($statusPerbaikan === 'belum')
-                                        <span class="badge rounded-pill bg-opacity-25 bg-secondary text-secondary" style="font-size: 12px; padding: 4px 8px; font-weight: 700;">
-                                            Belum dikerjakan
-                                        </span>
-                                    @elseif ($statusPerbaikan === 'sedang diperbaiki')
-                                        <span class="badge rounded-pill bg-opacity-25 bg-info text-info" style="font-size: 12px; padding: 4px 8px; font-weight: 700;">
-                                            Sedang dikerjakan
-                                        </span>
-                                    @elseif ($statusPerbaikan === 'selesai')
-                                        <span class="badge rounded-pill bg-opacity-25 bg-success text-success" style="font-size: 12px; padding: 4px 8px; font-weight: 700;">
-                                            Selesai
-                                        </span>
-                                    @else
-                                        <span class="badge rounded-pill bg-opacity-25 bg-secondary text-secondary" style="font-size: 12px; padding: 4px 8px; font-weight: 700;">
-                                            {{ ucfirst($statusPerbaikan) }}
-                                        </span>
-                                    @endif
-                                </div>
-                            </div>
-
-                            <div class="row mb-2">
-                                <div class="col-sm-4 fw-bold">Tanggal Dibuat</div>
-                                <div class="col-sm-8">: {{ $laporan->created_at->format('d M Y') }}</div>
-                            </div>
-
-                            <div class="row mb-2">
-                                <div class="col-sm-4 fw-bold">Tanggal Ditugaskan ke Teknisi</div>
-                                <div class="col-sm-8">: {{ $laporan->perbaikan->formatted_tanggal_ditugaskan }}</div>
+                                @endforeach
                             </div>
                         </div>
+                    </div>
+                </div>
 
-                        @if (!$isDitolak)
-                            @if ($laporan->foto_laporan || ($laporan->perbaikan && $laporan->perbaikan->foto_perbaikan))
-                                <div class="col-md-6 d-flex align-items-start" style="gap: 2rem;">
-                                    @if ($laporan->foto_laporan)
-                                        <div style="flex: 1;">
-                                            <p><strong>Foto Laporan</strong></p>
-                                            <div class="img-hover-dark mb-3" style="height: 180px;">
-                                                <a href="{{ asset('storage/' . $laporan->foto_laporan) }}" data-lightbox="laporan" data-title="Foto Laporan">
-                                                    <img src="{{ asset('storage/' . $laporan->foto_laporan) }}" alt="Foto Laporan" class="img-fluid" style="width: 100%; height: 100%; object-fit: cover;">
-                                                    <i class="ri-search-line icon-search"></i>
-                                                </a>
+                @if ($laporan->foto_laporan)
+                <div class="col-lg-3 d-flex flex-column">
+                    <div class="card flex-fill h-100">
+                        <div class="card-header bg-light bg-opacity-50">
+                            <h6 class="card-title mb-0"><i class="ri-image-line me-2"></i>Foto Laporan</h6>
+                        </div>
+                        <div class="card-body p-0 d-flex flex-column">
+                            <div class="image-preview-container flex-grow-1 d-flex align-items-center justify-content-center p-3">
+                                <a href="{{ asset('storage/' . $laporan->foto_laporan) }}" data-lightbox="laporan" data-title="Foto Laporan">
+                                    <div class="image-wrapper position-relative">
+                                        <img src="{{ asset('storage/' . $laporan->foto_laporan) }}" class="img-fluid rounded shadow-sm" style="max-height: 220px; width: auto; object-fit: contain;">
+                                        <div class="image-overlay">
+                                            <i class="ri-zoom-in-line"></i>
+                                        </div>
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                @endif
+
+                <div class="col-lg-3 d-flex flex-column">
+                    <div class="card flex-fill h-100">
+                        <div class="card-header bg-light bg-opacity-50">
+                            <h6 class="card-title mb-0"><i class="ri-tools-line me-2"></i>Foto Perbaikan</h6>
+                        </div>
+                        <div class="card-body p-0 d-flex flex-column">
+                            @if ($laporan->perbaikan && $laporan->perbaikan->foto_perbaikan)
+                                <div class="image-preview-container flex-grow-1 d-flex align-items-center justify-content-center p-3">
+                                    <a href="{{ asset('storage/' . $laporan->perbaikan->foto_perbaikan) }}" data-lightbox="perbaikan" data-title="Foto Perbaikan">
+                                        <div class="image-wrapper position-relative">
+                                            <img src="{{ asset('storage/' . $laporan->perbaikan->foto_perbaikan) }}" class="img-fluid rounded shadow-sm" style="max-height: 220px; width: auto; object-fit: contain;">
+                                            <div class="image-overlay">
+                                                <i class="ri-zoom-in-line"></i>
                                             </div>
                                         </div>
-                                    @endif
-                                    <div style="flex: 1;">
-                                        <p><strong>Foto Perbaikan</strong></p>
-                                        @if ($laporan->perbaikan && $laporan->perbaikan->foto_perbaikan)
-                                            <div class="img-hover-dark" style="height: 180px;">
-                                                <a href="{{ asset('storage/' . $laporan->perbaikan->foto_perbaikan) }}" data-lightbox="perbaikan" data-title="Foto Perbaikan">
-                                                    <img src="{{ asset('storage/' . $laporan->perbaikan->foto_perbaikan) }}" alt="Foto Perbaikan" class="img-fluid" style="width: 100%; height: 100%; object-fit: cover;">
-                                                    <i class="ri-search-line icon-search"></i>
-                                                </a>
-                                            </div>
-                                        @else
-                                            <p><em>Foto perbaikan belum tersedia (perbaikan belum selesai).</em></p>
-                                        @endif
+                                    </a>
+                                </div>
+                            @else
+                                <div class="flex-grow-1 d-flex flex-column align-items-center justify-content-center p-4 text-center">
+                                    <div class="bg-light bg-opacity-25 rounded p-4 w-100 h-100 d-flex flex-column align-items-center justify-content-center">
+                                        <i class="ri-alert-line fs-1 text-warning mb-2"></i>
+                                        <p class="mb-0 text-muted">Foto perbaikan belum tersedia</p>
+                                        <small class="text-muted mt-1">Akan muncul setelah perbaikan selesai</small>
                                     </div>
                                 </div>
                             @endif
-                            <div class="col-md-6 mt-3">
-                                <p><strong>Deskripsi Laporan:</strong></p>
-                                <div class="border p-2 rounded bg-light">
-                                    {{ $laporan->deskripsi ?? 'Tidak ada deskripsi tersedia.' }}
-                                </div>
-                            </div>
-                            <div class="col-md-6 mt-3">
-                                <p><strong>Deskripsi Perbaikan:</strong></p>
-                                <div class="border p-2 rounded bg-light">
-                                    {{ $laporan->perbaikan->catatan_perbaikan ?? 'Tidak ada deskripsi tersedia.' }}
-                                </div>
-                            </div>
-                        @else
-                            @if ($laporan->foto_laporan)
-                                <div class="col-md-4">
-                                    <p><strong>Foto Laporan</strong></p>
-                                    <div class="img-hover-dark" style="max-width: 200px; height: auto;">
-                                        <a href="{{ asset('storage/' . $laporan->foto_laporan) }}" data-lightbox="laporan" data-title="Foto Laporan">
-                                            <img src="{{ asset('storage/' . $laporan->foto_laporan) }}" alt="Foto Laporan" class="img-fluid" style="width: 100%; height: auto; object-fit: contain;">
-                                            <i class="ri-search-line icon-search"></i>
-                                        </a>
-                                    </div>
-                                </div>
-                            @endif
-                            <div class="col-md-12 mt-3">
-                                <p><strong>Deskripsi Laporan:</strong></p>
-                                <div class="border p-2 rounded bg-light">
-                                    {{ $laporan->deskripsi ?? 'Tidak ada deskripsi tersedia.' }}
-                                </div>
-                            </div>
-                        @endif
+                        </div>
+                    </div>
+                </div>
+            </div>
 
+            <div class="row mt-4 g-4">
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-header bg-light bg-opacity-50">
+                            <h6 class="card-title mb-0"><i class="ri-file-text-line me-2"></i>Deskripsi Laporan</h6>
+                        </div>
+                        <div class="card-body">
+                            <div class="bg-light bg-opacity-25 rounded text-start">
+                                {!! $laporan->deskripsi ? nl2br(e($laporan->deskripsi)) : '<span class="text-muted">Tidak ada deskripsi tersedia.</span>' !!}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-header bg-light bg-opacity-50">
+                            <h6 class="card-title mb-0"><i class="ri-tools-line me-2"></i>Deskripsi Perbaikan</h6>
+                        </div>
+                        <div class="card-body">
+                            <div class="bg-light bg-opacity-25 rounded text-start">
+                                {!! $laporan->perbaikan->catatan_perbaikan ? nl2br(e($laporan->perbaikan->catatan_perbaikan)) : '<span class="text-muted">Belum ada catatan perbaikan.</span>' !!}
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-        {{-- <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
-        </div> --}}
     </div>
 </div>
 
 <style>
-    .img-hover-dark {
-        position: relative;
-        display: inline-block;
+    .avatar {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 48px;
+        height: 48px;
+    }
+
+    .image-preview-container {
+        border-radius: 8px;
         overflow: hidden;
-        width: 100%;
-        height: 180px;
+        min-height: 220px;
     }
 
-    .img-hover-dark img {
-        display: block;
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-        transition: filter 0.3s ease;
+    .img-fluid {
+        max-width: 100%;
+        height: auto;
     }
 
-    .img-hover-dark:hover img {
-        filter: brightness(60%);
-        cursor: pointer;
+    .image-wrapper {
+        position: relative;
+        transition: all 0.3s ease;
     }
 
-    .img-hover-dark .icon-search {
+    .image-overlay {
         position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        color: white;
-        font-size: 2rem;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: rgba(0, 0, 0, 0.3);
+        display: flex;
+        align-items: center;
+        justify-content: center;
         opacity: 0;
         transition: opacity 0.3s ease;
-        pointer-events: none;
+        border-radius: 0.5rem;
     }
 
-    .img-hover-dark:hover .icon-search {
+    .image-overlay i {
+        color: white;
+        font-size: 2rem;
+    }
+
+    .image-wrapper:hover .image-overlay {
         opacity: 1;
     }
 
-    .lb-image {
-        max-width: 90vw !important;
-        max-height: 90vh !important;
-        width: auto !important;
-        height: auto !important;
+    .modal-header {
+        border-bottom: 1px solid #e9ecef;
+    }
+
+    .bg-opacity-10 {
+        background-color: rgba(var(--bs-primary-rgb), 0.1);
+    }
+
+    .card-header {
+        border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+        border-radius: 0.5rem 0.5rem 0 0 !important;
+    }
+
+    .card {
+        border-radius: 0.5rem !important;
+        box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
     }
 </style>

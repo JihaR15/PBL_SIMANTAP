@@ -4,13 +4,11 @@
     <div class="page-content">
         <div class="container-fluid">
 
-            <!-- start page title -->
             <div class="row">
                 <div class="col-12">
                     @include('layouts.breadcrumb')
                 </div>
             </div>
-            <!-- end page title -->
 
             <div class="row">
                 <div class="col-12">
@@ -18,18 +16,25 @@
                         <div class="card-body">
                             <div class="row mb-4">
                                 <div class="col-md-12">
-                                    <h4 class="card-title">Laporkan Kerusakan anda Sedetail Mungkin</h4>
-                                    <p class="card-title">Silakan isi form berikut untuk melaporkan kerusakan yang terjadi.
-                                        Pastikan semua data yang dimasukkan sudah benar sebelum disubmit.</p>
+                                    <div class="d-flex align-items-center mb-3">
+                                        <i class="fas fa-exclamation-triangle text-warning me-2" style="font-size: 2rem;"></i>
+                                        <h4 class="card-title mb-0">Laporkan Kerusakan Fasilitas</h4>
+                                    </div>
+                                    <div class="alert alert-info bg-soft-info border-0">
+                                        <i class="fas fa-info-circle me-2"></i> Silakan isi form berikut untuk melaporkan kerusakan yang terjadi. Pastikan semua data yang dimasukkan sudah benar sebelum disubmit.
+                                    </div>
                                 </div>
+
                                 @if (session('success'))
-                                    <div class="alert alert-success">
+                                    <div class="alert alert-success d-flex align-items-center">
+                                        <i class="fas fa-check-circle me-2"></i>
                                         {{ session('success') }}
                                     </div>
                                 @endif
 
                                 @if (session('error'))
-                                    <div class="alert alert-danger">
+                                    <div class="alert alert-danger d-flex align-items-center">
+                                        <i class="fas fa-exclamation-circle me-2"></i>
                                         {{ session('error') }}
                                     </div>
                                 @endif
@@ -38,130 +43,209 @@
                             <form id="form-laporan" class="custom-validation" action="{{ route('laporan.store') }}"
                                 method="POST" enctype="multipart/form-data">
                                 @csrf
-                                <div class="mb-3">
-                                    <label>Pilih Jenis Fasilitas</label>
-                                    <select name="fasilitas_id" id="fasilitas_id" class="form-select" required>
-                                        @foreach($fasilitas as $f)
-                                            <option value="{{ $f->fasilitas_id }}">{{ $f->nama_fasilitas }}</option>
-                                        @endforeach
-                                    </select>
-                                    <small id="error-fasilitas_id" class="error-text form-text text-danger"></small>
-                                </div>
 
-                                <div class="row">
-                                    <div class="mb-3 col-md-4">
-                                        <label>Pilih Unit</label>
-                                        <select name="unit_id" id="unit_id" class="form-select" required>
-                                            @foreach($unit as $u)
-                                                <option value="{{ $u->unit_id }}">{{ $u->nama_unit }}</option>
+                                <!-- Fasilitas Section -->
+                                <div class="mb-4 p-3 border rounded bg-light">
+                                    <h5 class="mb-3 text-primary">
+                                        <i class="fas fa-building me-2"></i> Informasi Fasilitas
+                                    </h5>
+
+                                    <div class="mb-3">
+                                        <label class="form-label fw-semibold">Pilih Jenis Fasilitas</label>
+                                        <select name="fasilitas_id" id="fasilitas_id" class="form-select select2" required>
+                                            @foreach($fasilitas as $f)
+                                                <option value="{{ $f->fasilitas_id }}">{{ $f->nama_fasilitas }}</option>
                                             @endforeach
                                         </select>
-                                        <small id="error-unit_id" class="error-text form-text text-danger"></small>
+                                        <small id="error-fasilitas_id" class="error-text form-text text-danger"></small>
                                     </div>
 
-                                    <div class="mb-3 col-md-8">
-                                        <label>Pilih Tempat/Ruangan</label>
-                                        <select name="tempat_id" id="tempat_id" class="form-select" required>
-                                            @foreach($tempat as $t)
-                                                <option value="{{ $t->tempat_id }}">{{ $t->nama_tempat }}</option>
-                                            @endforeach
-                                        </select>
-                                        <small id="error-tempat_id" class="error-text form-text text-danger"></small>
-                                    </div>
-                                </div>
+                                    <div class="row">
+                                        <div class="mb-3 col-md-4">
+                                            <label class="form-label fw-semibold">Pilih Unit</label>
+                                            <select name="unit_id" id="unit_id" class="form-select select2" required>
+                                                @foreach($unit as $u)
+                                                    <option value="{{ $u->unit_id }}">{{ $u->nama_unit }}</option>
+                                                @endforeach
+                                            </select>
+                                            <small id="error-unit_id" class="error-text form-text text-danger"></small>
+                                        </div>
 
-                                <div class="row">
-                                    <div class="mb-3 col-md-4">
-                                        <label>Pilih Barang</label>
-                                        <select name="barang_lokasi_id" id="barang_lokasi_id" class="form-select" required>
-                                            @foreach($barangLokasi as $b)
-                                                <option value="{{ $b->barang_lokasi_id }}">{{ $b->jenisBarang->nama_barang }}
-                                                </option>
-                                            @endforeach
-                                        </select>
-                                        <small id="error-barang_id" class="error-text form-text text-danger"></small>
-                                    </div>
-                                    <div class="mb-3 col-md-4">
-                                        <label>Pilih Kategori Kerusakan</label>
-                                        <select name="kategori_kerusakan_id" id="kategori_kerusakan_id" class="form-select"
-                                            required>
-                                            @foreach($kategoriKerusakan as $k)
-                                                <option value="{{ $k->kategori_kerusakan_id }}">{{ $k->nama_kategori }}
-                                                </option>
-                                            @endforeach
-                                        </select>
-                                        <small id="error-kategori-kerusakan_id"
-                                            class="error-text form-text text-danger"></small>
-                                    </div>
-                                    <div class="mb-3 col-md-4">
-                                        <label for="jumlah_barang_rusak">Jumlah Fasilitas yang Rusak</label>
-                                        <input type="number" name="jumlah_barang_rusak" id="jumlah_barang_rusak" class="form-control" required min="1">
-                                        <small id="max-jumlah" class="form-text text-muted">Jumlah fasilitas yang tersedia: 0</small>
-                                        <small id="error-jumlah_rusak" class="error-text form-text text-danger"></small>
-                                    </div>
-                                </div>
-
-                                <div class="mb-3">
-                                    <label>Pilih Periode</label>
-                                    <select name="periode_id" id="periode_id" class="form-select" required>
-                                        @foreach($periode as $p)
-                                            <option value="{{ $p->periode_id }}">{{ $p->nama_periode }}
-                                            </option>
-                                        @endforeach
-                                    </select>
-                                    <small id="error-periode_id" class="error-text form-text text-danger"></small>
-                                </div>
-
-
-                                <div class="mb-3">
-                                    <label>Deskripsi Kerusakan</label>
-                                    <div>
-                                        <textarea required name="deskripsi" class="form-control" rows="5"></textarea>
-                                    </div>
-                                </div>
-
-                                {{-- <div class="mb-3">
-                                    <label>Upload Foto Kerusakan</label>
-                                    <div class="dropzone" id="my-dropzone">
-                                        <div class="dz-message needsclick">
-                                            <div class="mb-3">
-                                                <i class="display-4 text-muted ri-upload-cloud-2-line"></i>
-                                            </div>
-                                            <h4>Drop files here or click to upload.</h4>
+                                        <div class="mb-3 col-md-8">
+                                            <label class="form-label fw-semibold">Pilih Tempat/Ruangan</label>
+                                            <select name="tempat_id" id="tempat_id" class="form-select select2" required>
+                                                @foreach($tempat as $t)
+                                                    <option value="{{ $t->tempat_id }}">{{ $t->nama_tempat }}</option>
+                                                @endforeach
+                                            </select>
+                                            <small id="error-tempat_id" class="error-text form-text text-danger"></small>
                                         </div>
                                     </div>
-                                </div> --}}
-
-                                <div class="mb-3">
-                                    <label for="foto_laporan">Foto Laporan</label>
-                                    <input type="file" name="foto_laporan" id="foto_laporan" class="form-control"
-                                        accept="image/jpeg,image/jpg,image/png,image/gif,application/pdf" required>
-                                    <small id="error-foto-laporan" class="error-text form-text text-danger"></small>
                                 </div>
 
-                                <div class="mb-0">
-                                    <div>
-                                        <button type="submit" class="btn btn-primary waves-effect waves-light me-1">
-                                            Submit
-                                        </button>
+                                <!-- Barang Section -->
+                                <div class="mb-4 p-3 border rounded bg-light">
+                                    <h5 class="mb-3 text-primary">
+                                        <i class="fas fa-box-open me-2"></i> Informasi Barang Rusak
+                                    </h5>
+
+                                    <div class="row">
+                                        <div class="mb-3 col-md-4">
+                                            <label class="form-label fw-semibold">Pilih Barang</label>
+                                            <select name="barang_lokasi_id" id="barang_lokasi_id" class="form-select select2" required>
+                                                @foreach($barangLokasi as $b)
+                                                    <option value="{{ $b->barang_lokasi_id }}">{{ $b->jenisBarang->nama_barang }}
+                                                    </option>
+                                                @endforeach
+                                            </select>
+                                            <small id="error-barang_id" class="error-text form-text text-danger"></small>
+                                        </div>
+                                        <div class="mb-3 col-md-4">
+                                            <label class="form-label fw-semibold">Pilih Kategori Kerusakan</label>
+                                            <select name="kategori_kerusakan_id" id="kategori_kerusakan_id" class="form-select select2"
+                                                required>
+                                                @foreach($kategoriKerusakan as $k)
+                                                    <option value="{{ $k->kategori_kerusakan_id }}">{{ $k->nama_kategori }}
+                                                    </option>
+                                                @endforeach
+                                            </select>
+                                            <small id="error-kategori-kerusakan_id"
+                                                class="error-text form-text text-danger"></small>
+                                        </div>
+                                        <div class="mb-3 col-md-4">
+                                            <label for="jumlah_barang_rusak" class="form-label fw-semibold">Jumlah Fasilitas yang Rusak</label>
+                                            <div class="input-group">
+                                                <input type="number" name="jumlah_barang_rusak" id="jumlah_barang_rusak"
+                                                    class="form-control" required min="1">
+                                                <span class="input-group-text">unit</span>
+                                            </div>
+                                            <div id="max-jumlah" class="form-text text-muted">
+                                                <i class="fas fa-info-circle me-1"></i> Jumlah fasilitas yang tersedia: <span id="available-count">0</span>
+                                            </div>
+                                            <small id="error-jumlah_rusak" class="error-text form-text text-danger"></small>
+                                        </div>
                                     </div>
+                                </div>
+
+                                <!-- Periode Section -->
+                                <div class="mb-4 p-3 border rounded bg-light">
+                                    <h5 class="mb-3 text-primary">
+                                        <i class="fas fa-calendar-alt me-2"></i> Informasi Periode
+                                    </h5>
+
+                                    <div class="mb-3">
+                                        <label class="form-label fw-semibold">Pilih Periode</label>
+                                        <select name="periode_id" id="periode_id" class="form-select select2" required>
+                                            @foreach($periode as $p)
+                                                <option value="{{ $p->periode_id }}">{{ $p->nama_periode }}
+                                                </option>
+                                            @endforeach
+                                        </select>
+                                        <small id="error-periode_id" class="error-text form-text text-danger"></small>
+                                    </div>
+                                </div>
+
+                                <!-- Deskripsi Section -->
+                                <div class="mb-4 p-3 border rounded bg-light">
+                                    <h5 class="mb-3 text-primary">
+                                        <i class="fas fa-align-left me-2"></i> Deskripsi Kerusakan
+                                    </h5>
+
+                                    <div class="mb-3">
+                                        <label class="form-label fw-semibold">Deskripsi Kerusakan</label>
+                                        <div>
+                                            <textarea required name="deskripsi" class="form-control" rows="5"
+                                                placeholder="Jelaskan secara detail tentang kerusakan yang terjadi..."></textarea>
+                                        </div>
+                                        <div class="form-text">
+                                            <i class="fas fa-lightbulb me-1"></i> Deskripsi yang jelas akan membantu tim perbaikan memahami masalah dengan lebih baik.
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Upload Section -->
+                                <div class="mb-4 p-3 border rounded bg-light">
+                                    <h5 class="mb-3 text-primary">
+                                        <i class="fas fa-camera me-2"></i> Dokumentasi Kerusakan
+                                    </h5>
+
+                                    <div class="mb-3">
+                                        <label for="foto_laporan" class="form-label fw-semibold">Foto Laporan</label>
+                                        <div class="file-upload-wrapper">
+                                            <input type="file" name="foto_laporan" id="foto_laporan" class="form-control"
+                                                accept="image/jpeg,image/jpg,image/png,image/gif,application/pdf" required>
+                                            <div class="form-text">
+                                                <i class="fas fa-info-circle me-1"></i> Unggah foto kerusakan (format: JPG, PNG, maksimal 2MB)
+                                            </div>
+                                            <div id="file-preview" class="mt-2 text-center d-none">
+                                                <img id="preview-image" src="#" alt="Preview" class="img-thumbnail" style="max-height: 200px; display: none;">
+                                                <div id="file-info" class="mt-2"></div>
+                                            </div>
+                                        </div>
+                                        <small id="error-foto-laporan" class="error-text form-text text-danger"></small>
+                                    </div>
+                                </div>
+
+                                <div class="d-flex justify-content-between mt-4">
+                                    <button type="reset" class="btn btn-outline-secondary waves-effect" id="resetButton">
+                                        <i class="fas fa-undo me-1"></i> Reset Form
+                                    </button>
+                                    <button type="submit" class="btn btn-primary waves-effect waves-light">
+                                        <i class="fas fa-paper-plane me-1"></i> Kirim Laporan
+                                    </button>
                                 </div>
                             </form>
 
                         </div>
                     </div>
-
-                </div> <!-- end col -->
+                </div>
             </div>
-            <!-- end row -->
-
         </div>
-
     </div>
-    <!-- End Page-content -->
 @endsection
 
 @push('css')
+    <style>
+        .file-upload-wrapper {
+            position: relative;
+            margin-bottom: 1rem;
+        }
+
+        .select2-container--default .select2-selection--single {
+            height: 38px;
+            border: 1px solid #ced4da;
+        }
+
+        .select2-container--default .select2-selection--single .select2-selection__rendered {
+            line-height: 36px;
+        }
+
+        .select2-container--default .select2-selection--single .select2-selection__arrow {
+            height: 36px;
+        }
+
+        .bg-light {
+            background-color: #f8f9fa !important;
+        }
+
+        .border {
+            border: 1px solid #dee2e6 !important;
+        }
+
+        .rounded {
+            border-radius: 0.375rem !important;
+        }
+
+        .progress {
+            height: 10px;
+            margin-top: 5px;
+        }
+
+        #preview-image {
+            max-width: 100%;
+            max-height: 200px;
+        }
+    </style>
 @endpush
 
 @push('js')
@@ -171,187 +255,176 @@
     <script src="{{ asset('assets/libs/sweetalert2/sweetalert2.all.min.js') }}"></script>
 
     <script>
-        const units = @json($unit); // Data unit dari controller
-        const tempat = @json($tempat); // Data tempat dari controller
-        const barangLokasi = @json($barangLokasi); // Data barang lokasi dari controller
+        $(document).ready(function() {
+            const units = @json($unit);
+            const tempat = @json($tempat);
+            const barangLokasi = @json($barangLokasi);
+            // console.log('Data Barang Lokasi:', barangLokasi);
 
-        $(document).ready(function () {
-            $('#barang_lokasi_id').on('change', function () {
-                const selectedBarangId = $(this).val();
-                console.log('Barang yang dipilih:', selectedBarangId);
+            // 1. nonaktifkan semua field kecuali fasilitas awal
+            disableAllFieldsExceptFasilitas();
 
-                const selectedBarang = barangLokasi.find(b => b.barang_lokasi_id == selectedBarangId);
+            // 2. handler perubahan fasilitas
+            $('#fasilitas_id').on('change', function() {
+                const selectedFasilitas = $(this).val();
+                resetDependentFields();
 
-                if (selectedBarang) {
-                    const maxJumlahRusak = selectedBarang.jumlah_barang;
-                    $('#jumlah_barang_rusak').attr('max', maxJumlahRusak);
-                    $('#max-jumlah').text('Jumlah fasilitas yang tersedia: ' + maxJumlahRusak);
+                if (selectedFasilitas == '2') { // FasUm
+                    handleFasilitasUmum();
+                } else if (selectedFasilitas) { // FasGed
+                    handleFasilitasGedung(selectedFasilitas);
                 }
             });
 
-            const defaultBarang = $('#barang_lokasi_id').val();
-            if (defaultBarang) {
-                $('#barang_lokasi_id').trigger('change');
+            // 3. handler perubahan unit (hanya untuk fasilitas gedung)
+            $('#unit_id').on('change', function() {
+                const selectedUnit = $(this).val();
+                if (selectedUnit) {
+                    filterTempat(selectedUnit);
+                    $('#tempat_id').prop('disabled', false);
+                }
+            });
+
+            // 4. handler perubahan tempat
+            $('#tempat_id').on('change', function() {
+                const selectedTempat = $(this).val();
+                if (selectedTempat) {
+                    filterBarangLokasi(selectedTempat);
+                    $('#barang_lokasi_id').prop('disabled', false);
+                }
+            });
+
+            // 5. handler perubahan barang
+            $('#barang_lokasi_id').on('change', function() {
+                const selectedBarang = $(this).val();
+                if (selectedBarang) {
+                    enableRemainingFields();
+                    updateJumlahBarangTersedia(selectedBarang);
+                }
+            });
+
+            $('#resetButton').on('click', function() {
+                resetForm();
+            });
+
+            function disableAllFieldsExceptFasilitas() {
+                $('#unit_id, #tempat_id, #barang_lokasi_id, #kategori_kerusakan_id, #periode_id, #jumlah_barang_rusak, #deskripsi, #foto_laporan')
+                    .prop('disabled', true);
             }
 
-        });
+            function resetDependentFields() {
+                // mengosongkan dan nonaktifkan dropdown serta field lain
+                $('#unit_id, #tempat_id, #barang_lokasi_id').empty().prop('disabled', true);
+                $('#kategori_kerusakan_id, #periode_id, #jumlah_barang_rusak, #deskripsi, #foto_laporan')
+                    .val('').prop('disabled', true);
 
-        $(document).ready(function () {
-            // Saat halaman dimuat, nonaktifkan dropdown tempat dan barang lokasi
-            $('#tempat_id').prop('disabled', true);
-            $('#barang_lokasi_id').prop('disabled', true);
+                $('#unit_id, #tempat_id, #barang_lokasi_id').removeClass('is-valid is-invalid');
 
-            // Tampilkan default value saat halaman pertama kali dimuat
-            const defaultFasilitas = $('#fasilitas_id').find('option:selected').val();
-            filterUnits(defaultFasilitas);
+                $('#unit_id, #tempat_id, #barang_lokasi_id').prop('selectedIndex', 0);
 
-            // Event listener untuk dropdown fasilitas
-            $('#fasilitas_id').on('change', function () {
-                const selectedFasilitas = $(this).val(); // Ambil ID fasilitas yang dipilih
-                console.log('Fasilitas yang dipilih:', selectedFasilitas);
+                $('input, select').removeClass('is-valid is-invalid');
+            }
 
-                // Jika fasilitas umum dipilih
-                if (selectedFasilitas == '2') { // Ganti '1' dengan ID fasilitas umum
-                    console.log('Fasilitas Umum dipilih, unit otomatis diatur ke Umum.');
+            function resetForm() {
+                $('#form-laporan')[0].reset(); // reset seluruh form
 
-                    // Atur unit ke Umum (ID 1) dan disable dropdown unit
-                    $('#unit_id').empty().append('<option value="1" selected>Umum</option>');
-                    $('#unit_id').after('<input type="hidden" name="unit_id" value="1" />');
-                    $('#unit_id').prop('disabled', true);
+                // reset status validasi pada elemen select dan input lainnya
+                $('#unit_id, #tempat_id, #barang_lokasi_id').removeClass('is-valid is-invalid');
+                $('#unit_id, #tempat_id, #barang_lokasi_id').prop('selectedIndex', 0);  // mengosongkan atau pilih opsi default
 
+                $('#barang_lokasi_id').find('option:selected').prop('selected', false);
+                $('#barang_lokasi_id').removeClass('is-valid');
 
-                    // Filter tempat berdasarkan unit Umum
-                    filterTempat(1);
+                disableAllFieldsExceptFasilitas();  // untuk nonaktifkan semua kecuali fasilitas
 
-                    // Aktifkan dropdown tempat
-                    $('#tempat_id').prop('disabled', false);
-                } else {
-                    // Reset dropdown unit dan tempat jika fasilitas bukan umum
-                    $('#unit_id').prop('disabled', false);
-                    filterUnits(selectedFasilitas);
+                $('#form-laporan').validate().resetForm(); // reset validasi form
+                $('#form-laporan').removeClass('was-validated'); // menghapus class was-validated
+                window.location.reload();
+            }
 
-                    // Reset dropdown tempat dan barang lokasi
-                    $('#tempat_id').empty().prop('disabled', true);
-                    $('#barang_lokasi_id').empty().prop('disabled', true);
-                }
-            });
+            function handleFasilitasUmum() {
+                $('#unit_id').append('<option value="1" selected>Umum</option>')
+                    .prop('disabled', true);
+                $('#unit_id').after('<input type="hidden" name="unit_id" value="1" />');
+                filterTempat(1);
+                $('#tempat_id').prop('disabled', false);
+            }
 
-            // Event listener untuk dropdown unit
-            $('#unit_id').on('change', function () {
-                const selectedUnit = $(this).val(); // Ambil ID unit yang dipilih
-                console.log('Unit yang dipilih:', selectedUnit);
+            function handleFasilitasGedung(fasilitasId) {
+                filterUnits(fasilitasId);
+                $('#unit_id').prop('disabled', false);
+            }
 
-                // Filter tempat berdasarkan unit_id
-                filterTempat(selectedUnit);
-
-                // Reset dropdown barang lokasi
-                $('#barang_lokasi_id').empty().prop('disabled', true);
-            });
-
-            // Event listener untuk dropdown tempat
-            $('#tempat_id').on('change', function () {
-                const selectedTempat = $(this).val(); // Ambil ID tempat yang dipilih
-                console.log('Tempat yang dipilih:', selectedTempat);
-
-                // Filter barang lokasi berdasarkan tempat_id
-                filterBarangLokasi(selectedTempat);
-            });
-
-            // Fungsi untuk memfilter unit
             function filterUnits(fasilitasId) {
-                // Kosongkan dropdown unit_id
-                $('#unit_id').empty();
-
-                // Tambahkan opsi default
-                $('#unit_id').append('<option value="" disabled selected>Pilih Unit</option>');
-
-                // Filter data unit berdasarkan fasilitas_id
+                $('#unit_id').empty().append('<option value="" disabled selected>Pilih Unit</option>');
                 const filteredUnits = units.filter(unit => unit.fasilitas_id == fasilitasId);
 
-                // Tambahkan opsi unit yang sesuai
-                filteredUnits.forEach(function (unit) {
+                filteredUnits.forEach(function(unit) {
                     $('#unit_id').append(`<option value="${unit.unit_id}">${unit.nama_unit}</option>`);
                 });
-
-                console.log('Unit yang ditampilkan:', filteredUnits);
-
-                // Aktifkan dropdown unit jika ada data
-                $('#unit_id').prop('disabled', filteredUnits.length === 0);
             }
 
-            // Fungsi untuk memfilter tempat
             function filterTempat(unitId) {
-                // Kosongkan dropdown tempat_id
-                $('#tempat_id').empty();
-
-                // Tambahkan opsi default
-                $('#tempat_id').append('<option value="" disabled selected>Pilih Tempat</option>');
-
-                // Filter data tempat berdasarkan unit_id
+                $('#tempat_id').empty().append('<option value="" disabled selected>Pilih Tempat</option>');
                 const filteredTempat = tempat.filter(t => t.unit_id == unitId);
 
-                // Tambahkan opsi tempat yang sesuai
-                filteredTempat.forEach(function (t) {
-                    $('#tempat_id').append(`<option value="${t.tempat_id}">${t.nama_tempat}</option>`);
-                });
-
-                console.log('Tempat yang ditampilkan:', filteredTempat);
-
-                // Aktifkan dropdown tempat jika ada data
-                $('#tempat_id').prop('disabled', filteredTempat.length === 0);
+                if (filteredTempat.length > 0) {
+                    filteredTempat.forEach(function(t) {
+                        $('#tempat_id').append(`<option value="${t.tempat_id}">${t.nama_tempat}</option>`);
+                    });
+                } else {
+                    $('#tempat_id').append('<option value="" disabled>Tidak ada tempat tersedia</option>');
+                }
             }
 
-            // Fungsi untuk memfilter barang lokasi
             function filterBarangLokasi(tempatId) {
-                // Kosongkan dropdown barang_lokasi_id
-                $('#barang_lokasi_id').empty();
+                $('#barang_lokasi_id').empty().append('<option value="" disabled selected>Pilih Barang</option>');
+                const filteredBarang = barangLokasi.filter(b => b.tempat_id == tempatId);
 
-                // Tambahkan opsi default
-                $('#barang_lokasi_id').append('<option value="" disabled selected>Pilih Barang</option>');
-
-                // Filter data barang lokasi berdasarkan tempat_id
-                const filteredBarangLokasi = barangLokasi.filter(b => b.tempat_id == tempatId);
-
-                // Tambahkan opsi barang lokasi yang sesuai
-                filteredBarangLokasi.forEach(function (b) {
-                    $('#barang_lokasi_id').append(`<option value="${b.barang_lokasi_id}">${b.jenis_barang.nama_barang}</option>`);
-                });
-
-                console.log('Barang lokasi yang ditampilkan:', filteredBarangLokasi);
-
-                // Aktifkan dropdown barang lokasi jika ada data
-                $('#barang_lokasi_id').prop('disabled', filteredBarangLokasi.length === 0);
+                if (filteredBarang.length > 0) {
+                    filteredBarang.forEach(function(b) {
+                        const namaBarang = b.jenis_barang ? b.jenis_barang.nama_barang : 'Barang Tidak Dikenal';
+                        $('#barang_lokasi_id').append(
+                            `<option value="${b.barang_lokasi_id}">${namaBarang}</option>`
+                        );
+                    });
+                } else {
+                    $('#barang_lokasi_id').append('<option value="" disabled>Tidak ada barang tersedia</option>');
+                }
             }
 
-            $.validator.addMethod('filesize', function (value, element, param) {
+            function enableRemainingFields() {
+                $('#kategori_kerusakan_id, #periode_id, #jumlah_barang_rusak, #deskripsi, #foto_laporan')
+                    .prop('disabled', false);
+            }
+
+            function updateJumlahBarangTersedia(barangLokasiId) {
+                const selectedBarang = barangLokasi.find(b => b.barang_lokasi_id == barangLokasiId);
+
+                if (selectedBarang) {
+                    const maxJumlahRusak = selectedBarang.jumlah_barang || 0;
+                    $('#jumlah_barang_rusak').attr('max', maxJumlahRusak);
+                    $('#max-jumlah').text(`Jumlah fasilitas yang tersedia: ${maxJumlahRusak}`);
+                }
+            }
+
+            // Validasi form
+            $.validator.addMethod('filesize', function(value, element, param) {
                 return this.optional(element) || (element.files[0].size <= param * 1024);
             }, 'Ukuran file terlalu besar.');
 
-            // Validasi form menggunakan jQuery Validation
             $('#form-laporan').validate({
                 rules: {
-                    fasilitas_id: {
-                        required: true
-                    },
-                    unit_id: {
-                        required: true
-                    },
-                    tempat_id: {
-                        required: true
-                    },
-                    barang_lokasi_id: {
-                        required: true
-                    },
-                    kategori_kerusakan_id: {
-                        required: true
-                    },
-                    periode_id: {
-                        required: true
-                    },
+                    fasilitas_id: { required: true },
+                    unit_id: { required: true },
+                    tempat_id: { required: true },
+                    barang_lokasi_id: { required: true },
+                    kategori_kerusakan_id: { required: true },
+                    periode_id: { required: true },
                     foto_laporan: {
                         required: true,
                         extension: "jpg|jpeg|png|gif",
-                        filesize: 2048 // 2MB in KB
+                        filesize: 2048
                     },
                     deskripsi: {
                         required: true,
@@ -362,11 +435,10 @@
                         min: 1,
                         max: function() {
                             const maxRusak = $('#jumlah_barang_rusak').attr('max');
-                            return  parseInt(maxRusak);
+                            return parseInt(maxRusak);
                         }
                     }
                 },
-                // Messages should be outside the rules object
                 messages: {
                     fasilitas_id: "Silakan pilih fasilitas.",
                     unit_id: "Silakan pilih unit.",
@@ -376,7 +448,7 @@
                     periode_id: "Silakan pilih periode.",
                     foto_laporan: {
                         required: "Silakan unggah foto laporan.",
-                        extension: "Hanya file JPG, JPEG, PNG, dan PDF yang diperbolehkan.",
+                        extension: "Hanya file JPG, JPEG, PNG yang diperbolehkan.",
                         filesize: "Ukuran file tidak boleh lebih dari 2 MB."
                     },
                     deskripsi: {
@@ -389,23 +461,32 @@
                         max: "Jumlah fasilitas yang rusak tidak boleh melebihi jumlah fasilitas yang tersedia."
                     }
                 },
-                errorPlacement: function (error, element) {
+                errorPlacement: function(error, element) {
                     if (element.attr("name") == "jumlah_barang_rusak") {
                         error.appendTo("#error-jumlah_rusak");
                     } else {
                         error.insertAfter(element);
                     }
+                },
+                highlight: function(element) {
+                    $(element).addClass('is-invalid').removeClass('is-valid');
+                },
+                unhighlight: function(element) {
+                    $(element).removeClass('is-invalid').addClass('is-valid');
                 }
             });
 
-            $('#form-laporan').on('submit', function (e) {
-                e.preventDefault(); // cegah form submit standar
+            // Form submission with AJAX
+            $('#form-laporan').on('submit', function(e) {
+                e.preventDefault();
+
+                if (!$(this).valid()) return;
+
                 let formData = new FormData(this);
 
-                // Tampilkan loading sebelum AJAX
                 Swal.fire({
-                    title: 'Mengirim...',
-                    text: 'Mohon tunggu sebentar.',
+                    title: 'Mengirim Laporan',
+                    text: 'Sedang memproses laporan Anda...',
                     allowOutsideClick: false,
                     didOpen: () => {
                         Swal.showLoading();
@@ -418,28 +499,33 @@
                     data: formData,
                     processData: false,
                     contentType: false,
-                    success: function (response) {
-                        console.log(response);
+                    success: function(response) {
                         Swal.fire({
                             icon: 'success',
                             title: 'Berhasil!',
-                            text: response.message || 'Laporan berhasil dikirim!'
-                        }).then(() => {
-                            window.location.href = "{{ route('riwayatlaporan') }}";
+                            html: `<p>${response.message || 'Laporan berhasil dikirim!'}</p>
+                                <div class="alert alert-info mt-3">
+                                    <i class="fas fa-info-circle me-2"></i>
+                                    Anda dapat melacak status laporan di menu Riwayat Laporan.
+                                </div>`,
+                            confirmButtonText: 'Ke Riwayat Laporan',
+                            showCancelButton: true,
+                            cancelButtonText: 'Tutup'
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                window.location.href = "{{ route('riwayatlaporan') }}";
+                            } else {
+                                resetForm();
+                                $('#file-preview').addClass('d-none');
+                            }
                         });
                     },
-                    error: function (xhr) {
-                        console.log(xhr);
+                    error: function(xhr) {
                         let errorMsg = 'Terjadi kesalahan saat mengirim laporan.';
 
-                        if (xhr.status === 422 && xhr.responseJSON && xhr.responseJSON.errors) {
-                            // Ambil semua pesan langsung dari Laravel (sudah custom di Controller)
-                            let messages = [];
-                            for (let field in xhr.responseJSON.errors) {
-                                messages.push(xhr.responseJSON.errors[field][0]);
-                            }
-                            errorMsg = messages.join('<br>');
-                        } else if (xhr.responseJSON && xhr.responseJSON.message) {
+                        if (xhr.status === 422 && xhr.responseJSON?.errors) {
+                            errorMsg = Object.values(xhr.responseJSON.errors).join('<br>');
+                        } else if (xhr.responseJSON?.message) {
                             errorMsg = xhr.responseJSON.message;
                         }
 
@@ -451,7 +537,6 @@
                     }
                 });
             });
-
         });
     </script>
 @endpush
