@@ -29,6 +29,10 @@
                                 <div class="col-sm-8">: {{ $laporan->barangLokasi->jenisBarang->nama_barang ?? '-' }}</div>
                             </div>
                             <div class="row mb-2">
+                                <div class="col-sm-4 fw-bold">Jumlah yang rusak</div>
+                                <div class="col-sm-8">: {{ $laporan->jumlah_barang_rusak ?? '0' }}</div>
+                            </div>
+                            <div class="row mb-2">
                                 <div class="col-sm-4 fw-bold">Kategori Kerusakan</div>
                                 <div class="col-sm-8">: {{ $laporan->kategoriKerusakan->nama_kategori ?? '-' }}</div>
                             </div>

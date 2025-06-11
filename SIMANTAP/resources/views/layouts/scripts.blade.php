@@ -34,6 +34,61 @@
             });
         }
 
+    // document.addEventListener('DOMContentLoaded', function () {
+    //     const themeToggle = document.getElementById('theme-toggle');
+    //     const themeIcon = document.getElementById('theme-icon');
+    //     const bootstrapStyle = document.getElementById('bootstrap-style');
+    //     const appStyle = document.getElementById('app-style');
+    //     const dataTable = document.querySelector('#datatable');
+
+    //     // Fungsi untuk mengatur tema
+    //     const setTheme = (theme) => {
+    //         if (theme === 'dark') {
+    //             bootstrapStyle.setAttribute('href', 'assets/css/bootstrap-dark.min.css');
+    //             appStyle.setAttribute('href', 'assets/css/app-dark.min.css');
+    //             themeIcon.classList.remove('ri-sun-line');
+    //             themeIcon.classList.add('ri-moon-line');
+
+    //             if (dataTable) {
+    //                 dataTable.classList.add('table-dark');
+    //             }
+    //         } else {
+    //             bootstrapStyle.setAttribute('href', 'assets/css/bootstrap.min.css');
+    //             appStyle.setAttribute('href', 'assets/css/app.min.css');
+    //             themeIcon.classList.remove('ri-moon-line');
+    //             themeIcon.classList.add('ri-sun-line');
+
+    //             if (dataTable) {
+    //             dataTable.classList.remove('table-dark');
+    //             }
+    //         }
+    //         localStorage.setItem('theme', theme); // Simpan preferensi tema di localStorage
+
+    //         window.location.reload();
+    //     };
+
+    //     // Deteksi preferensi tema perangkat
+    //     const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+
+    //     // Periksa apakah ada preferensi tema yang disimpan di localStorage
+    //     const savedTheme = localStorage.getItem('theme');
+
+    //     if (savedTheme) {
+    //         setTheme(savedTheme); // Gunakan tema yang disimpan
+    //     } else {
+    //         setTheme(systemPrefersDark ? 'dark' : 'light'); // Gunakan preferensi perangkat
+    //     }
+
+    //     // Tambahkan event listener untuk tombol toggle tema
+    //     themeToggle.addEventListener('click', () => {
+    //         const currentTheme = localStorage.getItem('theme') || (systemPrefersDark ? 'dark' : 'light');
+    //         setTheme(currentTheme === 'dark' ? 'light' : 'dark'); // Toggle tema
+    //     });
+
+    //     // Setelah tema diterapkan, tampilkan halaman
+    //     document.body.style.visibility = 'visible';
+    // });
+
     document.addEventListener('DOMContentLoaded', function () {
         const themeToggle = document.getElementById('theme-toggle');
         const themeIcon = document.getElementById('theme-icon');
@@ -41,14 +96,14 @@
         const appStyle = document.getElementById('app-style');
         const dataTable = document.querySelector('#datatable');
 
-        // Fungsi untuk mengatur tema
-        const setTheme = (theme) => {
+        // Fungsi untuk mengatur tema tanpa reload
+        const applyTheme = (theme) => {
             if (theme === 'dark') {
                 bootstrapStyle.setAttribute('href', 'assets/css/bootstrap-dark.min.css');
                 appStyle.setAttribute('href', 'assets/css/app-dark.min.css');
                 themeIcon.classList.remove('ri-sun-line');
                 themeIcon.classList.add('ri-moon-line');
-
+                
                 if (dataTable) {
                     dataTable.classList.add('table-dark');
                 }
@@ -57,34 +112,36 @@
                 appStyle.setAttribute('href', 'assets/css/app.min.css');
                 themeIcon.classList.remove('ri-moon-line');
                 themeIcon.classList.add('ri-sun-line');
-
+                
                 if (dataTable) {
-                dataTable.classList.remove('table-dark');
+                    dataTable.classList.remove('table-dark');
                 }
             }
-            localStorage.setItem('theme', theme); // Simpan preferensi tema di localStorage
+            localStorage.setItem('theme', theme);
         };
 
-        // Deteksi preferensi tema perangkat
+        // Fungsi untuk toggle tema dengan reload
+        const toggleThemeWithReload = () => {
+            const currentTheme = localStorage.getItem('theme') || 
+                                (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            localStorage.setItem('theme', newTheme);
+            window.location.reload();
+        };
+
+        // Deteksi preferensi tema
         const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-
-        // Periksa apakah ada preferensi tema yang disimpan di localStorage
         const savedTheme = localStorage.getItem('theme');
+        const initialTheme = savedTheme || (systemPrefersDark ? 'dark' : 'light');
 
-        if (savedTheme) {
-            setTheme(savedTheme); // Gunakan tema yang disimpan
-        } else {
-            setTheme(systemPrefersDark ? 'dark' : 'light'); // Gunakan preferensi perangkat
-        }
+        // Terapkan tema awal
+        applyTheme(initialTheme);
 
-        // Tambahkan event listener untuk tombol toggle tema
-        themeToggle.addEventListener('click', () => {
-            const currentTheme = localStorage.getItem('theme') || (systemPrefersDark ? 'dark' : 'light');
-            setTheme(currentTheme === 'dark' ? 'light' : 'dark'); // Toggle tema
-        });
-
-        // Setelah tema diterapkan, tampilkan halaman
+        // Tampilkan halaman setelah tema diterapkan
         document.body.style.visibility = 'visible';
+
+        // Event listener untuk tombol toggle
+        themeToggle.addEventListener('click', toggleThemeWithReload);
     });
 
     $(document).ready(function () {

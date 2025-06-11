@@ -38,7 +38,7 @@ class VerifikasiController extends Controller
     public function list(Request $request)
     {
         $laporans = LaporanModel::with(['fasilitas', 'unit', 'tempat', 'barangLokasi.jenisBarang'])
-            ->select('laporan_id', 'fasilitas_id', 'unit_id', 'tempat_id', 'barang_lokasi_id', 'status_verif', 'created_at')
+            ->select('laporan_id', 'fasilitas_id', 'unit_id', 'tempat_id', 'barang_lokasi_id', 'jumlah_barang_rusak', 'status_verif', 'created_at')
             ->where('status_verif', 'belum diverifikasi')
             ->get();
 
@@ -341,7 +341,7 @@ class VerifikasiController extends Controller
     {
         if ($request->ajax()) {
             $laporans = LaporanModel::with(['fasilitas', 'unit', 'tempat', 'barangLokasi.jenisBarang'])
-                ->select('laporan_id', 'fasilitas_id', 'unit_id', 'tempat_id', 'barang_lokasi_id', 'status_verif', 'created_at')
+                ->select('laporan_id', 'fasilitas_id', 'unit_id', 'tempat_id', 'barang_lokasi_id', 'jumlah_barang_rusak', 'status_verif', 'created_at')
                 ->whereIn('status_verif', ['diverifikasi', 'ditolak'])
                 ->orderBy('created_at', 'desc')
                 ->get();
@@ -399,5 +399,12 @@ class VerifikasiController extends Controller
         }
 
         return view('verifikasi.showriwayatverif', compact('laporan'));
+    }
+
+    public function showFeedback($laporan_id)
+    {
+        $laporan = LaporanModel::with(['feedback.rating'])->findOrFail($laporan_id);
+
+        return view('verifikasi.modalfeedback', compact('laporan'));
     }
 }

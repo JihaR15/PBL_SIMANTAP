@@ -13,7 +13,7 @@ class LaporanVerifikatorSeeder extends Seeder
      */
     public function run(): void
     {
-        $userIds = [5, 16]; // ini diganti user_id nya sarpras #jiha
+        $userIds = [5, 8]; // ini diganti user_id nya sarpras #gilang
 
         LaporanModel::all()->each(function ($laporan) use ($userIds) {
             $laporan->verifikator_id = $userIds[array_rand($userIds)];

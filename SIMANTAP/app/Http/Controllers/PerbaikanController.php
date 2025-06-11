@@ -71,6 +71,9 @@ class PerbaikanController extends Controller
             ->addColumn('created_at', function ($laporan) {
                 return Carbon::parse($laporan->created_at)->format('d M Y');
             })
+            ->addColumn('jumlah_barang_rusak', function ($perbaikan) {
+                return optional($perbaikan->laporan)->jumlah_barang_rusak ?? '-'; // Menampilkan jumlah barang rusak
+            })
             ->rawColumns(['action', 'prioritas'])
             ->make(true);
     }
@@ -183,6 +186,9 @@ class PerbaikanController extends Controller
             })
             ->addColumn('created_at', function ($laporan) {
                 return Carbon::parse($laporan->created_at)->format('d M Y');
+            })
+            ->addColumn('jumlah_barang_rusak', function ($perbaikan) {
+                return optional($perbaikan->laporan)->jumlah_barang_rusak ?? '-'; // Menampilkan jumlah barang rusak
             })
             ->rawColumns(['action', 'prioritas'])
             ->make(true);
@@ -298,6 +304,9 @@ class PerbaikanController extends Controller
             ->addColumn('created_at', function ($laporan) {
                 return Carbon::parse($laporan->created_at)->format('d M Y');
             })
+            ->addColumn('jumlah_barang_rusak', function ($perbaikan) {
+                return optional($perbaikan->laporan)->jumlah_barang_rusak ?? '-'; // Menampilkan jumlah barang rusak
+            })
             ->rawColumns(['action', 'prioritas'])
             ->make(true);
     }
@@ -325,6 +334,13 @@ class PerbaikanController extends Controller
         return view('perbaikan.showriwayat', compact('perbaikan'));
     }
 
+    public function showFeedback($perbaikan_id)
+    {
+        $perbaikan = PerbaikanModel::with('laporan.feedback.rating')->findOrFail($perbaikan_id);
+        $feedback = $perbaikan->laporan->feedback ?? collect();
+
+        return view('perbaikan.modalfeedback', compact('feedback'));
+    }
 
 
 

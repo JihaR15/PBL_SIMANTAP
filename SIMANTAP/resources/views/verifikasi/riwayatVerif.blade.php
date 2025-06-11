@@ -29,6 +29,7 @@
                                         <th>Unit</th>
                                         <th>Tempat</th>
                                         <th>Barang</th>
+                                        <th>Jumlah Fasilitas yang rusak</th>
                                         <th>Tanggal</th>
                                         <th>Status</th>
                                         <th>Aksi</th>
@@ -89,6 +90,11 @@
                     {
                         data: 'nama_barang',
                         name: 'nama_barang'
+                    },
+                    {
+                        data: 'jumlah_barang_rusak',
+                        name: 'jumlah_barang_rusak',
+                        className: "text-center"
                     },
                     {
                         data: 'created_at',

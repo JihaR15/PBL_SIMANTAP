@@ -89,7 +89,7 @@ class ProfileController extends Controller
         if ($request->ajax() || $request->wantsJson()) {
             return response()->json([
                 'status' => true,
-                'message' => 'User updated successfully.',
+                'message' => 'Perubahan profil berhasil disimpan!.',
                 'data' => $user
             ]);
         }

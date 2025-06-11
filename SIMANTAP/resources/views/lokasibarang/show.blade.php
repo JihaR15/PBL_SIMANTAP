@@ -69,6 +69,7 @@
                     <tr class="text-bold">
                         <th style="width: 5%;">No</th>
                         <th>Nama Barang</th>
+                        <th>Jumlah Barang</th>
                         <th class="text-center" style="width: 10%;">Aksi</th>
                     </tr>
                 </thead>
@@ -77,6 +78,14 @@
                         <tr>
                             <td>{{ $key + 1 }}</td>
                             <td>{{ $barang->jenisBarang->nama_barang }}</td>
+                            <td>
+                                <form action="{{ url('lokasibarang/' . $barang->barang_lokasi_id . '/updateJumlah') }}" method="POST" class="form-edit-jumlah">
+                                    @csrf
+                                    @method('PUT')
+                                    <input type="number" name="jumlah_barang" value="{{ $barang->jumlah_barang }}" class="form-control form-control-sm" required data-original-value="{{ $barang->jumlah_barang }}">
+                                    <button type="submit" class="btn btn-sm btn-primary mt-2" style="display: none;">Simpan</button>
+                                </form>
+                            </td>
                             <td class="text-center">
                                 <form action="javascript:void(0);" id="hapus-barang-form" style="display:inline;">
                                     <button type="button" class="btn btn-sm btn-danger" onclick="modalAction('{{ url('/lokasibarang/' . $tempat_id . '/confirmDelete/' . $barang->jenis_barang_id) }}')">Hapus</button>
@@ -138,6 +147,57 @@
         })
         .catch(() => {
             Swal.fire('Error', 'Terjadi kesalahan saat menambah fasilitas.', 'error');
+        });
+    });
+
+    // Mengatur tombol simpan muncul jika ada perubahan input jumlah barang
+    document.querySelectorAll('.form-edit-jumlah input').forEach(input => {
+        input.addEventListener('input', function() {
+            var form = this.closest('form');
+            var originalValue = form.querySelector('input[name="jumlah_barang"]').getAttribute('data-original-value');
+            var saveButton = form.querySelector('button[type="submit"]');
+
+            if (this.value != originalValue) {
+                saveButton.style.display = "inline-block";  // Tampilkan tombol simpan jika ada perubahan
+            } else {
+                saveButton.style.display = "none";  // Sembunyikan tombol simpan jika tidak ada perubahan
+            }
+        });
+    });
+
+    // Mengirim form ketika tombol simpan diklik
+    document.querySelectorAll('.form-edit-jumlah').forEach(form => {
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const formData = new FormData(this);
+            const url = this.action;
+            const saveButton = this.querySelector('button[type="submit"]');
+
+            fetch(url, {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())  // Mendapatkan respons JSON dari server
+            .then(data => {
+                if (data.status === 'success') {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Sukses',
+                        text: data.message,  // Menampilkan pesan sukses
+                        timer: 1500,
+                        showConfirmButton: false
+                    }).then(() => {
+                        saveButton.style.display = "none";  // Menyembunyikan tombol simpan setelah sukses
+                        location.reload();  // Refresh halaman untuk melihat perubahan
+                    });
+                } else {
+                    Swal.fire('Error', data.message || 'Terjadi kesalahan.', 'error');  // Menampilkan pesan error jika gagal
+                }
+            })
+            .catch((error) => {
+                Swal.fire('Error', 'Terjadi kesalahan saat memperbarui jumlah barang.', 'error');  // Menangani error yang terjadi pada fetch
+            });
         });
     });
 

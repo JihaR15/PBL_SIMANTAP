@@ -129,10 +129,11 @@ Route::middleware(['auth'])->group(function () {
         Route::get('lokasibarang/{tempat_id}/show', [BarangLokasiController::class, 'show'])->name('lokasibarang.show');
         Route::get('lokasibarang/{tempat_id}/create', [BarangLokasiController::class, 'create'])->name('lokasibarang.create');
         Route::post('lokasibarang/{tempat_id}/store', [BarangLokasiController::class, 'store'])->name('lokasibarang.store');
+        Route::put('/lokasibarang/{barang_lokasi_id}/updateJumlah', [BarangLokasiController::class, 'updateJumlah'])->name('lokasibarang.updateJumlah');
         Route::get('/lokasibarang/{tempat_id}/confirmDelete/{jenis_barang_id}', [BarangLokasiController::class, 'confirmDelete'])->name('lokasibarang.confirmDelete');
         Route::delete('/lokasibarang/{tempat_id}/delete/{jenis_barang_id}', [BarangLokasiController::class, 'delete'])->name('lokasibarang.delete');
 
-        // Bobot 
+        // Bobot
         Route::get('bobot', [BobotController::class, 'index'])->name('bobot.index');
         Route::post('bobot/list', [BobotController::class, 'list'])->name('bobot.list');
         Route::get('bobot/edit', [BobotController::class, 'edit'])->name('bobot.edit');
@@ -174,7 +175,7 @@ Route::middleware(['auth'])->group(function () {
         Route::delete('laporan/{id}/delete/', [LaporanController::class,'destroy'])->name('laporan.delete');
         Route::get('/statusperbaikan', [LaporanController::class, 'statusPerbaikan'])->name('statusperbaikan');
         Route::get('/statusperbaikan/{laporan_id}/show', [LaporanController::class, 'showStatusPerbaikan'])->name('statusperbaikan.show');
-        
+
         // Feedback
         Route::get('feedback', [FeedbackController::class, 'index'])->name('feedback.index');
         Route::get('feedback/list', [FeedbackController::class, 'list'])->name('feedback.list');
@@ -194,6 +195,7 @@ Route::middleware(['auth'])->group(function () {
         Route::post('verifikasi/{laporan_id}/reject', [VerifikasiController::class, 'reject'])->name('verifikasi.reject');
         Route::get('riwayatverifikasi', [VerifikasiController::class, 'riwayatVerifikasi'])->name('riwayatverifikasi');
         Route::get('/riwayatverifikasi/{laporan_id}/show', [VerifikasiController::class, 'showRiwayatVerif'])->name('riwayatverifikasi.show');
+        Route::get('/riwayatverifikasi/{laporan_id}/feedback', [VerifikasiController::class, 'showFeedback']);
         Route::get('verifikasi/{laporan_id}/prioritas', [VerifikasiController::class, 'showPrioritas'])->name('verifikasi.prioritas.show');
 
         Route::get('laporan/laporanadmin', [LaporanController::class, 'laporanadmin'])->name('laporan.laporanadmin'); // laporan pdf admin
@@ -215,6 +217,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('riwayatperbaikan', [PerbaikanController::class, 'riwayatPerbaikan'])->name('riwayatperbaikan');
         Route::post('/riwayatperbaikan/list', [PerbaikanController::class, 'riwayatList'])->name('perbaikan.riwayatList');
         Route::get('riwayatperbaikan/{perbaikan_id}/show', [PerbaikanController::class, 'showRiwayatPerbaikan'])->name('riwayatperbaikan.show');
+        Route::get('riwayatperbaikan/{perbaikan_id}/feedback', [PerbaikanController::class, 'showFeedback']);
 
     });
 });

@@ -29,6 +29,7 @@
                                         <th>Tempat</th>
                                         <th>Unit</th>
                                         <th>Tanggal</th>
+                                        <th>Jumlah Fasilitas yang rusak</th>
                                         <th>Status Perbaikan</th>
                                         <th>Aksi</th>
                                     </tr>
@@ -70,6 +71,7 @@
                     { data: 'tempat', name: 'tempat' },
                     { data: 'unit', name: 'unit' },
                     { data: 'created_at', name: 'created_at' },
+                    { data: 'jumlah_barang_rusak', name: 'jumlah_barang_rusak', className: "text-center", width: "10%"},
                     { data: 'status_perbaikan', name: 'status_perbaikan', className: "text-center" },
                     { data: 'action', name: 'action', orderable: false, searchable: false, className: "text-center", width: "8%" }
                 ],

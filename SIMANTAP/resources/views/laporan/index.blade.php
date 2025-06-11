@@ -81,7 +81,7 @@
                                         </select>
                                         <small id="error-barang_id" class="error-text form-text text-danger"></small>
                                     </div>
-                                    <div class="mb-3 col-md-8">
+                                    <div class="mb-3 col-md-4">
                                         <label>Pilih Kategori Kerusakan</label>
                                         <select name="kategori_kerusakan_id" id="kategori_kerusakan_id" class="form-select"
                                             required>
@@ -92,6 +92,12 @@
                                         </select>
                                         <small id="error-kategori-kerusakan_id"
                                             class="error-text form-text text-danger"></small>
+                                    </div>
+                                    <div class="mb-3 col-md-4">
+                                        <label for="jumlah_barang_rusak">Jumlah Fasilitas yang Rusak</label>
+                                        <input type="number" name="jumlah_barang_rusak" id="jumlah_barang_rusak" class="form-control" required min="1">
+                                        <small id="max-jumlah" class="form-text text-muted">Jumlah fasilitas yang tersedia: 0</small>
+                                        <small id="error-jumlah_rusak" class="error-text form-text text-danger"></small>
                                     </div>
                                 </div>
 
@@ -168,6 +174,27 @@
         const units = @json($unit); // Data unit dari controller
         const tempat = @json($tempat); // Data tempat dari controller
         const barangLokasi = @json($barangLokasi); // Data barang lokasi dari controller
+
+        $(document).ready(function () {
+            $('#barang_lokasi_id').on('change', function () {
+                const selectedBarangId = $(this).val();
+                console.log('Barang yang dipilih:', selectedBarangId);
+
+                const selectedBarang = barangLokasi.find(b => b.barang_lokasi_id == selectedBarangId);
+
+                if (selectedBarang) {
+                    const maxJumlahRusak = selectedBarang.jumlah_barang;
+                    $('#jumlah_barang_rusak').attr('max', maxJumlahRusak);
+                    $('#max-jumlah').text('Jumlah fasilitas yang tersedia: ' + maxJumlahRusak);
+                }
+            });
+
+            const defaultBarang = $('#barang_lokasi_id').val();
+            if (defaultBarang) {
+                $('#barang_lokasi_id').trigger('change');
+            }
+
+        });
 
         $(document).ready(function () {
             // Saat halaman dimuat, nonaktifkan dropdown tempat dan barang lokasi
@@ -329,6 +356,14 @@
                     deskripsi: {
                         required: true,
                         minlength: 5
+                    },
+                    jumlah_barang_rusak: {
+                        required: true,
+                        min: 1,
+                        max: function() {
+                            const maxRusak = $('#jumlah_barang_rusak').attr('max');
+                            return  parseInt(maxRusak);
+                        }
                     }
                 },
                 // Messages should be outside the rules object
@@ -347,6 +382,18 @@
                     deskripsi: {
                         required: "Silakan isi deskripsi kerusakan.",
                         minlength: "Deskripsi harus terdiri dari minimal 5 karakter."
+                    },
+                    jumlah_barang_rusak: {
+                        required: "Silakan masukkan jumlah fasilitas yang rusak.",
+                        min: "Jumlah fasilitas yang rusak harus lebih dari 0.",
+                        max: "Jumlah fasilitas yang rusak tidak boleh melebihi jumlah fasilitas yang tersedia."
+                    }
+                },
+                errorPlacement: function (error, element) {
+                    if (element.attr("name") == "jumlah_barang_rusak") {
+                        error.appendTo("#error-jumlah_rusak");
+                    } else {
+                        error.insertAfter(element);
                     }
                 }
             });

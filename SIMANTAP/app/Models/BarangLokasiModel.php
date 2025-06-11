@@ -15,6 +15,7 @@ class BarangLokasiModel extends Model
     protected $fillable = [
         'jenis_barang_id',
         'tempat_id',
+        'jumlah_barang',
     ];
 
     public function jenisBarang()

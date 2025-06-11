@@ -29,6 +29,7 @@
                                         <th>Tempat</th>
                                         <th>Unit</th>
                                         <th>Tanggal</th>
+                                        <th>Jumlah Fasilitas yang rusak</th>
                                         <th>Prioritas</th>
                                         <th>Aksi</th>
                                     </tr>
@@ -90,6 +91,11 @@
                     {
                         data: 'created_at',
                         name: 'created_at'
+                    },
+                    {
+                        data: 'jumlah_barang_rusak',
+                        name: 'jumlah_barang_rusak',
+                        className: "text-center"
                     },
                     {
                         data: 'prioritas',

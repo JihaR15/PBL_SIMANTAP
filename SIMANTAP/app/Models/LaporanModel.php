@@ -18,6 +18,7 @@ class LaporanModel extends Model
         'unit_id',
         'tempat_id',
         'barang_lokasi_id',
+        'jumlah_barang_rusak',
         'periode_id',
         'kategori_kerusakan_id',
         'status_verif',

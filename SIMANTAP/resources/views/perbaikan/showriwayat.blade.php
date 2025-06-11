@@ -31,6 +31,11 @@
                                     : {{ $perbaikan->laporan->barangLokasi->jenisBarang->nama_barang ?? '-' }}</div>
                             </div>
                             <div class="row mb-2">
+                                <div class="col-sm-4 fw-bold">Jumlah yang rusak</div>
+                                <div class="col-sm-8">
+                                    : {{ $perbaikan->laporan->jumlah_barang_rusak ?? '0' }}</div>
+                            </div>
+                            <div class="row mb-2">
                                 <div class="col-sm-4 fw-bold">Kategori Kerusakan</div>
                                 <div class="col-sm-8">:
                                     {{ $perbaikan->laporan->kategoriKerusakan->nama_kategori ?? '-' }}
@@ -91,6 +96,15 @@
                     </div>
                 </div>
             </div>
+
+            <div class="modal-footer">
+                    {{-- <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button> --}}
+                    @if ($perbaikan->status_perbaikan === 'selesai')
+                        <button class="btn btn-primary" onclick="showFeedback({{ $perbaikan->perbaikan_id }})">
+                            Lihat Feedback
+                        </button>
+                    @endif
+                </div>
         </div>
     </div>
 </div>
@@ -133,44 +147,91 @@
     .img-hover-dark:hover .icon-search {
         opacity: 1;
     }
+
+    .swal2-actions {
+        display: flex !important;
+        justify-content: flex-end !important;
+        padding: 0 1.5rem 1rem;
+    }
+
+    .swal-btn-tutup {
+        margin-left: auto;
+        margin-right: 0;
+        padding: 6px 20px;
+        font-weight: 500;
+        border-radius: 6px;
+    }
 </style>
 
 <script>
-    $('#btn-verify').on('click', function () {
-        var id = $(this).data('id');
+    function setTheme(theme) {
+        if (theme === 'dark') {
+            document.body.classList.add('dark-mode');
+            document.body.classList.remove('light-mode');
+            localStorage.setItem('theme', 'dark');
+        } else {
+            document.body.classList.add('light-mode');
+            document.body.classList.remove('dark-mode');
+            localStorage.setItem('theme', 'light');
+        }
+    }
 
-        Swal.fire({
-            title: 'Yakin ingin mengerjakan?',
-            icon: 'question',
-            showCancelButton: true,
-            confirmButtonColor: '#198754',
-            cancelButtonColor: '#d33',
-            confirmButtonText: 'Ya, kerjakan!',
-            cancelButtonText: 'Batal'
-        }).then((result) => {
-            if (result.isConfirmed) {
-                $.ajax({
-                    url: '/perbaikan/' + id + '/kerjakan',
-                    type: 'PUT',
-                    data: {
-                        _token: '{{ csrf_token() }}'
-                    },
-                    success: function (response) {
-                        Swal.fire(
-                            'Berhasil!',
-                            'Perbaikan telah dimulai. 💪',
-                            'success'
-                        ).then(() => { // kalo mau refresh ditempat tinggal ganti ke location.reload(); 
-                            // kalo gak  $('#myModal').modal('hide'); $('#datatable').DataTable().ajax.reload(); #jiha
-                            window.location.href = "{{ route('dikerjakan') }}";
-                        });
-                    },
-                    error: function () {
-                        Swal.fire('Gagal', 'Gagal mengupdate perbaikan.', 'error');
-                    }
-                });
-            }
-        });
+    const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+
+    const savedTheme = localStorage.getItem('theme');
+
+    if (savedTheme) {
+        setTheme(savedTheme);
+    } else {
+        setTheme(systemPrefersDark ? 'dark' : 'light');
+    }
+
+    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
+        setTheme(e.matches ? 'dark' : 'light');
     });
 
+    function showFeedback(perbaikanId) {
+        $.get(`/riwayatperbaikan/${perbaikanId}/feedback`, function(html) {
+            Swal.fire({
+                title: 'Feedback Pelapor',
+                html: html,
+                width: '500px',
+                showConfirmButton: false,
+                confirmButtonText: 'Tutup',
+                showCancelButton: false,
+                showCloseButton: true,
+                focusConfirm: false,
+                buttonsStyling: false,
+                customClass: {
+                    popup: 'swal-left-align',
+                    confirmButton: 'btn btn-primary swal-btn-tutup'
+                }
+            });
+        }).fail(function () {
+            Swal.fire('Gagal', 'Gagal memuat feedback.', 'error');
+        });
+    }
+
+    const style = document.createElement('style');
+    style.innerHTML = `
+        .light-mode .swal-left-align {
+            background-color: #fff;
+            color: #000;
+        }
+
+        .dark-mode .swal-left-align {
+            background-color: #252b3b;
+            color: #fff;
+        }
+
+        /* Tambahkan gaya untuk modal di dark mode */
+        .dark-mode .swal2-title {
+            color: #fff; /* Ubah warna judul menjadi putih */
+        }
+
+        .dark-mode .swal2-html-container {
+            color: #79858f; /* Ubah warna teks menjadi putih */
+        }
+    `;
+    document.head.appendChild(style);
 </script>

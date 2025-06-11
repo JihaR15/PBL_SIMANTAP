@@ -31,6 +31,10 @@
                                     : {{ $perbaikan->laporan->barangLokasi->jenisBarang->nama_barang ?? '-' }}</div>
                             </div>
                             <div class="row mb-2">
+                                <div class="col-sm-4 fw-bold">Jumlah yang rusak</div>
+                                <div class="col-sm-8">: {{ $perbaikan->laporan->jumlah_barang_rusak ?? '0' }}</div>
+                            </div>
+                            <div class="row mb-2">
                                 <div class="col-sm-4 fw-bold">Kategori Kerusakan</div>
                                 <div class="col-sm-8">:
                                     {{ $perbaikan->laporan->kategoriKerusakan->nama_kategori ?? '-' }}
@@ -135,7 +139,7 @@ $('#btn-verify').on('click', function() {
                         'Berhasil!',
                         'Perbaikan telah dimulai. 💪',
                         'success'
-                    ).then(() => { // kalo mau refresh ditempat tinggal ganti ke location.reload(); 
+                    ).then(() => { // kalo mau refresh ditempat tinggal ganti ke location.reload();
                                 // kalo gak  $('#myModal').modal('hide'); $('#datatable').DataTable().ajax.reload(); #jiha
                         window.location.href = "{{ route('dikerjakan') }}";
                     });

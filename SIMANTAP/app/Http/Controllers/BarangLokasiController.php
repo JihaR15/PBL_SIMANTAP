@@ -112,6 +112,24 @@ class BarangLokasiController extends Controller
         ]);
     }
 
+    public function updateJumlah(Request $request, $barang_lokasi_id)
+    {
+        $request->validate([
+            'jumlah_barang' => 'required|integer|min:0',
+        ]);
+
+        $barangLokasi = BarangLokasiModel::findOrFail($barang_lokasi_id);
+
+        // Update jumlah barang
+        $barangLokasi->jumlah_barang = $request->jumlah_barang;
+        $barangLokasi->save();
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Jumlah barang berhasil diperbarui'
+        ]);
+    }
+
     public function confirmDelete($tempat_id, $jenis_barang_id)
     {
         $tempat = TempatModel::findOrFail($tempat_id);

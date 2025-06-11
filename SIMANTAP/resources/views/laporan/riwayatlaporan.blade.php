@@ -28,10 +28,11 @@
                                 <thead>
                                     <tr>
                                         <th>ID</th>
-                                        <th>Fasilitas</th>
+                                        {{-- <th>Fasilitas</th> --}}
                                         <th>Unit</th>
                                         <th>Tempat</th>
                                         <th>Barang</th>
+                                        <th>Jumlah Fasilitas yang rusak</th>
                                         <th>Tanggal</th>
                                         <th>Status</th>
                                         <th>Aksi</th>
@@ -76,13 +77,14 @@
                 },
                 columns: [
                     { data: "DT_RowIndex", className: "text-center", width: "5%" },
-                    { data: 'fasilitas.nama_fasilitas', name: 'fasilitas.nama_fasilitas' },
+                    // { data: 'fasilitas.nama_fasilitas', name: 'fasilitas.nama_fasilitas' },
                     { data: 'unit.nama_unit', name: 'unit.nama_unit' },
                     { data: 'tempat.nama_tempat', name: 'tempat.nama_tempat' },
                     { data: 'nama_barang', name: 'nama_barang' },
+                    { data: 'jumlah_barang_rusak', name: 'jumlah_barang_rusak', className: "text-center", width: "10%"},
                     { data: 'created_at', name: 'created_at' },
                     { data: 'status_verif', name: 'status_verif', className: "text-center" },
-                    { data: 'action', name: 'action', orderable: false, className: "text-center", searchable: false }
+                    { data: 'action', name: 'action', orderable: false, className: "text-center", searchable: false, width: "6%" }
                 ],
                 order: [[0, 'desc']],
 

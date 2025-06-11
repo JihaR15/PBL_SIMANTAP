@@ -5,7 +5,7 @@
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
-            <p>Anda yakin ingin menghapus <strong>{{ $barang->jenisBarang->nama_barang }}</strong> dari fasilitas <strong>{{ $tempat->nama_tempat }}</strong>?</p>
+            <p>Anda yakin ingin menghapus <strong>{{ $barang->jenisBarang->nama_barang }}</strong> dengan jumlah <strong>{{ $barang->jumlah_barang }}</strong> dari ruangan <strong>{{ $tempat->nama_tempat }}</strong>?</p>
 
             <form id="form-delete" action="{{ url('/lokasibarang/' . $tempat->tempat_id . '/delete/' . $barang->jenis_barang_id) }}" method="POST">
                 @csrf

@@ -57,6 +57,9 @@ class LaporanController extends Controller
             'foto_laporan.image' => 'File harus berupa gambar.',
             'foto_laporan.mimes' => 'Format gambar harus jpeg, png, atau jpg.',
             'foto_laporan.max' => 'Ukuran gambar maksimal 2MB.',
+            'jumlah_barang_rusak.required' => 'Silakan masukkan jumlah fasilitas yang rusak.',
+            'jumlah_barang_rusak.min' => 'Jumlah fasilitas yang rusak harus lebih dari 0.',
+            'jumlah_barang_rusak.max' => 'Jumlah fasilitas yang rusak tidak boleh melebihi jumlah fasilitas yang tersedia.',
         ];
 
         // Validasi input
@@ -65,6 +68,7 @@ class LaporanController extends Controller
             'unit_id' => 'required',
             'tempat_id' => 'required',
             'barang_lokasi_id' => 'required',
+            'jumlah_barang_rusak' => 'required|integer|min:1|max:' . $this->getMaxBarangRusak($request->barang_lokasi_id),
             'periode_id' => 'required',
             'kategori_kerusakan_id' => 'required',
             'deskripsi' => 'required',
@@ -94,6 +98,7 @@ class LaporanController extends Controller
                 'unit_id' => $validated['unit_id'],
                 'tempat_id' => $validated['tempat_id'],
                 'barang_lokasi_id' => $validated['barang_lokasi_id'],
+                'jumlah_barang_rusak' => $validated['jumlah_barang_rusak'],
                 'kategori_kerusakan_id' => $validated['kategori_kerusakan_id'],
                 'periode_id' => $validated['periode_id'],
                 'deskripsi' => $validated['deskripsi'],
@@ -135,10 +140,17 @@ class LaporanController extends Controller
         }
     }
 
+    // untuk mendapatkan jumlah barang yang tersedia
+    protected function getMaxBarangRusak($barang_lokasi_id)
+    {
+        $barangLokasi = BarangLokasiModel::find($barang_lokasi_id);
+        return $barangLokasi ? $barangLokasi->jumlah_barang : 0;
+    }
+
     public function list()
     {
         $laporan = LaporanModel::with(['fasilitas', 'unit', 'tempat', 'barangLokasi.jenisBarang'])
-            ->select('laporan_id', 'fasilitas_id', 'unit_id', 'tempat_id', 'barang_lokasi_id', 'status_verif', 'created_at')
+            ->select('laporan_id', 'fasilitas_id', 'unit_id', 'tempat_id', 'barang_lokasi_id', 'jumlah_barang_rusak', 'status_verif', 'created_at')
             ->where('user_id', auth()->id())
             ->get();
 
@@ -236,7 +248,7 @@ class LaporanController extends Controller
     {
         if ($request->ajax()) {
             $laporans = LaporanModel::with(['fasilitas', 'unit', 'tempat', 'barangLokasi.jenisBarang', 'perbaikan'])
-                ->select('laporan_id', 'fasilitas_id', 'unit_id', 'tempat_id', 'barang_lokasi_id', 'created_at')
+                ->select('laporan_id', 'fasilitas_id', 'unit_id', 'tempat_id', 'barang_lokasi_id', 'created_at', 'jumlah_barang_rusak')
                 ->whereHas('perbaikan')
                 ->where('user_id', auth()->id())
                 ->where('status_verif', 'diverifikasi')
@@ -301,6 +313,7 @@ class LaporanController extends Controller
             'unit',
             'tempat',
             'barangLokasi.jenisBarang',
+            // 'jumlah_barang_rusak',
             'kategoriKerusakan',
             'periode',
             'perbaikan'
@@ -360,7 +373,7 @@ class LaporanController extends Controller
         if ($request->sort_by === 'tempat_asc') {
             $query->orderBy('tempat_id', 'asc');
         } elseif ($request->sort_by === 'tanggal_desc') {
-            $query->orderBy('created_at', 'desc'); 
+            $query->orderBy('created_at', 'desc');
         } elseif ($request->sort_by === 'tanggal_asc') {
             $query->orderBy('created_at', 'asc');
         } else {
