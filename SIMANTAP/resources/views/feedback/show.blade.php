@@ -1,3 +1,28 @@
+@php
+    $statusPerbaikan = strtolower($laporan->perbaikan->status_perbaikan ?? '');
+    $perbaikanClass = 'bg-secondary bg-opacity-10 text-secondary';
+    $perbaikanIcon = 'ri-time-line';
+    $perbaikanText = 'Belum Diperbaiki';
+
+    switch ($statusPerbaikan) {
+        case 'selesai':
+            $perbaikanClass = 'bg-success bg-opacity-10 text-success';
+            $perbaikanIcon = 'ri-check-line';
+            $perbaikanText = 'Selesai';
+            break;
+        case 'sedang diperbaiki':
+            $perbaikanClass = 'bg-info bg-opacity-10 text-info';
+            $perbaikanIcon = 'ri-refresh-line';
+            $perbaikanText = 'Sedang dikerjakan';
+            break;
+        case 'belum diperbaiki':
+            $perbaikanClass = 'bg-secondary bg-opacity-10 text-secondary';
+            $perbaikanIcon = 'ri-time-line';
+            $perbaikanText = 'Belum dikerjakan';
+            break;
+    }
+@endphp
+
 <div id="modal-master" class="modal-dialog modal-xl" role="document">
     <div class="modal-content border-0 shadow-lg">
         <div class="modal-header bg-light text-white">
@@ -166,18 +191,10 @@
                                             <div>
                                                 <label class="form-label text-muted small mb-1">Status Perbaikan</label>
                                                 <p class="mb-0 fw-bold">
-                                                    @php
-                                                        $status = $laporan->perbaikan->status_perbaikan ?? null;
-                                                    @endphp
-                                                    @if ($status === 'selesai')
-                                                        <span class="badge bg-success bg-opacity-10 text-success rounded-pill py-2 px-3">{{ ucfirst($status) }}</span>
-                                                    @elseif ($status === 'sedang diperbaiki')
-                                                        <span class="badge bg-info bg-opacity-10 text-info rounded-pill py-2 px-3">{{ ucfirst($status) }}</span>
-                                                    @elseif ($status)
-                                                        <span class="badge bg-secondary bg-opacity-10 text-secondary rounded-pill py-2 px-3">{{ ucfirst($status) }}</span>
-                                                    @else
-                                                        <span class="badge bg-secondary bg-opacity-10 text-secondary rounded-pill py-2 px-3">-</span>
-                                                    @endif
+                                                    <span class="badge {{ $perbaikanClass }} rounded-pill py-2 px-3">
+                                                        <i class="{{ $perbaikanIcon }} me-1"></i>
+                                                        {{ $perbaikanText }}
+                                                    </span>
                                                 </p>
                                             </div>
                                         </div>

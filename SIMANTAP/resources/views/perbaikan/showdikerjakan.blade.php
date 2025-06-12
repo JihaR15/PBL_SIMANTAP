@@ -1,3 +1,24 @@
+@php
+    $urgensi = $perbaikan->laporan->prioritas->klasifikasi_urgensi ?? '-';
+    $urgensiClass = 'bg-secondary bg-opacity-10 text-secondary';
+    $urgensiIcon = 'ri-information-line';
+    $urgensiText = 'Belum Ditentukan';
+
+    if ($urgensi === 'Tidak Mendesak') {
+        $urgensiClass = 'bg-secondary bg-opacity-10 text-secondary';
+        $urgensiIcon = 'ri-time-line';
+        $urgensiText = 'Tidak Urgent';
+    } elseif ($urgensi === 'Biasa') {
+        $urgensiClass = 'bg-success bg-opacity-10 text-success';
+        $urgensiIcon = 'ri-check-line';
+        $urgensiText = 'Biasa';
+    } elseif ($urgensi === 'Mendesak') {
+        $urgensiClass = 'bg-danger bg-opacity-10 text-danger';
+        $urgensiIcon = 'ri-alarm-warning-line';
+        $urgensiText = 'Urgent';
+    }
+@endphp
+
 <div id="modal-master" class="modal-dialog modal-lg" role="document">
     <div class="modal-content border-0" style="border-radius: 12px;">
         <div class="modal-header text-white bg-light">
@@ -20,7 +41,7 @@
                 </div>
                 <div class="flex-grow-1 ms-3">
                     <h4 class="mb-0">Perbaikan ID: {{ $perbaikan->perbaikan_id }}</h4>
-                    <span class="text-muted"><i class="ri-calendar-line me-1"></i> {{ $perbaikan->created_at->format('d M Y H:i') }}</span>
+                    <span class="text-muted"><i class="ri-calendar-line me-1"></i> {{ $perbaikan->created_at->format('d M Y') }}</span>
                 </div>
                 <div>
                     <span class="badge bg-warning bg-opacity-10 text-warning rounded-pill py-2 px-3">
@@ -101,6 +122,20 @@
                                         </div>
                                     </div>
                                 </div>
+                                <div class="col-md-6 mb-3">
+                                    <div class="d-flex align-items-start">
+                                        <i class="ri-flashlight-line text-primary me-2 mt-1"></i>
+                                        <div>
+                                            <label class="form-label text-muted small mb-1"> Tingkat Urgensi</label>
+                                            <p class="mb-0">
+                                                <span class="badge {{ $urgensiClass }} rounded-pill py-2 px-3">
+                                                    <i class="{{ $urgensiIcon }} me-1"></i>
+                                                    {{ $urgensiText }}
+                                                </span>
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -133,7 +168,7 @@
                     <h6 class="card-title mb-0"><i class="ri-file-text-line me-2 text-primary"></i>Deskripsi Laporan</h6>
                 </div>
                 <div class="card-body">
-                    <div class="bg-light bg-opacity-25 rounded text-start">
+                    <div class="bg-opacity-25 rounded text-start">
                         {!! $perbaikan->laporan->deskripsi ? nl2br(e($perbaikan->laporan->deskripsi)) : '<span class="text-muted">Tidak ada deskripsi tersedia.</span>' !!}
                     </div>
                 </div>

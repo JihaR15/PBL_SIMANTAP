@@ -5,6 +5,25 @@
         'sedang diperbaiki' => 'bg-info bg-opacity-10 text-info',
         'belum diperbaiki' => 'bg-secondary bg-opacity-10 text-secondary'
     ][$statusPerbaikan] ?? 'bg-secondary bg-opacity-10 text-secondary';
+
+    $urgensi = $perbaikan->laporan->prioritas->klasifikasi_urgensi ?? '-';
+    $urgensiClass = 'bg-secondary bg-opacity-10 text-secondary';
+    $urgensiIcon = 'ri-information-line';
+    $urgensiText = 'Belum Ditentukan';
+
+    if ($urgensi === 'Tidak Mendesak') {
+        $urgensiClass = 'bg-secondary bg-opacity-10 text-secondary';
+        $urgensiIcon = 'ri-time-line';
+        $urgensiText = 'Tidak Urgent';
+    } elseif ($urgensi === 'Biasa') {
+        $urgensiClass = 'bg-success bg-opacity-10 text-success';
+        $urgensiIcon = 'ri-check-line';
+        $urgensiText = 'Biasa';
+    } elseif ($urgensi === 'Mendesak') {
+        $urgensiClass = 'bg-danger bg-opacity-10 text-danger';
+        $urgensiIcon = 'ri-alarm-warning-line';
+        $urgensiText = 'Urgent';
+    }
 @endphp
 
 <div id="modal-master" class="modal-dialog modal-xl" role="document">
@@ -43,71 +62,139 @@
             <div class="row g-4">
                 <div class="col-lg-6">
                     <div class="card h-100">
-                        <div class="card-header bg-primary bg-opacity-10">
-                            <h6 class="card-title mb-0"><i class="ri-information-line me-2 text-primary"></i>Informasi Laporan</h6>
+                        <div class="card-header bg-primary bg-opacity-10 p-0 border-0">
+                            <ul class="nav nav-tabs nav-tabs-card" role="tablist">
+                                <li class="nav-item">
+                                    <a class="nav-link active" data-bs-toggle="tab" href="#tab-laporan" role="tab">
+                                        <i class="ri-information-line me-1"></i> Informasi Laporan
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" data-bs-toggle="tab" href="#tab-perbaikan" role="tab">
+                                        <i class="ri-tools-line me-1"></i> Informasi Perbaikan
+                                    </a>
+                                </li>
+                            </ul>
                         </div>
-                        <div class="card-body">
-                            <div class="row">
-                                <div class="col-md-6 mb-3">
-                                    <div class="d-flex align-items-start">
-                                        <i class="ri-building-2-line text-primary me-2 mt-1"></i>
-                                        <div>
-                                            <label class="form-label text-muted small mb-1">Fasilitas</label>
-                                            <p class="mb-0 fw-bold">{{ $perbaikan->laporan->fasilitas->nama_fasilitas ?? '-' }}</p>
+                        <div class="card-body tab-content">
+                            <div class="tab-pane fade show active" id="tab-laporan" role="tabpanel">
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <div class="d-flex align-items-start">
+                                            <i class="ri-building-2-line text-primary me-2 mt-1"></i>
+                                            <div>
+                                                <label class="form-label text-muted small mb-1">Fasilitas</label>
+                                                <p class="mb-0 fw-bold">{{ $perbaikan->laporan->fasilitas->nama_fasilitas ?? '-' }}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <div class="d-flex align-items-start">
+                                            <i class="ri-community-line text-primary me-2 mt-1"></i>
+                                            <div>
+                                                <label class="form-label text-muted small mb-1">Unit</label>
+                                                <p class="mb-0 fw-bold">{{ $perbaikan->laporan->unit->nama_unit ?? '-' }}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <div class="d-flex align-items-start">
+                                            <i class="ri-map-pin-line text-primary me-2 mt-1"></i>
+                                            <div>
+                                                <label class="form-label text-muted small mb-1">Tempat</label>
+                                                <p class="mb-0 fw-bold">{{ $perbaikan->laporan->tempat->nama_tempat ?? '-' }}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <div class="d-flex align-items-start">
+                                            <i class="ri-inbox-line text-primary me-2 mt-1"></i>
+                                            <div>
+                                                <label class="form-label text-muted small mb-1">Barang</label>
+                                                <p class="mb-0 fw-bold">{{ $perbaikan->laporan->barangLokasi->jenisBarang->nama_barang ?? '-' }}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <div class="d-flex align-items-start">
+                                            <i class="ri-error-warning-line text-primary me-2 mt-1"></i>
+                                            <div>
+                                                <label class="form-label text-muted small mb-1">Jumlah Rusak</label>
+                                                <p class="mb-0 fw-bold">{{ $perbaikan->laporan->jumlah_barang_rusak ?? '0' }}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <div class="d-flex align-items-start">
+                                            <i class="ri-alert-line text-primary me-2 mt-1"></i>
+                                            <div>
+                                                <label class="form-label text-muted small mb-1">Kategori Kerusakan</label>
+                                                <p class="mb-0 fw-bold">{{ $perbaikan->laporan->kategoriKerusakan->nama_kategori ?? '-' }}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <div class="d-flex align-items-start">
+                                            <i class="ri-calendar-event-line text-primary me-2 mt-1"></i>
+                                            <div>
+                                                <label class="form-label text-muted small mb-1">Periode</label>
+                                                <p class="mb-0 fw-bold">{{ $perbaikan->laporan->periode->nama_periode ?? '-' }}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <div class="d-flex align-items-start">
+                                            <i class="ri-flashlight-line text-primary me-2 mt-1"></i>
+                                            <div>
+                                                <label class="form-label text-muted small mb-1"> Tingkat Urgensi</label>
+                                                <p class="mb-0">
+                                                    <span class="badge {{ $urgensiClass }} rounded-pill py-2 px-3">
+                                                        <i class="{{ $urgensiIcon }} me-1"></i>
+                                                        {{ $urgensiText }}
+                                                    </span>
+                                                </p>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-md-6 mb-3">
-                                    <div class="d-flex align-items-start">
-                                        <i class="ri-community-line text-primary me-2 mt-1"></i>
-                                        <div>
-                                            <label class="form-label text-muted small mb-1">Unit</label>
-                                            <p class="mb-0 fw-bold">{{ $perbaikan->laporan->unit->nama_unit ?? '-' }}</p>
+                            </div>
+
+                            <div class="tab-pane fade" id="tab-perbaikan" role="tabpanel">
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <div class="d-flex align-items-start">
+                                            <i class="ri-calendar-check-line text-primary me-2 mt-1"></i>
+                                            <div>
+                                                <label class="form-label text-muted small mb-1">Tanggal Ditugaskan</label>
+                                                <p class="mb-0 fw-bold">{{ $perbaikan->ditugaskan_pada ? \Carbon\Carbon::parse($perbaikan->ditugaskan_pada)->format('d M Y H:i') : '-' }}</p>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-                                <div class="col-md-6 mb-3">
-                                    <div class="d-flex align-items-start">
-                                        <i class="ri-map-pin-line text-primary me-2 mt-1"></i>
-                                        <div>
-                                            <label class="form-label text-muted small mb-1">Tempat</label>
-                                            <p class="mb-0 fw-bold">{{ $perbaikan->laporan->tempat->nama_tempat ?? '-' }}</p>
+                                    <div class="col-md-6 mb-3">
+                                        <div class="d-flex align-items-start">
+                                            <i class="ri-calendar-todo-line text-primary me-2 mt-1"></i>
+                                            <div>
+                                                <label class="form-label text-muted small mb-1">Tanggal Selesai</label>
+                                                <p class="mb-0 fw-bold">{{ $perbaikan->selesai_pada_formatted ?? '-' }}</p>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-                                <div class="col-md-6 mb-3">
-                                    <div class="d-flex align-items-start">
-                                        <i class="ri-inbox-line text-primary me-2 mt-1"></i>
-                                        <div>
-                                            <label class="form-label text-muted small mb-1">Barang</label>
-                                            <p class="mb-0 fw-bold">{{ $perbaikan->laporan->barangLokasi->jenisBarang->nama_barang ?? '-' }}</p>
+                                    <div class="col-md-6 mb-3">
+                                        <div class="d-flex align-items-start">
+                                            <i class="ri-money-dollar-circle-line text-primary me-2 mt-1"></i>
+                                            <div>
+                                                <label class="form-label text-muted small mb-1">Biaya Perbaikan</label>
+                                                <p class="mb-0 fw-bold">{{ $perbaikan->biaya ? 'Rp ' . number_format($perbaikan->biaya, 0, ',', '.') : '-' }}</p>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-                                <div class="col-md-6 mb-3">
-                                    <div class="d-flex align-items-start">
-                                        <i class="ri-error-warning-line text-primary me-2 mt-1"></i>
-                                        <div>
-                                            <label class="form-label text-muted small mb-1">Jumlah Rusak</label>
-                                            <p class="mb-0 fw-bold">{{ $perbaikan->laporan->jumlah_barang_rusak ?? '0' }}</p>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-6 mb-3">
-                                    <div class="d-flex align-items-start">
-                                        <i class="ri-alert-line text-primary me-2 mt-1"></i>
-                                        <div>
-                                            <label class="form-label text-muted small mb-1">Kategori Kerusakan</label>
-                                            <p class="mb-0 fw-bold">{{ $perbaikan->laporan->kategoriKerusakan->nama_kategori ?? '-' }}</p>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-6 mb-3">
-                                    <div class="d-flex align-items-start">
-                                        <i class="ri-calendar-event-line text-primary me-2 mt-1"></i>
-                                        <div>
-                                            <label class="form-label text-muted small mb-1">Periode</label>
-                                            <p class="mb-0 fw-bold">{{ $perbaikan->laporan->periode->nama_periode ?? '-' }}</p>
+                                    <div class="col-md-6 mb-3">
+                                        <div class="d-flex align-items-start">
+                                            <i class="ri-user-settings-line text-primary me-2 mt-1"></i>
+                                            <div>
+                                                <label class="form-label text-muted small mb-1">Ditugaskan Oleh</label>
+                                                <p class="mb-0 fw-bold">{{ $perbaikan->laporan->verifikator->name ?? '-' }}</p>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -119,97 +206,52 @@
                 <div class="col-lg-6">
                     <div class="card h-100">
                         <div class="card-header bg-primary bg-opacity-10">
-                            <h6 class="card-title mb-0"><i class="ri-image-line me-2 text-primary"></i>Foto Laporan</h6>
-                        </div>
-                        <div class="card-body d-flex align-items-center justify-content-center">
-                            @if ($perbaikan->laporan->foto_laporan)
-                                <a href="{{ asset('storage/' . $perbaikan->laporan->foto_laporan) }}" data-lightbox="laporan" data-title="Foto Laporan">
-                                    <div class="image-wrapper position-relative">
-                                        <img src="{{ asset('storage/' . $perbaikan->laporan->foto_laporan) }}" class="img-fluid rounded shadow-sm" style="max-height: 300px; width: 100%; object-fit: contain;">
-                                        <div class="image-overlay">
-                                            <i class="ri-zoom-in-line text-white"></i>
-                                        </div>
-                                    </div>
-                                </a>
-                            @else
-                                <div class="bg-light bg-opacity-25 rounded p-4 w-100 h-100 d-flex flex-column align-items-center justify-content-center">
-                                    <i class="ri-alert-line fs-1 text-warning mb-2"></i>
-                                    <p class="mb-0 text-muted">Foto laporan tidak tersedia</p>
-                                </div>
-                            @endif
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-lg-6">
-                    <div class="card h-100">
-                        <div class="card-header bg-primary bg-opacity-10">
-                            <h6 class="card-title mb-0"><i class="ri-tools-line me-2 text-primary"></i>Informasi Perbaikan</h6>
+                            <h6 class="card-title mb-0"><i class="ri-image-line me-2 text-primary"></i>Dokumentasi Foto</h6>
                         </div>
                         <div class="card-body">
-                            <div class="row">
-                                <div class="col-md-6 mb-3">
-                                    <div class="d-flex align-items-start">
-                                        <i class="ri-calendar-check-line text-primary me-2 mt-1"></i>
-                                        <div>
-                                            <label class="form-label text-muted small mb-1">Tanggal Ditugaskan</label>
-                                            <p class="mb-0 fw-bold">{{ $perbaikan->ditugaskan_pada_formatted }}</p>
-                                        </div>
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <div class="h-100">
+                                        <h6 class="small text-muted mb-2"><i class="ri-image-line me-1"></i> Foto Laporan</h6>
+                                        @if ($perbaikan->laporan->foto_laporan)
+                                            <a href="{{ asset('storage/' . $perbaikan->laporan->foto_laporan) }}" data-lightbox="laporan" data-title="Foto Laporan">
+                                                <div class="image-wrapper position-relative">
+                                                    <img src="{{ asset('storage/' . $perbaikan->laporan->foto_laporan) }}" class="img-fluid rounded shadow-sm" style="height: 200px; width: 100%; object-fit: cover;">
+                                                    <div class="image-overlay">
+                                                        <i class="ri-zoom-in-line text-white"></i>
+                                                    </div>
+                                                </div>
+                                            </a>
+                                        @else
+                                            <div class="bg-light bg-opacity-25 rounded p-4 w-100 h-100 d-flex flex-column align-items-center justify-content-center" style="height: 200px;">
+                                                <i class="ri-alert-line fs-1 text-warning mb-2"></i>
+                                                <p class="mb-0 text-muted small">Foto laporan tidak tersedia</p>
+                                            </div>
+                                        @endif
                                     </div>
                                 </div>
-                                <div class="col-md-6 mb-3">
-                                    <div class="d-flex align-items-start">
-                                        <i class="ri-calendar-todo-line text-primary me-2 mt-1"></i>
-                                        <div>
-                                            <label class="form-label text-muted small mb-1">Tanggal Selesai</label>
-                                            <p class="mb-0 fw-bold">{{ $perbaikan->selesai_pada_formatted ?? '-' }}</p>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-6 mb-3">
-                                    <div class="d-flex align-items-start">
-                                        <i class="ri-money-dollar-circle-line text-primary me-2 mt-1"></i>
-                                        <div>
-                                            <label class="form-label text-muted small mb-1">Biaya Perbaikan</label>
-                                            <p class="mb-0 fw-bold">{{ $perbaikan->biaya ? 'Rp ' . number_format($perbaikan->biaya, 0, ',', '.') : '-' }}</p>
-                                        </div>
-                                    </div>
-                                </div>
-                                {{-- <div class="col-md-6 mb-3">
-                                    <div class="d-flex align-items-start">
-                                        <i class="ri-user-line text-primary me-2 mt-1"></i>
-                                        <div>
-                                            <label class="form-label text-muted small mb-1">Teknisi</label>
-                                            <p class="mb-0 fw-bold">{{ $perbaikan->teknisi->nama ?? '-' }}</p>
-                                        </div>
-                                    </div>
-                                </div> --}}
-                            </div>
-                        </div>
-                    </div>
-                </div>
 
-                <div class="col-lg-6">
-                    <div class="card h-100">
-                        <div class="card-header bg-primary bg-opacity-10">
-                            <h6 class="card-title mb-0"><i class="ri-image-line me-2 text-primary"></i>Foto Perbaikan</h6>
-                        </div>
-                        <div class="card-body d-flex align-items-center justify-content-center">
-                            @if ($perbaikan->foto_perbaikan)
-                                <a href="{{ asset('storage/' . $perbaikan->foto_perbaikan) }}" data-lightbox="perbaikan" data-title="Foto Perbaikan">
-                                    <div class="image-wrapper position-relative">
-                                        <img src="{{ asset('storage/' . $perbaikan->foto_perbaikan) }}" class="img-fluid rounded shadow-sm" style="max-height: 300px; width: 100%; object-fit: contain;">
-                                        <div class="image-overlay">
-                                            <i class="ri-zoom-in-line text-white"></i>
-                                        </div>
+                                <div class="col-md-6">
+                                    <div class="h-100">
+                                        <h6 class="small text-muted mb-2"><i class="ri-tools-line me-1"></i> Foto Perbaikan</h6>
+                                        @if ($perbaikan->foto_perbaikan)
+                                            <a href="{{ asset('storage/' . $perbaikan->foto_perbaikan) }}" data-lightbox="perbaikan" data-title="Foto Perbaikan">
+                                                <div class="image-wrapper position-relative">
+                                                    <img src="{{ asset('storage/' . $perbaikan->foto_perbaikan) }}" class="img-fluid rounded shadow-sm" style="height: 200px; width: 100%; object-fit: cover;">
+                                                    <div class="image-overlay">
+                                                        <i class="ri-zoom-in-line text-white"></i>
+                                                    </div>
+                                                </div>
+                                            </a>
+                                        @else
+                                            <div class="bg-light bg-opacity-25 rounded p-4 w-100 h-100 d-flex flex-column align-items-center justify-content-center" style="height: 200px;">
+                                                <i class="ri-alert-line fs-1 text-warning mb-2"></i>
+                                                <p class="mb-0 text-muted small">Foto perbaikan belum tersedia</p>
+                                            </div>
+                                        @endif
                                     </div>
-                                </a>
-                            @else
-                                <div class="bg-light bg-opacity-25 rounded p-4 w-100 h-100 d-flex flex-column align-items-center justify-content-center">
-                                    <i class="ri-alert-line fs-1 text-warning mb-2"></i>
-                                    <p class="mb-0 text-muted">Foto perbaikan belum tersedia</p>
                                 </div>
-                            @endif
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -222,7 +264,7 @@
                             <h6 class="card-title mb-0"><i class="ri-file-text-line me-2 text-primary"></i>Deskripsi Laporan</h6>
                         </div>
                         <div class="card-body">
-                            <div class="bg-light bg-opacity-25 rounded">
+                            <div class="bg-opacity-25 rounded">
                                 {!! $perbaikan->laporan->deskripsi ? nl2br(e($perbaikan->laporan->deskripsi)) : '<span class="text-muted">Tidak ada deskripsi tersedia.</span>' !!}
                             </div>
                         </div>
@@ -234,7 +276,7 @@
                             <h6 class="card-title mb-0"><i class="ri-tools-line me-2 text-primary"></i>Catatan Perbaikan</h6>
                         </div>
                         <div class="card-body">
-                            <div class="bg-light bg-opacity-25 rounded">
+                            <div class="bg-opacity-25 rounded">
                                 {!! $perbaikan->catatan_perbaikan ? nl2br(e($perbaikan->catatan_perbaikan)) : '<span class="text-muted">Belum ada catatan perbaikan.</span>' !!}
                             </div>
                         </div>
@@ -244,9 +286,6 @@
         </div>
 
         <div class="modal-footer">
-            {{-- <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-                <i class="ri-close-line me-1"></i> Tutup
-            </button> --}}
             @if ($perbaikan->status_perbaikan === 'selesai')
                 <button class="btn btn-primary"
                         onclick="showFeedback({{ $perbaikan->perbaikan_id }})"
@@ -327,6 +366,40 @@
         transform: translateY(-1px);
     }
 
+    /* Style untuk tab */
+    .nav-tabs-card {
+        border-bottom: none;
+        padding: 0 1rem;
+    }
+
+    .nav-tabs-card .nav-link {
+        border: none;
+        color: #6c757d;
+        font-weight: 500;
+        padding: 0.75rem 1rem;
+        border-radius: 0;
+        position: relative;
+    }
+
+    .nav-tabs-card .nav-link.active {
+        color: var(--bs-primary);
+        background-color: transparent;
+    }
+
+    .nav-tabs-card .nav-link.active:after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: 2px;
+        background-color: var(--bs-primary);
+    }
+
+    .nav-tabs-card .nav-link:hover:not(.active) {
+        color: #495057;
+    }
+
     .dark-mode .btn-primary {
         background-color: #3a7bd5;
         border-color: #3a7bd5;
@@ -399,13 +472,12 @@
             color: #fff;
         }
 
-        /* Tambahkan gaya untuk modal di dark mode */
         .dark-mode .swal2-title {
-            color: #fff; /* Ubah warna judul menjadi putih */
+            color: #fff;
         }
 
         .dark-mode .swal2-html-container {
-            color: #79858f; /* Ubah warna teks menjadi putih */
+            color: #79858f;
         }
     `;
     document.head.appendChild(style);

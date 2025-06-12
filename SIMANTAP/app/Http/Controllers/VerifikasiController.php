@@ -394,7 +394,7 @@ class VerifikasiController extends Controller
 
         if ($laporan->perbaikan) {
             if ($laporan->perbaikan->ditugaskan_pada) {
-                $laporan->perbaikan->formatted_tanggal_ditugaskan = Carbon::parse($laporan->perbaikan->ditugaskan_pada)->format('d M Y');
+                $laporan->perbaikan->formatted_tanggal_ditugaskan = Carbon::parse($laporan->perbaikan->ditugaskan_pada)->format('d M Y H:i');
             } else {
                 $laporan->perbaikan->formatted_tanggal_ditugaskan = null;
             }

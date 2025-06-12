@@ -1,6 +1,29 @@
 @php
     $statusVerif = strtolower($laporan->status_verif ?? '');
     $isDitolak = ($statusVerif === 'ditolak');
+
+    $statusPerbaikan = strtolower($laporan->perbaikan->status_perbaikan ?? '');
+    $perbaikanClass = 'bg-secondary bg-opacity-10 text-secondary';
+    $perbaikanIcon = 'ri-time-line';
+    $perbaikanText = 'Belum dikerjakan';
+
+    switch ($statusPerbaikan) {
+        case 'selesai':
+            $perbaikanClass = 'bg-success bg-opacity-10 text-success';
+            $perbaikanIcon = 'ri-check-line';
+            $perbaikanText = 'Selesai';
+            break;
+        case 'sedang diperbaiki':
+            $perbaikanClass = 'bg-info bg-opacity-10 text-info';
+            $perbaikanIcon = 'ri-refresh-line';
+            $perbaikanText = 'Sedang dikerjakan';
+            break;
+        case 'belum diperbaiki':
+            $perbaikanClass = 'bg-secondary bg-opacity-10 text-secondary';
+            $perbaikanIcon = 'ri-time-line';
+            $perbaikanText = 'Belum dikerjakan';
+            break;
+    }
 @endphp
 
 <div id="modal-master" class="modal-dialog modal-xl" role="document">
@@ -132,13 +155,10 @@
                                         <div>
                                             <label class="form-label text-muted small mb-1">Status Perbaikan</label>
                                             <p class="mb-0 fw-bold">
-                                                @if ($laporan->perbaikan && $laporan->perbaikan->status_perbaikan)
-                                                    <span class="badge {{ $laporan->perbaikan->status_perbaikan === 'selesai' ? 'bg-success bg-opacity-10 text-success' : ($laporan->perbaikan->status_perbaikan === 'sedang diperbaiki' ? 'bg-info bg-opacity-10 text-info' : 'bg-secondary bg-opacity-10 text-secondary') }} rounded-pill py-2 px-3">
-                                                        {{ ucfirst($laporan->perbaikan->status_perbaikan) }}
-                                                    </span>
-                                                @else
-                                                    <span class="badge bg-secondary bg-opacity-10 text-secondary rounded-pill py-2 px-3">-</span>
-                                                @endif
+                                                <span class="badge {{ $perbaikanClass }} rounded-pill py-2 px-3">
+                                                    <i class="{{ $perbaikanIcon }} me-1"></i>
+                                                    {{ $perbaikanText }}
+                                                </span>
                                             </p>
                                         </div>
                                     </div>

@@ -326,7 +326,7 @@ class PerbaikanController extends Controller
 
         // Format ditugaskan_pada dengan Carbon
         if ($perbaikan->ditugaskan_pada) {
-            $perbaikan->ditugaskan_pada_formatted = Carbon::parse($perbaikan->ditugaskan_pada)->format('d M Y H:i');
+            $perbaikan->ditugaskan_pada_formatted = Carbon::parse($perbaikan->ditugaskan_pada)->format('d M Y');
         } else {
             $perbaikan->ditugaskan_pada_formatted = '-';
         }
