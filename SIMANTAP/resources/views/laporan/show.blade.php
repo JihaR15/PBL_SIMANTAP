@@ -34,14 +34,14 @@
             <div class="row align-items-stretch">
                 <div class="{{ $laporan->foto_laporan ? 'col-lg-8 d-flex flex-column' : 'col-lg-12' }}">
                     <div class="card flex-fill mb-4">
-                        <div class="card-header bg-light bg-opacity-50">
-                            <h6 class="card-title mb-0"><i class="ri-information-line me-2"></i>Informasi Laporan</h6>
+                        <div class="card-header bg-primary bg-opacity-10">
+                            <h6 class="card-title mb-0"><i class="ri-information-line me-2 text-primary"></i>Informasi Laporan</h6>
                         </div>
                         <div class="card-body">
                             <div class="row">
                                 <div class="col-md-6 mb-3">
                                     <div class="d-flex align-items-start">
-                                        <i class="ri-building-2-line text-muted me-2 mt-1"></i>
+                                        <i class="ri-building-2-line text-primary me-2 mt-1"></i>
                                         <div>
                                             <label class="form-label text-muted small mb-1">Fasilitas</label>
                                             <p class="mb-0 fw-bold">{{ $laporan->fasilitas->nama_fasilitas ?? '-' }}</p>
@@ -50,7 +50,7 @@
                                 </div>
                                 <div class="col-md-6 mb-3">
                                     <div class="d-flex align-items-start">
-                                        <i class="ri-community-line text-muted me-2 mt-1"></i>
+                                        <i class="ri-community-line text-primary me-2 mt-1"></i>
                                         <div>
                                             <label class="form-label text-muted small mb-1">Unit</label>
                                             <p class="mb-0 fw-bold">{{ $laporan->unit->nama_unit ?? '-' }}</p>
@@ -59,7 +59,7 @@
                                 </div>
                                 <div class="col-md-6 mb-3">
                                     <div class="d-flex align-items-start">
-                                        <i class="ri-map-pin-line text-muted me-2 mt-1"></i>
+                                        <i class="ri-map-pin-line text-primary me-2 mt-1"></i>
                                         <div>
                                             <label class="form-label text-muted small mb-1">Tempat</label>
                                             <p class="mb-0 fw-bold">{{ $laporan->tempat->nama_tempat ?? '-' }}</p>
@@ -68,7 +68,7 @@
                                 </div>
                                 <div class="col-md-6 mb-3">
                                     <div class="d-flex align-items-start">
-                                        <i class="ri-box-3-line text-muted me-2 mt-1"></i>
+                                        <i class="ri-inbox-line text-primary me-2 mt-1"></i>
                                         <div>
                                             <label class="form-label text-muted small mb-1">Barang</label>
                                             <p class="mb-0 fw-bold">{{ $laporan->barangLokasi->jenisBarang->nama_barang ?? '-' }}</p>
@@ -77,7 +77,7 @@
                                 </div>
                                 <div class="col-md-6 mb-3">
                                     <div class="d-flex align-items-start">
-                                        <i class="ri-error-warning-line text-muted me-2 mt-1"></i>
+                                        <i class="ri-error-warning-line text-primary me-2 mt-1"></i>
                                         <div>
                                             <label class="form-label text-muted small mb-1">Jumlah Rusak</label>
                                             <p class="mb-0 fw-bold">{{ $laporan->jumlah_barang_rusak ?? '0' }}</p>
@@ -86,7 +86,7 @@
                                 </div>
                                 <div class="col-md-6 mb-3">
                                     <div class="d-flex align-items-start">
-                                        <i class="ri-alert-line text-muted me-2 mt-1"></i>
+                                        <i class="ri-alert-line text-primary me-2 mt-1"></i>
                                         <div>
                                             <label class="form-label text-muted small mb-1">Kategori Kerusakan</label>
                                             <p class="mb-0 fw-bold">{{ $laporan->kategoriKerusakan->nama_kategori ?? '-' }}</p>
@@ -95,7 +95,7 @@
                                 </div>
                                 <div class="col-md-6 mb-3">
                                     <div class="d-flex align-items-start">
-                                        <i class="ri-calendar-event-line text-muted me-2 mt-1"></i>
+                                        <i class="ri-calendar-event-line text-primary me-2 mt-1"></i>
                                         <div>
                                             <label class="form-label text-muted small mb-1">Periode</label>
                                             <p class="mb-0 fw-bold">{{ $laporan->periode->nama_periode ?? '-' }}</p>
@@ -110,8 +110,8 @@
                 @if ($laporan->foto_laporan)
                 <div class="col-lg-4 d-flex flex-column">
                     <div class="card flex-fill h-100">
-                        <div class="card-header bg-light bg-opacity-50">
-                            <h6 class="card-title mb-0"><i class="ri-image-line me-2"></i>Foto Laporan</h6>
+                        <div class="card-header bg-primary bg-opacity-10">
+                            <h6 class="card-title mb-0"><i class="ri-image-line me-2 text-primary"></i>Foto Laporan</h6>
                         </div>
                         <div class="card-body d-flex align-items-center justify-content-center">
                             <div class="image-preview-container w-100">
@@ -131,8 +131,8 @@
             </div>
 
             <div class="card mt-4">
-                <div class="card-header bg-light bg-opacity-50">
-                    <h6 class="card-title mb-0"><i class="ri-file-text-line me-2"></i>Deskripsi Laporan</h6>
+                <div class="card-header bg-primary bg-opacity-10">
+                    <h6 class="card-title mb-0"><i class="ri-file-text-line me-2 text-primary"></i>Deskripsi Laporan</h6>
                 </div>
                 <div class="card-body">
                     <div class="bg-light bg-opacity-25 rounded text-start" style="text-align: left !important;">

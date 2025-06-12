@@ -20,7 +20,7 @@
                                         <i class="fas fa-exclamation-triangle text-warning me-2" style="font-size: 2rem;"></i>
                                         <h4 class="card-title mb-0">Laporkan Kerusakan Fasilitas</h4>
                                     </div>
-                                    <div class="alert alert-info bg-soft-info border-0">
+                                    <div class="alert alert-info bg-info text-white border-0 bg-opacity-50  ">
                                         <i class="fas fa-info-circle me-2"></i> Silakan isi form berikut untuk melaporkan kerusakan yang terjadi. Pastikan semua data yang dimasukkan sudah benar sebelum disubmit.
                                     </div>
                                 </div>
@@ -44,7 +44,6 @@
                                 method="POST" enctype="multipart/form-data">
                                 @csrf
 
-                                <!-- Fasilitas Section -->
                                 <div class="mb-4 p-3 border rounded bg-light">
                                     <h5 class="mb-3 text-primary">
                                         <i class="fas fa-building me-2"></i> Informasi Fasilitas
@@ -52,7 +51,13 @@
 
                                     <div class="mb-3">
                                         <label class="form-label fw-semibold">Pilih Jenis Fasilitas</label>
+                                        {{-- <select name="fasilitas_id" id="fasilitas_id" class="form-select select2" required>
+                                            @foreach($fasilitas as $f)
+                                                <option value="{{ $f->fasilitas_id }}">{{ $f->nama_fasilitas }}</option>
+                                            @endforeach
+                                        </select> --}}
                                         <select name="fasilitas_id" id="fasilitas_id" class="form-select select2" required>
+                                            <option value="" disabled selected>-- Pilih Jenis Fasilitas --</option>
                                             @foreach($fasilitas as $f)
                                                 <option value="{{ $f->fasilitas_id }}">{{ $f->nama_fasilitas }}</option>
                                             @endforeach
@@ -83,7 +88,6 @@
                                     </div>
                                 </div>
 
-                                <!-- Barang Section -->
                                 <div class="mb-4 p-3 border rounded bg-light">
                                     <h5 class="mb-3 text-primary">
                                         <i class="fas fa-box-open me-2"></i> Informasi Barang Rusak
@@ -127,7 +131,6 @@
                                     </div>
                                 </div>
 
-                                <!-- Periode Section -->
                                 <div class="mb-4 p-3 border rounded bg-light">
                                     <h5 class="mb-3 text-primary">
                                         <i class="fas fa-calendar-alt me-2"></i> Informasi Periode
@@ -145,7 +148,6 @@
                                     </div>
                                 </div>
 
-                                <!-- Deskripsi Section -->
                                 <div class="mb-4 p-3 border rounded bg-light">
                                     <h5 class="mb-3 text-primary">
                                         <i class="fas fa-align-left me-2"></i> Deskripsi Kerusakan
@@ -163,7 +165,6 @@
                                     </div>
                                 </div>
 
-                                <!-- Upload Section -->
                                 <div class="mb-4 p-3 border rounded bg-light">
                                     <h5 class="mb-3 text-primary">
                                         <i class="fas fa-camera me-2"></i> Dokumentasi Kerusakan
@@ -187,11 +188,13 @@
                                 </div>
 
                                 <div class="d-flex justify-content-between mt-4">
-                                    <button type="reset" class="btn btn-outline-secondary waves-effect" id="resetButton">
-                                        <i class="fas fa-undo me-1"></i> Reset Form
+                                    <button type="reset" class="btn btn-outline-secondary rounded-pill px-4 py-2" id="resetButton"
+                                            style="border: 1px solid #dee2e6; transition: all 0.2s ease;">
+                                        <i class="fas fa-undo me-2"></i> Reset Form
                                     </button>
-                                    <button type="submit" class="btn btn-primary waves-effect waves-light">
-                                        <i class="fas fa-paper-plane me-1"></i> Kirim Laporan
+                                    <button type="submit" class="btn btn-primary rounded-pill px-4 py-2"
+                                            style="background-color: #3b82f6; border: none; box-shadow: 0 2px 4px rgba(59, 130, 246, 0.3); transition: all 0.2s ease;">
+                                        <i class="fas fa-paper-plane me-2"></i> Kirim Laporan
                                     </button>
                                 </div>
                             </form>
@@ -244,6 +247,46 @@
         #preview-image {
             max-width: 100%;
             max-height: 200px;
+        }
+
+        .btn {
+            font-weight: 500;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 150px;
+        }
+
+        .btn-primary:hover {
+            background-color: #2563eb !important;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 8px rgba(59, 130, 246, 0.4) !important;
+        }
+
+        .btn-outline-secondary:hover {
+            background-color: #f8f9fa;
+            border-color: #dee2e6;
+        }
+
+        .btn:active {
+            transform: translateY(1px);
+        }
+
+        .dark-mode .btn-primary {
+            background-color: #1d4ed8 !important;
+        }
+
+        .dark-mode .btn-primary:hover {
+            background-color: #1e40af !important;
+        }
+
+        .dark-mode .btn-outline-secondary {
+            border-color: #3a4155;
+            color: #e9ecef;
+        }
+
+        .dark-mode .btn-outline-secondary:hover {
+            background-color: #2a3042;
         }
     </style>
 @endpush

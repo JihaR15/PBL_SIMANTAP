@@ -21,12 +21,12 @@
             <div class="d-flex align-items-center mb-4">
                 <div class="flex-shrink-0">
                     <span class="avatar avatar-lg bg-primary bg-opacity-10 text-primary rounded-circle">
-                        <i class="ri-file-list-line fs-4"></i>
+                        <i class="ri-file-list-line fs-4 text-primary"></i>
                     </span>
                 </div>
                 <div class="flex-grow-1 ms-3">
                     <h4 class="mb-0">Laporan ID: {{ $laporan->laporan_id }}</h4>
-                    <span class="text-muted"><i class="ri-calendar-line me-1"></i> {{ $laporan->formatted_created_at }}</span>
+                    <span class="text-muted"><i class="ri-calendar-line me-1 text-primary"></i> {{ $laporan->formatted_created_at }}</span>
                 </div>
                 <div>
                     @php
@@ -47,41 +47,102 @@
             <div class="row align-items-stretch g-4">
                 <div class="col-lg-6 d-flex flex-column">
                     <div class="card flex-fill h-100">
-                        <div class="card-header bg-light bg-opacity-50">
-                            <h6 class="card-title mb-0"><i class="ri-information-line me-2"></i>Informasi Laporan</h6>
+                        <div class="card-header bg-primary bg-opacity-10">
+                            <h6 class="card-title mb-0"><i class="ri-information-line me-2 text-primary"></i>Informasi Laporan</h6>
                         </div>
                         <div class="card-body">
                             <div class="row">
-                                @foreach([
-                                    ['ri-building-2-line', 'Fasilitas', $laporan->fasilitas->nama_fasilitas ?? '-'],
-                                    ['ri-community-line', 'Unit', $laporan->unit->nama_unit ?? '-'],
-                                    ['ri-map-pin-line', 'Tempat', $laporan->tempat->nama_tempat ?? '-'],
-                                    ['ri-box-3-line', 'Barang', $laporan->barangLokasi->jenisBarang->nama_barang ?? '-'],
-                                    ['ri-error-warning-line', 'Jumlah Rusak', $laporan->jumlah_barang_rusak ?? '0'],
-                                    ['ri-alert-line', 'Kategori Kerusakan', $laporan->kategoriKerusakan->nama_kategori ?? '-'],
-                                    ['ri-calendar-event-line', 'Periode', $laporan->periode->nama_periode ?? '-'],
-                                    [
-                                        'ri-tools-line',
-                                        'Status Perbaikan',
-                                        $laporan->perbaikan && $laporan->perbaikan->status_perbaikan
-                                            ? '<span class="badge ' . (
-                                                $laporan->perbaikan->status_perbaikan === 'selesai' ? 'bg-success bg-opacity-10 text-success' :
-                                                ($laporan->perbaikan->status_perbaikan === 'sedang diperbaiki' ? 'bg-info bg-opacity-10 text-info' :
-                                                'bg-secondary bg-opacity-10 text-secondary')
-                                            ) . ' rounded-pill py-2 px-3">' . ucfirst($laporan->perbaikan->status_perbaikan) . '</span>'
-                                            : '<span class="badge bg-secondary bg-opacity-10 text-secondary rounded-pill py-2 px-3">-</span>'
-                                    ],
-                                ] as [$icon, $label, $value])
                                 <div class="col-md-6 mb-3">
                                     <div class="d-flex align-items-start">
-                                        <i class="{{ $icon }} text-muted me-2 mt-1"></i>
+                                        <i class="ri-building-2-line text-primary me-2 mt-1"></i>
                                         <div>
-                                            <label class="form-label text-muted small mb-1">{{ $label }}</label>
-                                            <p class="mb-0 fw-bold">{!! $value !!}</p>
+                                            <label class="form-label text-muted small mb-1">Fasilitas</label>
+                                            <p class="mb-0 fw-bold">{{ $laporan->fasilitas->nama_fasilitas ?? '-' }}</p>
                                         </div>
                                     </div>
                                 </div>
-                                @endforeach
+                                <div class="col-md-6 mb-3">
+                                    <div class="d-flex align-items-start">
+                                        <i class="ri-community-line text-primary me-2 mt-1"></i>
+                                        <div>
+                                            <label class="form-label text-muted small mb-1">Unit</label>
+                                            <p class="mb-0 fw-bold">{{ $laporan->unit->nama_unit ?? '-' }}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <div class="d-flex align-items-start">
+                                        <i class="ri-map-pin-line text-primary me-2 mt-1"></i>
+                                        <div>
+                                            <label class="form-label text-muted small mb-1">Tempat</label>
+                                            <p class="mb-0 fw-bold">{{ $laporan->tempat->nama_tempat ?? '-' }}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <div class="d-flex align-items-start">
+                                        <i class="ri-inbox-line text-primary me-2 mt-1"></i>
+                                        <div>
+                                            <label class="form-label text-muted small mb-1">Barang</label>
+                                            <p class="mb-0 fw-bold">{{ $laporan->barangLokasi->jenisBarang->nama_barang ?? '-' }}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <div class="d-flex align-items-start">
+                                        <i class="ri-error-warning-line text-primary me-2 mt-1"></i>
+                                        <div>
+                                            <label class="form-label text-muted small mb-1">Jumlah Rusak</label>
+                                            <p class="mb-0 fw-bold">{{ $laporan->jumlah_barang_rusak ?? '0' }}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <div class="d-flex align-items-start">
+                                        <i class="ri-alert-line text-primary me-2 mt-1"></i>
+                                        <div>
+                                            <label class="form-label text-muted small mb-1">Kategori Kerusakan</label>
+                                            <p class="mb-0 fw-bold">{{ $laporan->kategoriKerusakan->nama_kategori ?? '-' }}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <div class="d-flex align-items-start">
+                                        <i class="ri-calendar-event-line text-primary me-2 mt-1"></i>
+                                        <div>
+                                            <label class="form-label text-muted small mb-1">Periode</label>
+                                            <p class="mb-0 fw-bold">{{ $laporan->periode->nama_periode ?? '-' }}</p>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6 mb-3">
+                                    <div class="d-flex align-items-start">
+                                        <i class="ri-calendar-check-line text-primary me-2 mt-1"></i>
+                                        <div>
+                                            <label class="form-label text-muted small mb-1">Tanggal Ditugaskan</label>
+                                            <p class="mb-0 fw-bold">{{ $isDitolak ? '-' : ($laporan->perbaikan->formatted_tanggal_ditugaskan ?? '-') }}</p>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-12 mb-3">
+                                    <div class="d-flex align-items-start">
+                                        <i class="ri-tools-line text-primary me-2 mt-1"></i>
+                                        <div>
+                                            <label class="form-label text-muted small mb-1">Status Perbaikan</label>
+                                            <p class="mb-0 fw-bold">
+                                                @if ($laporan->perbaikan && $laporan->perbaikan->status_perbaikan)
+                                                    <span class="badge {{ $laporan->perbaikan->status_perbaikan === 'selesai' ? 'bg-success bg-opacity-10 text-success' : ($laporan->perbaikan->status_perbaikan === 'sedang diperbaiki' ? 'bg-info bg-opacity-10 text-info' : 'bg-secondary bg-opacity-10 text-secondary') }} rounded-pill py-2 px-3">
+                                                        {{ ucfirst($laporan->perbaikan->status_perbaikan) }}
+                                                    </span>
+                                                @else
+                                                    <span class="badge bg-secondary bg-opacity-10 text-secondary rounded-pill py-2 px-3">-</span>
+                                                @endif
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -90,8 +151,8 @@
                 @if ($laporan->foto_laporan)
                 <div class="col-lg-3 d-flex flex-column">
                     <div class="card flex-fill h-100">
-                        <div class="card-header bg-light bg-opacity-50">
-                            <h6 class="card-title mb-0"><i class="ri-image-line me-2"></i>Foto Laporan</h6>
+                        <div class="card-header bg-primary bg-opacity-10">
+                            <h6 class="card-title mb-0"><i class="ri-image-line me-2 text-primary"></i>Foto Laporan</h6>
                         </div>
                         <div class="card-body p-0 d-flex flex-column">
                             <div class="image-preview-container flex-grow-1 d-flex align-items-center justify-content-center p-3">
@@ -99,7 +160,7 @@
                                     <div class="image-wrapper position-relative">
                                         <img src="{{ asset('storage/' . $laporan->foto_laporan) }}" class="img-fluid rounded shadow-sm" style="max-height: 220px; width: auto; object-fit: contain;">
                                         <div class="image-overlay">
-                                            <i class="ri-zoom-in-line"></i>
+                                            <i class="ri-zoom-in-line text-white"></i>
                                         </div>
                                     </div>
                                 </a>
@@ -111,8 +172,8 @@
 
                 <div class="col-lg-3 d-flex flex-column">
                     <div class="card flex-fill h-100">
-                        <div class="card-header bg-light bg-opacity-50">
-                            <h6 class="card-title mb-0"><i class="ri-tools-line me-2"></i>Foto Perbaikan</h6>
+                        <div class="card-header bg-primary bg-opacity-10">
+                            <h6 class="card-title mb-0"><i class="ri-tools-line me-2 text-primary"></i>Foto Perbaikan</h6>
                         </div>
                         <div class="card-body p-0 d-flex flex-column">
                             @if ($laporan->perbaikan && $laporan->perbaikan->foto_perbaikan)
@@ -121,7 +182,7 @@
                                         <div class="image-wrapper position-relative">
                                             <img src="{{ asset('storage/' . $laporan->perbaikan->foto_perbaikan) }}" class="img-fluid rounded shadow-sm" style="max-height: 220px; width: auto; object-fit: contain;">
                                             <div class="image-overlay">
-                                                <i class="ri-zoom-in-line"></i>
+                                                <i class="ri-zoom-in-line text-white"></i>
                                             </div>
                                         </div>
                                     </a>
@@ -143,8 +204,8 @@
             <div class="row mt-4 g-4">
                 <div class="col-md-6">
                     <div class="card">
-                        <div class="card-header bg-light bg-opacity-50">
-                            <h6 class="card-title mb-0"><i class="ri-file-text-line me-2"></i>Deskripsi Laporan</h6>
+                        <div class="card-header bg-primary bg-opacity-10">
+                            <h6 class="card-title mb-0"><i class="ri-file-text-line me-2 text-primary"></i>Deskripsi Laporan</h6>
                         </div>
                         <div class="card-body">
                             <div class="bg-light bg-opacity-25 rounded text-start">
@@ -155,8 +216,8 @@
                 </div>
                 <div class="col-md-6">
                     <div class="card">
-                        <div class="card-header bg-light bg-opacity-50">
-                            <h6 class="card-title mb-0"><i class="ri-tools-line me-2"></i>Deskripsi Perbaikan</h6>
+                        <div class="card-header bg-primary bg-opacity-10">
+                            <h6 class="card-title mb-0"><i class="ri-tools-line me-2 text-primary"></i>Deskripsi Perbaikan</h6>
                         </div>
                         <div class="card-body">
                             <div class="bg-light bg-opacity-25 rounded text-start">

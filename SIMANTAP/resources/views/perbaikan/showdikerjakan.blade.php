@@ -1,138 +1,246 @@
 <div id="modal-master" class="modal-dialog modal-lg" role="document">
-    <div class="modal-content">
-        <div class="modal-header">
-            <h5 class="modal-title">Detail Perbaikan</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+    <div class="modal-content border-0" style="border-radius: 12px;">
+        <div class="modal-header text-white bg-light">
+            <div class="d-flex align-items-center w-100">
+                <div class="flex-grow-1">
+                    <h5 class="modal-title mb-0">
+                        <i class="ri-tools-line me-2"></i>Detail Perbaikan
+                    </h5>
+                    <p class="mb-0 small opacity-85 mt-1 text-muted">Informasi lengkap laporan perbaikan</p>
+                </div>
+                <button type="button" class="btn-close btn-close-black" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
         </div>
-        <div class="modal-body">
-            <div class="card">
-                <div class="card-header">
-                    Perbaikan ID: {{ $perbaikan->perbaikan_id }}
+        <div class="modal-body p-4">
+            <div class="d-flex align-items-center mb-4">
+                <div class="flex-shrink-0">
+                    <span class="avatar avatar-lg bg-primary bg-opacity-10 text-primary rounded-circle">
+                        <i class="ri-tools-fill fs-4 text-primary"></i>
+                    </span>
+                </div>
+                <div class="flex-grow-1 ms-3">
+                    <h4 class="mb-0">Perbaikan ID: {{ $perbaikan->perbaikan_id }}</h4>
+                    <span class="text-muted"><i class="ri-calendar-line me-1"></i> {{ $perbaikan->created_at->format('d M Y H:i') }}</span>
+                </div>
+                <div>
+                    <span class="badge bg-warning bg-opacity-10 text-warning rounded-pill py-2 px-3">
+                        <i class="ri-tools-line me-1"></i>
+                        Dalam Proses
+                    </span>
+                </div>
+            </div>
+
+            <div class="row align-items-stretch g-4">
+                <div class="col-lg-8 d-flex flex-column">
+                    <div class="card flex-fill h-100">
+                        <div class="card-header bg-primary bg-opacity-10">
+                            <h6 class="card-title mb-0"><i class="ri-information-line text-primary me-2"></i>Informasi Laporan</h6>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <div class="d-flex align-items-start">
+                                        <i class="ri-building-2-line text-primary me-2 mt-1"></i>
+                                        <div>
+                                            <label class="form-label text-muted small mb-1">Fasilitas</label>
+                                            <p class="mb-0 fw-bold">{{ $perbaikan->laporan->fasilitas->nama_fasilitas ?? '-' }}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <div class="d-flex align-items-start">
+                                        <i class="ri-community-line text-primary me-2 mt-1"></i>
+                                        <div>
+                                            <label class="form-label text-muted small mb-1">Unit</label>
+                                            <p class="mb-0 fw-bold">{{ $perbaikan->laporan->unit->nama_unit ?? '-' }}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <div class="d-flex align-items-start">
+                                        <i class="ri-map-pin-line text-primary me-2 mt-1"></i>
+                                        <div>
+                                            <label class="form-label text-muted small mb-1">Tempat</label>
+                                            <p class="mb-0 fw-bold">{{ $perbaikan->laporan->tempat->nama_tempat ?? '-' }}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <div class="d-flex align-items-start">
+                                        <i class="ri-inbox-line text-primary me-2 mt-1"></i>
+                                        <div>
+                                            <label class="form-label text-muted small mb-1">Barang</label>
+                                            <p class="mb-0 fw-bold">{{ $perbaikan->laporan->barangLokasi->jenisBarang->nama_barang ?? '-' }}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <div class="d-flex align-items-start">
+                                        <i class="ri-error-warning-line text-primary me-2 mt-1"></i>
+                                        <div>
+                                            <label class="form-label text-muted small mb-1">Jumlah Rusak</label>
+                                            <p class="mb-0 fw-bold">{{ $perbaikan->laporan->jumlah_barang_rusak ?? '0' }}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <div class="d-flex align-items-start">
+                                        <i class="ri-alert-line text-primary me-2 mt-1"></i>
+                                        <div>
+                                            <label class="form-label text-muted small mb-1">Kategori Kerusakan</label>
+                                            <p class="mb-0 fw-bold">{{ $perbaikan->laporan->kategoriKerusakan->nama_kategori ?? '-' }}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <div class="d-flex align-items-start">
+                                        <i class="ri-calendar-event-line text-primary me-2 mt-1"></i>
+                                        <div>
+                                            <label class="form-label text-muted small mb-1">Periode</label>
+                                            <p class="mb-0 fw-bold">{{ $perbaikan->laporan->periode->nama_periode ?? '-' }}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                @if ($perbaikan->laporan->foto_laporan)
+                    <div class="col-lg-4 d-flex flex-column">
+                        <div class="card flex-fill h-100">
+                            <div class="card-header bg-primary bg-opacity-10">
+                                <h6 class="card-title mb-0"><i class="ri-image-line me-2 text-primary"></i>Foto Laporan</h6>
+                            </div>
+                            <div class="card-body d-flex align-items-center justify-content-center">
+                                <div class="image-preview-container w-100">
+                                    <a href="{{ asset('storage/' . $perbaikan->laporan->foto_laporan) }}" data-lightbox="laporan" data-title="Foto Laporan">
+                                        <div class="image-wrapper rounded overflow-hidden">
+                                            <img src="{{ asset('storage/' . $perbaikan->laporan->foto_laporan) }}" alt="Foto Laporan" class="img-fluid" style="max-width: 100%;">
+                                            <div class="image-overlay">
+                                                <i class="ri-zoom-in-line"></i>
+                                            </div>
+                                        </div>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                @endif
+            </div>
+
+            <div class="card mt-2">
+                <div class="card-header bg-primary bg-opacity-10">
+                    <h6 class="card-title mb-0"><i class="ri-file-text-line me-2 text-primary"></i>Deskripsi Laporan</h6>
                 </div>
                 <div class="card-body">
-                    <div class="row">
-                        <div class="{{ $perbaikan->laporan->foto_laporan ? 'col-md-8' : 'col-md-12' }}">
-                            <div class="row mb-2">
-                                <div class="col-sm-4 fw-bold">Fasilitas</div>
-                                <div class="col-sm-8">: {{ $perbaikan->laporan->fasilitas->nama_fasilitas ?? '-' }}
-                                </div>
-                            </div>
-                            <div class="row mb-2">
-                                <div class="col-sm-4 fw-bold">Unit</div>
-                                <div class="col-sm-8">: {{ $perbaikan->laporan->unit->nama_unit ?? '-' }}</div>
-                            </div>
-                            <div class="row mb-2">
-                                <div class="col-sm-4 fw-bold">Tempat</div>
-                                <div class="col-sm-8">: {{ $perbaikan->laporan->tempat->nama_tempat ?? '-' }}</div>
-                            </div>
-                            <div class="row mb-2">
-                                <div class="col-sm-4 fw-bold">Barang</div>
-                                <div class="col-sm-8">
-                                    : {{ $perbaikan->laporan->barangLokasi->jenisBarang->nama_barang ?? '-' }}</div>
-                            </div>
-                            <div class="row mb-2">
-                                <div class="col-sm-4 fw-bold">Jumlah yang rusak</div>
-                                <div class="col-sm-8">
-                                    : {{ $perbaikan->laporan->jumlah_barang_rusak ?? '0' }}</div>
-                            </div>
-                            <div class="row mb-2">
-                                <div class="col-sm-4 fw-bold">Kategori Kerusakan</div>
-                                <div class="col-sm-8">:
-                                    {{ $perbaikan->laporan->kategoriKerusakan->nama_kategori ?? '-' }}
-                                </div>
-                            </div>
-                            <div class="row mb-2">
-                                <div class="col-sm-4 fw-bold">Periode</div>
-                                <div class="col-sm-8">: {{ $perbaikan->laporan->periode->nama_periode ?? '-' }}</div>
-                            </div>
-                            <div class="row">
-                                <div class="col-sm-4 fw-bold">Tanggal Dibuat</div>
-                                <div class="col-sm-8">: {{ $perbaikan->created_at->format('d M Y') }}</div>
-                            </div>
-                        </div>
-
-                        @if ($perbaikan->laporan->foto_laporan)
-                            <div class="col-md-4">
-                                <p><strong>Foto Laporan:</strong></p>
-                                <a href="{{ asset('storage/' . $perbaikan->laporan->foto_laporan) }}"
-                                    data-lightbox="laporan" data-title="Foto Laporan" class="img-hover-dark">
-                                    <img src="{{ asset('storage/' . $perbaikan->laporan->foto_laporan) }}"
-                                        alt="Foto Laporan">
-                                    <i class="ri-search-line icon-search"></i>
-                                </a>
-                            </div>
-                        @endif
-
-                        <div class="col-md-12 mt-3">
-                            <p><strong>Deskripsi:</strong></p>
-                            <div class="card-header">
-                                {{ $perbaikan->laporan->deskripsi ?? 'Tidak ada deskripsi tersedia.' }}
-                            </div>
-                        </div>
-
+                    <div class="bg-light bg-opacity-25 rounded text-start">
+                        {!! $perbaikan->laporan->deskripsi ? nl2br(e($perbaikan->laporan->deskripsi)) : '<span class="text-muted">Tidak ada deskripsi tersedia.</span>' !!}
                     </div>
                 </div>
             </div>
         </div>
         <div class="modal-footer">
+            {{-- <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" style="border-radius: 50px !important">Tutup</button> --}}
             <button onclick="modalAction('{{ url('dikerjakan/' . $perbaikan->perbaikan_id . '/konfirmasi') }}')"
-                class="btn btn-primary" id="btn-verify">Selesaikan</button>
-            {{-- <button id="btn-verify" class="btn btn-success"
-                data-id="{{ $perbaikan->perbaikan_id }}">Selesaikan</button> --}}
+                class="btn btn-primary" id="btn-verify" style="border-radius: 50px !important">
+                <i class="ri-check-line me-1"></i> Selesaikan
+            </button>
         </div>
     </div>
 </div>
 
 <style>
-    .img-hover-dark {
+    .avatar {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 48px;
+        height: 48px;
+    }
+
+    .image-preview-container {
+        border-radius: 8px;
+        overflow: hidden;
+        min-height: 220px;
+    }
+
+    .image-wrapper {
         position: relative;
         display: inline-block;
+        transition: all 0.3s ease;
+        border-radius: 0.5rem;
         overflow: hidden;
     }
 
-    .img-hover-dark img {
+    .image-wrapper img {
         display: block;
-        transition: filter 0.3s ease;
-        max-width: 100%;
+        width: 100%;
+        height: auto;
+        object-fit: contain;
     }
 
-    .img-hover-dark:hover img {
-        filter: brightness(60%);
-        cursor: pointer;
-    }
-
-    .img-hover-dark .icon-search {
+    .image-overlay {
         position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        color: white;
-        font-size: 2rem;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: rgba(0, 0, 0, 0.3);
+        display: flex;
+        align-items: center;
+        justify-content: center;
         opacity: 0;
         transition: opacity 0.3s ease;
-        pointer-events: none;
     }
 
-    .img-hover-dark:hover .icon-search {
+    .image-wrapper:hover .image-overlay {
         opacity: 1;
+    }
+
+    .image-overlay i {
+        color: white;
+        font-size: 2rem;
+    }
+
+    .card:last-of-type {
+        margin-bottom: 0 !important;
+    }
+
+    .modal-header {
+        border-bottom: 1px solid #e9ecef;
+    }
+
+    .card-header {
+        border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+        border-radius: 0.5rem 0.5rem 0 0 !important;
+    }
+
+    .card {
+        border-radius: 0.5rem !important;
+        box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
     }
 </style>
 
 <script>
-    perbaikanId = null;
-
     function modalAction(url = '') {
-        const parts = url.split('/');
-        perbaikanId = parts[parts.length - 2];  // const di sini supaya set global
+        const btn = $('#btn-verify');
+        btn.prop('disabled', true);
+        btn.html('<i class="fas fa-spinner fa-spin me-2"></i>Memuat...');
 
-        $('#myModal').load(url, function () {
+        $('#myModal').load(url, function() {
             $('#myModal').modal('show');
+            btn.prop('disabled', false);
+            btn.html('<i class="ri-check-line me-1"></i> Selesaikan');
 
-            $('#formKonfirmasi').off('submit').on('submit', function (e) {
+            $('#formKonfirmasi').off('submit').on('submit', function(e) {
                 e.preventDefault();
+                const formBtn = $(this).find('button[type="submit"]');
+                formBtn.prop('disabled', true);
+                formBtn.html('<i class="fas fa-spinner fa-spin me-2"></i>Memproses...');
 
-                var formData = new FormData(this);
+                const formData = new FormData(this);
                 formData.append('_method', 'PUT');
+                const perbaikanId = url.split('/')[url.split('/').length - 2];
 
                 $.ajax({
                     url: `/dikerjakan/${perbaikanId}/selesai`,
@@ -143,28 +251,45 @@
                     headers: {
                         'X-CSRF-TOKEN': '{{ csrf_token() }}'
                     },
-                    success: function (res) {
+                    success: function(res) {
                         if (res.success) {
-                            Swal.fire(
-                                'Sukses',
-                                res.message || 'Perbaikan berhasil diselesaikan.',
-                                'success'
-                            ).then(() => {
+                            Swal.fire({
+                                title: 'Sukses',
+                                text: res.message || 'Perbaikan berhasil diselesaikan.',
+                                icon: 'success',
+                                confirmButtonColor: '#198754',
+                                confirmButtonText: 'OK'
+                            }).then(() => {
                                 $('#myModal').modal('hide');
                                 $('#datatable').DataTable().ajax.reload();
                             });
                         } else {
-                            Swal.fire('Error', res.message || 'Gagal memproses data.', 'error');
+                            Swal.fire({
+                                title: 'Error',
+                                text: res.message || 'Gagal memproses data.',
+                                icon: 'error',
+                                confirmButtonColor: '#dc3545'
+                            });
+                            formBtn.prop('disabled', false);
+                            formBtn.html('<i class="ri-check-line me-1"></i> Simpan');
                         }
                     },
-                    error: function (xhr) {
+                    error: function(xhr) {
                         let msg = 'Gagal memproses data.';
-                        if (xhr.responseJSON && xhr.responseJSON.message) msg = xhr.responseJSON.message;
-                        Swal.fire('Error', msg, 'error');
+                        if (xhr.responseJSON && xhr.responseJSON.message) {
+                            msg = xhr.responseJSON.message;
+                        }
+                        Swal.fire({
+                            title: 'Error',
+                            text: msg,
+                            icon: 'error',
+                            confirmButtonColor: '#dc3545'
+                        });
+                        formBtn.prop('disabled', false);
+                        formBtn.html('<i class="ri-check-line me-1"></i> Simpan');
                     }
                 });
             });
         });
     }
-
 </script>

@@ -64,30 +64,74 @@
                 <div class="row align-items-stretch g-4">
                     <div class="col-lg-8 d-flex flex-column">
                         <div class="card flex-fill h-100">
-                            <div class="card-header bg-light bg-opacity-50">
+                            <div class="card-header bg-primary bg-opacity-10">
                                 <h6 class="card-title mb-0"><i class="ri-information-line me-2"></i>Informasi Laporan</h6>
                             </div>
                             <div class="card-body">
                                 <div class="row">
-                                    @foreach([
-                                        ['ri-building-2-line', 'Fasilitas', $laporan->fasilitas->nama_fasilitas ?? '-'],
-                                        ['ri-community-line', 'Unit', $laporan->unit->nama_unit ?? '-'],
-                                        ['ri-map-pin-line', 'Tempat', $laporan->tempat->nama_tempat ?? '-'],
-                                        ['ri-box-3-line', 'Barang', $laporan->barangLokasi->jenisBarang->nama_barang ?? '-'],
-                                        ['ri-error-warning-line', 'Jumlah Rusak', $laporan->jumlah_barang_rusak ?? '0'],
-                                        ['ri-alert-line', 'Kategori Kerusakan', $laporan->kategoriKerusakan->nama_kategori ?? '-'],
-                                        ['ri-calendar-event-line', 'Periode', $laporan->periode->nama_periode ?? '-'],
-                                    ] as [$icon, $label, $value])
-                                        <div class="col-md-6 mb-3">
-                                            <div class="d-flex align-items-start">
-                                                <i class="{{ $icon }} text-muted me-2 mt-1"></i>
-                                                <div>
-                                                    <label class="form-label text-muted small mb-1">{{ $label }}</label>
-                                                    <p class="mb-0 fw-bold">{!! $value !!}</p>
-                                                </div>
+                                    <div class="col-md-6 mb-3">
+                                        <div class="d-flex align-items-start">
+                                            <i class="ri-building-2-line text-primary me-2 mt-1"></i>
+                                            <div>
+                                                <label class="form-label text-muted small mb-1">Fasilitas</label>
+                                                <p class="mb-0 fw-bold">{{ $laporan->fasilitas->nama_fasilitas ?? '-' }}</p>
                                             </div>
                                         </div>
-                                    @endforeach
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <div class="d-flex align-items-start">
+                                            <i class="ri-community-line text-primary me-2 mt-1"></i>
+                                            <div>
+                                                <label class="form-label text-muted small mb-1">Unit</label>
+                                                <p class="mb-0 fw-bold">{{ $laporan->unit->nama_unit ?? '-' }}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <div class="d-flex align-items-start">
+                                            <i class="ri-map-pin-line text-primary me-2 mt-1"></i>
+                                            <div>
+                                                <label class="form-label text-muted small mb-1">Tempat</label>
+                                                <p class="mb-0 fw-bold">{{ $laporan->tempat->nama_tempat ?? '-' }}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <div class="d-flex align-items-start">
+                                            <i class="ri-inbox-line text-primary me-2 mt-1"></i>
+                                            <div>
+                                                <label class="form-label text-muted small mb-1">Barang</label>
+                                                <p class="mb-0 fw-bold">{{ $laporan->barangLokasi->jenisBarang->nama_barang ?? '-' }}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <div class="d-flex align-items-start">
+                                            <i class="ri-error-warning-line text-primary me-2 mt-1"></i>
+                                            <div>
+                                                <label class="form-label text-muted small mb-1">Jumlah Rusak</label>
+                                                <p class="mb-0 fw-bold">{{ $laporan->jumlah_barang_rusak ?? '0' }}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <div class="d-flex align-items-start">
+                                            <i class="ri-alert-line text-primary me-2 mt-1"></i>
+                                            <div>
+                                                <label class="form-label text-muted small mb-1">Kategori Kerusakan</label>
+                                                <p class="mb-0 fw-bold">{{ $laporan->kategoriKerusakan->nama_kategori ?? '-' }}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <div class="d-flex align-items-start">
+                                            <i class="ri-calendar-event-line text-primary me-2 mt-1"></i>
+                                            <div>
+                                                <label class="form-label text-muted small mb-1">Periode</label>
+                                                <p class="mb-0 fw-bold">{{ $laporan->periode->nama_periode ?? '-' }}</p>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -95,8 +139,8 @@
                     @if ($laporan->foto_laporan)
                         <div class="col-lg-4 d-flex flex-column">
                             <div class="card flex-fill h-100">
-                                <div class="card-header bg-light bg-opacity-50">
-                                    <h6 class="card-title mb-0"><i class="ri-image-line me-2"></i>Foto Laporan</h6>
+                                <div class="card-header bg-primary bg-opacity-10">
+                                    <h6 class="card-title mb-0"><i class="ri-image-line me-2 text-primary"></i>Foto Laporan</h6>
                                 </div>
                                 <div class="card-body d-flex align-items-center justify-content-center">
                                     <div class="image-preview-container w-100">
@@ -115,8 +159,8 @@
                     @endif
                 </div>
                 <div class="card mt-2">
-                    <div class="card-header bg-light bg-opacity-50">
-                        <h6 class="card-title mb-0"><i class="ri-file-text-line me-2"></i>Deskripsi Laporan</h6>
+                    <div class="card-header bg-primary bg-opacity-10">
+                        <h6 class="card-title mb-0"><i class="ri-file-text-line me-2 text-primary"></i>Deskripsi Laporan</h6>
                     </div>
                     <div class="card-body">
                         <div class="bg-light bg-opacity-25 rounded text-start">
@@ -126,8 +170,8 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-                <button type="submit" class="btn btn-danger">Ya, Hapus</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" style="border-radius: 50px !important">Batal</button>
+                <button type="submit" class="btn btn-danger" id="submitBtn" style="border-radius: 50px !important">Ya, Hapus</button>
             </div>
         </div>
     </div>
@@ -185,56 +229,64 @@
 </style>
 
 <script>
-        $(document).ready(function () {
-            $("#form-delete").validate({
-                rules: {},
-                submitHandler: function (form) {
-                    $.ajax({
-                        url: form.action,
-                        type: form.method,
-                        data: $(form).serialize(),
-                        success: function (response) {
-                            if (response.status) {
-                                $('#myModal').modal('hide');
-                                Swal.fire({
-                                    icon: 'success',
-                                    title: 'Berhasil',
-                                    text: response.message
-                                });
-                                $('#datatable').DataTable().ajax.reload();
-                            } else {
-                                $('.error-text').text('');
-                                $.each(response.msgField, function (prefix, val) {
-                                    $('#error-' + prefix).text(val[0]);
-                                });
-                                Swal.fire({
-                                    icon: 'error',
-                                    title: 'Terjadi Kesalahan',
-                                    text: response.message
-                                });
-                            }
-                        },
-                        error: function () {
+    $(document).ready(function () {
+        $("#form-delete").validate({
+            rules: {},
+            submitHandler: function (form) {
+                var submitBtn = $('#submitBtn');
+                submitBtn.prop('disabled', true);
+                submitBtn.html('<i class="fas fa-spinner fa-spin me-2"></i>Menghapus...');
+
+                $.ajax({
+                    url: form.action,
+                    type: form.method,
+                    data: $(form).serialize(),
+                    success: function (response) {
+                        if (response.status) {
+                            $('#myModal').modal('hide');
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Berhasil',
+                                text: response.message
+                            });
+                            $('#datatable').DataTable().ajax.reload();
+                        } else {
+                            $('.error-text').text('');
+                            $.each(response.msgField, function (prefix, val) {
+                                $('#error-' + prefix).text(val[0]);
+                            });
                             Swal.fire({
                                 icon: 'error',
-                                title: 'Gagal',
-                                text: 'Terjadi kesalahan saat menghapus data.'
+                                title: 'Terjadi Kesalahan',
+                                text: response.message
                             });
                         }
-                    });
-                    return false;
-                },
-                errorElement: 'span',
-                errorPlacement: function (error, element) {
-                    error.addClass('invalid-feedback');
-                    element.closest('.form-group').append(error);
-                },
-                highlight: function (element, errorClass, validClass) {
-                    $(element).addClass('is-invalid');
-                },
-                unhighlight: function (element, errorClass, validClass) {
-                    $(element).removeClass('is-invalid');
-                }
-            });
+                        submitBtn.prop('disabled', false);
+                        submitBtn.html('Ya, Hapus');
+                    },
+                    error: function () {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Gagal',
+                            text: 'Terjadi kesalahan saat menghapus data.'
+                        });
+                        submitBtn.prop('disabled', false);
+                        submitBtn.html('Ya, Hapus');
+                    }
+                });
+                return false;
+            },
+            errorElement: 'span',
+            errorPlacement: function (error, element) {
+                error.addClass('invalid-feedback');
+                element.closest('.form-group').append(error);
+            },
+            highlight: function (element, errorClass, validClass) {
+                $(element).addClass('is-invalid');
+            },
+            unhighlight: function (element, errorClass, validClass) {
+                $(element).removeClass('is-invalid');
+            }
         });
+    });
 </script>

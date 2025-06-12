@@ -76,6 +76,8 @@ class VerifikasiController extends Controller
             'kategoriKerusakan', 'periode'
         ])->findOrFail($laporan_id);
 
+        $laporan->formatted_created_at = $laporan->created_at->format('d M Y');
+
         return view('verifikasi.show', compact('laporan'));
     }
 
