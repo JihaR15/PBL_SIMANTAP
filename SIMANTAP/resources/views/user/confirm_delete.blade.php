@@ -1,112 +1,215 @@
 @empty($user)
-<div id="modal-master" class="modal-dialog" role="document">
-    <div class="modal-content">
-        <div class="modal-header">
-            <h5 class="modal-title" id="exampleModalLabel">Kesalahan</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <div class="modal-body">
-            <div class="alert alert-danger">
-                <h5><i class="icon fas fa-ban"></i> Kesalahan!!!</h5>
-                Data yang anda cari tidak ditemukan
-            </div>
-            <a href="{{ url('/user') }}" class="btn btn-warning">Kembali</a>
-        </div>
-    </div>
-</div>
-@else
-<form action="{{ url('/user/' . $user->user_id.'/delete') }}" method="POST" id="form-delete">
-    @csrf
-    @method('DELETE')
-    <div id="modal-master" class="modal-dialog modal-lg" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Hapus Data User</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                
-            </div>
-            <div class="modal-body">
-                <div class="alert alert-warning">
-                    <h5 class="alert-heading"><i class="icon fas fa-ban"></i> Konfirmasi !!!</h5>
-                    Apakah Anda ingin menghapus data seperti di bawah ini?
-                </div>
-                <div class="d-flex align-items-start align-items-center">
-                    <div class="me-4">
-                        <img src="{{ $user->foto_profile ? asset('images/' . $user->foto_profile) : asset('profile_placeholder.png') }}?{{ now() }}"
-                        alt="Foto Profil" class="rounded-circle"
-                        style="width: 150px; height: 150px; object-fit: cover;">
+    <div id="modal-master" class="modal-dialog" role="document">
+        <div class="modal-content border-0" style="border-radius: 15px; overflow: hidden;">
+            <div class="modal-header text-white bg-light">
+                <div class="d-flex align-items-center">
+                    <div class="flex-shrink-0">
+                        <i class="fas fa-exclamation-triangle text-dark fa-2x me-2"></i>
                     </div>
-    
                     <div class="flex-grow-1">
-                        <table class="table table-bordered table-striped table-hover table-sm">
-                            <tr>
-                                <th class="text-nowrap" style="width: 150px;">Role Pengguna</th>
-                                <td>{{ $user->role->nama_role }}</td>
-                            </tr>
-                            <tr>
-                                <th class="text-nowrap">Username</th>
-                                <td>{{ $user->username }}</td>
-                            </tr>
-                            <tr>
-                                <th class="text-nowrap">Nama</th>
-                                <td>{{ $user->name }}</td>
-                            </tr>
-                        </table>
+                        <h5 class="modal-title mb-0">Kesalahan</h5>
+                        <p class="mb-0 small opacity-75 text-muted">Data tidak ditemukan</p>
                     </div>
                 </div>
+                <button type="button" class="btn-close btn-close-black" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-primary waves-effect" data-bs-dismiss="modal">Batal</button>
-                <button type="submit" class="btn btn-danger">Ya, Hapus</button>
+            <div class="modal-body p-4">
+                <div class="alert alert-danger">
+                    <h5><i class="icon fas fa-ban"></i> Kesalahan!</h5>
+                    Data yang anda cari tidak ditemukan
+                </div>
+                <div class="text-end">
+                    <a href="{{ url('/user') }}" class="btn btn-warning rounded-pill px-4">
+                        <i class="fas fa-arrow-left me-2"></i>Kembali
+                    </a>
+                </div>
             </div>
         </div>
     </div>
-</form>
-<script>
-    $(document).ready(function() {
-        $("#form-delete").validate({
-            rules: {},
-            submitHandler: function(form) {
-                $.ajax({
-                    url: form.action,
-                    type: form.method,
-                    data: $(form).serialize(),
-                    success: function(response) {
-                        if (response.status) {
-                            $('#myModal').modal('hide');
-                            Swal.fire({
-                                icon: 'success',
-                                title: 'Berhasil',
-                                text: response.message
-                            });
-                            dataUser.ajax.reload();
-                        } else {
-                            $('.error-text').text('');
-                            $.each(response.msgField, function(prefix, val) {
-                                $('#error-' + prefix).text(val[0]);
-                            });
-                            Swal.fire({
-                                icon: 'error',
-                                title: 'Terjadi Kesalahan',
-                                text: response.message
-                            });
+@else
+    <form action="{{ url('/user/' . $user->user_id.'/delete') }}" method="POST" id="form-delete">
+        @csrf
+        @method('DELETE')
+        <div id="modal-master" class="modal-dialog modal-lg" role="document">
+            <div class="modal-content border-0" style="border-radius: 15px; overflow: hidden; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);">
+                <div class="modal-header bg-light">
+                    <div class="d-flex align-items-center w-100">
+                        <div class="flex-grow-1">
+                            <h5 class="modal-title mb-0 text-dark">
+                                <i class="fas fa-trash-alt me-2"></i>Hapus Data Pengguna
+                            </h5>
+                            <p class="mb-0 small opacity-85 mt-1 text-muted">Konfirmasi penghapusan data pengguna</p>
+                        </div>
+                        <button type="button" class="btn-close btn-close-black" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                </div>
+
+                <div class="modal-body p-0">
+                    {{-- <div class="alert alert-warning bg-warning bg-opacity-10 border-warning border-opacity-25 m-4">
+                        <h5 class="alert-heading"><i class="fas fa-exclamation-circle me-2"></i>Konfirmasi!</h5>
+                        Apakah Anda yakin ingin menghapus data pengguna berikut?
+                    </div> --}}
+
+                    <div class="alert alert-warning bg-warning bg-opacity-10 border-warning border-opacity-25 m-4">
+                        <div class="d-flex align-items-center">
+                            <i class="fas fa-exclamation-circle me-3" style="font-size: 24px;"></i>
+                            <div>
+                                <h5 class="mb-1">Konfirmasi Penghapusan</h5>
+                                <p class="mb-0">Apakah Anda yakin ingin menghapus data berikut?</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row g-0 mx-4 mb-4">
+                        <div class="col-md-4">
+                            <div class="d-flex flex-column align-items-center justify-content-center p-2 h-100">
+                                <div class="position-relative">
+                                    <img src="{{ $user->foto_profile ? asset('images/' . $user->foto_profile) : asset('profile_placeholder.png') }}?{{ now() }}"
+                                        alt="Foto Profil"
+                                        class="img-thumbnail rounded-circle shadow"
+                                        style="width: 180px; height: 180px; object-fit: cover; border: 4px solid white;">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-8">
+                            <div class="p-4">
+                                <div class="card border-0 shadow-sm mb-4">
+                                    <div class="card-body p-3 bg-light" style="border-radius: 12px">
+                                        <table class="table table-borderless table-sm mb-0">
+                                            <tr>
+                                                <td style="width: 40px; padding: 0.5rem; vertical-align: middle; text-align: center;" class="text-primary">
+                                                    <i class="fas fa-id-card"></i>
+                                                </td>
+                                                <td style="width: 120px; padding: 0.5rem; vertical-align: middle;" class="text-muted small">ID Pengguna</td>
+                                                <td style="padding: 0.5rem; vertical-align: middle;" class="fw-bold">
+                                                    <span class="badge bg-primary bg-opacity-10 text-primary">{{ $user->user_id }}</span>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td style="width: 40px; padding: 0.5rem; vertical-align: middle; text-align: center;" class="text-primary">
+                                                    <i class="fas fa-user-tag"></i>
+                                                </td>
+                                                <td style="width: 120px; padding: 0.5rem; vertical-align: middle;" class="text-muted small">Role Pengguna</td>
+                                                <td style="padding: 0.5rem; vertical-align: middle;" class="fw-bold">
+                                                    {{ $user->role->nama_role ?? 'Tidak ada role' }}
+                                                </td>
+                                            </tr>
+                                            @if ($user->role->nama_role === 'Teknisi')
+                                            <tr>
+                                                <td style="width: 40px; padding: 0.5rem; vertical-align: middle; text-align: center;" class="text-primary">
+                                                    <i class="fas fa-tools"></i>
+                                                </td>
+                                                <td style="width: 120px; padding: 0.5rem; vertical-align: middle;" class="text-muted small">Spesialisasi</td>
+                                                <td style="padding: 0.5rem; vertical-align: middle;" class="fw-bold">
+                                                    {{ $user->teknisi->jenis_teknisi->nama_jenis_teknisi }}
+                                                </td>
+                                            </tr>
+                                            @endif
+                                            <tr>
+                                                <td style="width: 40px; padding: 0.5rem; vertical-align: middle; text-align: center;" class="text-primary">
+                                                    <i class="fas fa-at"></i>
+                                                </td>
+                                                <td style="width: 120px; padding: 0.5rem; vertical-align: middle;" class="text-muted small">Username</td>
+                                                <td style="padding: 0.5rem; vertical-align: middle;" class="fw-bold">
+                                                    {{ $user->username }}
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td style="width: 40px; padding: 0.5rem; vertical-align: middle; text-align: center;" class="text-primary">
+                                                    <i class="fas fa-user"></i>
+                                                </td>
+                                                <td style="width: 120px; padding: 0.5rem; vertical-align: middle;" class="text-muted small">Nama Lengkap</td>
+                                                <td style="padding: 0.5rem; vertical-align: middle;" class="fw-bold">
+                                                    {{ $user->name }}
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-footer bg-light">
+                    <button type="button" class="btn btn-outline-secondary rounded-pill px-4" data-bs-dismiss="modal">
+                        <i class="fas fa-times me-2"></i>Batal
+                    </button>
+                    <button type="submit" class="btn btn-danger rounded-pill px-4 shadow-sm">
+                        <i class="fas fa-trash-alt me-2"></i>Ya, Hapus
+                    </button>
+                </div>
+            </div>
+        </div>
+    </form>
+
+    <style>
+        .modal-content {
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+            border: none;
+        }
+        .modal-header {
+            padding: 1.5rem;
+            border-bottom: none;
+        }
+        .modal-body {
+            padding: 0;
+        }
+        .modal-footer {
+            border-top: 1px solid rgba(0, 0, 0, 0.05);
+            /* padding: 1.25rem 2rem; */
+        }
+        .table-sm td {
+            padding: 0.5rem 0.5rem;
+            vertical-align: middle;
+        }
+    </style>
+
+    <script>
+        $(document).ready(function() {
+            $("#form-delete").validate({
+                rules: {},
+                submitHandler: function(form) {
+                    const submitBtn = $(form).find('button[type="submit"]');
+                    submitBtn.prop('disabled', true);
+                    submitBtn.html('<i class="fas fa-spinner fa-spin me-2"></i>Menghapus...');
+
+                    $.ajax({
+                        url: form.action,
+                        type: form.method,
+                        data: $(form).serialize(),
+                        success: function(response) {
+                            if (response.status) {
+                                $('#myModal').modal('hide');
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: 'Berhasil',
+                                    text: response.message,
+                                    showConfirmButton: false,
+                                    timer: 1500,
+                                    background: '#fff'
+                                });
+                                setTimeout(() => {
+                                    dataUser.ajax.reload();
+                                }, 1500);
+                            } else {
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Terjadi Kesalahan',
+                                    text: response.message,
+                                    background: '#fff'
+                                });
+                            }
+                        },
+                        complete: function() {
+                            submitBtn.prop('disabled', false);
+                            submitBtn.html('<i class="fas fa-trash-alt me-2"></i>Ya, Hapus');
                         }
-                    }
-                });
-                return false;
-            },
-            errorElement: 'span',
-            errorPlacement: function(error, element) {
-                error.addClass('invalid-feedback');
-                element.closest('.form-group').append(error);
-            },
-            highlight: function(element, errorClass, validClass) {
-                $(element).addClass('is-invalid');
-            },
-            unhighlight: function(element, errorClass, validClass) {
-                $(element).removeClass('is-invalid');
-            }
+                    });
+                    return false;
+                }
+            });
         });
-    });
-</script>
+    </script>
 @endempty

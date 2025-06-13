@@ -1,28 +1,76 @@
 <div id="modal-master" class="modal-dialog modal-lg" role="document">
-    <div class="modal-content">
-        <div class="modal-header">
-            <h5 class="modal-title">Detail Ruang</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+    <div class="modal-content border-0" style="border-radius: 15px; overflow: hidden; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);">
+        <div class="modal-header text-white bg-light">
+            <div class="d-flex align-items-center w-100">
+                <div class="flex-grow-1">
+                    <h5 class="modal-title mb-0">
+                        <i class="fas fa-door-open me-2"></i>Detail Ruang
+                    </h5>
+                    <p class="mb-0 small opacity-85 mt-1 text-muted">Informasi lengkap ruang</p>
+                </div>
+                <button type="button" class="btn-close btn-close-dark" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
         </div>
-        <div class="modal-body">
-            <div class="row align-items-center">
-                <div class="col-12 col-md">
-                    <table class="table table-borderless table-sm">
+
+        <div class="modal-body p-4">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body p-3 bg-light" style="border-radius: 12px;">
+                    <table class="table table-borderless table-sm mb-0">
                         <tr>
-                            <td style="width: 150px;"><strong>Nama Unit</strong></td>
-                            <td>: {{ $unit->nama_unit }}</td>
+                            <td style="width: 40px; padding: 0.5rem; vertical-align: middle; text-align: center;" class="text-primary">
+                                <i class="fas fa-building"></i>
+                            </td>
+                            <td style="width: 120px; padding: 0.5rem; vertical-align: middle;" class="text-muted small">Nama Unit</td>
+                            <td style="padding: 0.5rem; vertical-align: middle;" class="fw-bold">
+                                {{ $unit->nama_unit }}
+                            </td>
                         </tr>
                         <tr>
-                            <td><strong>Nama Ruang</strong></td>
-                            <td>: {{ $tempat->nama_tempat }}</td>
+                            <td style="width: 40px; padding: 0.5rem; vertical-align: middle; text-align: center;" class="text-primary">
+                                <i class="fas fa-door-closed"></i>
+                            </td>
+                            <td style="width: 120px; padding: 0.5rem; vertical-align: middle;" class="text-muted small">Nama Ruang</td>
+                            <td style="padding: 0.5rem; vertical-align: middle;" class="fw-bold">
+                                {{ $tempat->nama_tempat }}
+                            </td>
                         </tr>
-                        {{-- Tambahkan detail lain jika ada --}}
                     </table>
                 </div>
             </div>
         </div>
-        <div class="modal-footer">
-            <button type="button" class="btn btn-light waves-effect" data-bs-dismiss="modal" onclick="modalAction('{{ url('/tempat/'.$unit->unit_id.'/popup') }}')">Tutup</button>
-        </div>
+
+        {{-- <div class="modal-footer bg-light">
+            <button type="button" class="btn btn-outline-secondary rounded-pill px-4" data-bs-dismiss="modal" onclick="modalAction('{{ url('/tempat/'.$unit->unit_id.'/popup') }}')">
+                <i class="fas fa-times me-2"></i>Tutup
+            </button>
+        </div> --}}
     </div>
 </div>
+
+<style>
+    .modal-content {
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+        border: none;
+    }
+    .modal-header {
+        padding: 1.25rem 1.5rem;
+        border-bottom: none;
+    }
+    .modal-body {
+        padding: 1.5rem;
+    }
+    /* .card {
+        border-radius: 12px;
+        background-color: #f8f9fc;
+    } */
+    /* .table-sm td {
+        padding: 0.5rem 0.5rem;
+        vertical-align: middle;
+    } */
+    .btn-outline-secondary {
+        transition: all 0.3s ease;
+    }
+    .btn-outline-secondary:hover {
+        transform: translateY(-1px);
+    }
+</style>

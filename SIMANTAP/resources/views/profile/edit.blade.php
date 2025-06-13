@@ -318,7 +318,6 @@
                                 timer: 1500,
                                 background: '#fff',
                                 backdrop: `
-                                    rgba(118, 75, 162, 0.4)
                                     url("/images/nyan-cat.gif")
                                     left top
                                     no-repeat

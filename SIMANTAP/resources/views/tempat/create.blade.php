@@ -1,63 +1,225 @@
-<form action="{{ url('/tempat/'.$unit->unit_id.'/store') }}" method="POST" id="form-create-tempat">
+<form action="{{ url('/tempat/'.$unit->unit_id.'/store') }}" method="POST" id="form-create-tempat" enctype="multipart/form-data">
     @csrf
     <div id="modal-master" class="modal-dialog modal-md" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Tambah Ruang di {{ $unit->nama_unit }}</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        <div class="modal-content border-0" style="border-radius: 12px; box-shadow: 0 5px 20px rgba(0,0,0,0.1);">
+            <div class="modal-header bg-light text-white">
+                <div class="d-flex w-100 align-items-center">
+                    <div class="flex-grow-1">
+                        <h5 class="modal-title mb-1">
+                            <i class="fas fa-plus-circle me-2"></i>Tambah Ruang Baru
+                        </h5>
+                        <p class="mb-0 small opacity-85 text-muted">Unit: {{ $unit->nama_unit }}</p>
+                    </div>
+                    <button type="button" class="btn-close btn-close-dark" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
             </div>
-            <div class="modal-body">
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="form-group mb-3">
-                            <label>Nama Ruang</label>
-                            <input type="text" name="nama_tempat" class="form-control" required>
-                            <small id="error-nama_tempat" class="error-text form-text text-danger"></small>
-                        </div>
+
+            <div class="modal-body p-4">
+                <div class="alert alert-info border-0 mb-4">
+                    <i class="fas fa-info-circle me-2"></i> Masukkan detail ruang yang akan ditambahkan
+                </div>
+
+                <div class="form-group mb-4">
+                    <label class="form-label fw-semibold">
+                        <i class="fas fa-door-closed me-2 text-primary"></i>Nama Ruang
+                        <span class="text-danger">*</span>
+                    </label>
+                    <div class="input-group">
+                        <span class="input-group-text bg-light border-end-0">
+                            <i class="fas fa-font text-muted"></i>
+                        </span>
+                        <input type="text" name="nama_tempat" id="nama_tempat"
+                               class="form-control rounded-end"
+                               placeholder="Contoh: Ruang Meeting Lantai 2"
+                               required>
+                    </div>
+                    <div class="d-flex justify-content-between mt-1">
+                        <small id="error-nama_tempat" class="error-text form-text text-danger"></small>
+                        {{-- <small class="text-muted">Max. 50 karakter</small> --}}
                     </div>
                 </div>
             </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-light waves-effect" data-bs-dismiss="modal" onclick="modalAction('{{ url('/tempat/'.$unit->unit_id.'/popup') }}')">Batal</button>
-                <button type="submit" class="btn btn-primary waves-effect waves-light" onclick="modalAction('{{ url('/tempat/'.$unit->unit_id.'/popup') }}')">Simpan</button>
+
+            <div class="modal-footer bg-light">
+                <button type="button" class="btn btn-outline-secondary rounded-pill px-4" data-bs-dismiss="modal">
+                    <i class="fas fa-times me-2"></i>Batal
+                </button>
+                <button type="submit" class="btn btn-primary rounded-pill px-4 shadow-sm">
+                    <i class="fas fa-save me-2"></i>Simpan
+                </button>
             </div>
         </div>
     </div>
 </form>
+
+<style>
+    .modal-content {
+        border: none;
+        overflow: hidden;
+    }
+    .modal-header {
+        padding: 1.25rem 1.5rem;
+        border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
+    .modal-body {
+        padding: 1.5rem;
+    }
+    .modal-footer {
+        border-top: 1px solid rgba(0,0,0,0.05);
+        padding: 1rem 1.5rem;
+    }
+    .input-group-text {
+        background-color: #f8f9fa;
+        transition: all 0.3s ease;
+    }
+    .form-control {
+        transition: all 0.3s ease;
+        border-left: 0;
+    }
+    .form-control:focus {
+        box-shadow: none;
+        border-color: #ced4da;
+    }
+    .form-control:focus + .input-group-text {
+        border-color: #86b7fe;
+    }
+    .btn-outline-secondary {
+        transition: all 0.3s ease;
+    }
+    .btn-primary {
+        transition: all 0.3s;
+        position: relative;
+        overflow: hidden;
+    }
+    .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(13, 110, 253, 0.3);
+    }
+    .btn-primary:active {
+        transform: translateY(0);
+    }
+    .form-label {
+        font-weight: 500;
+        margin-bottom: 0.5rem;
+    }
+    .is-invalid {
+        border-color: #dc3545 !important;
+    }
+    .is-invalid + .input-group-text {
+        border-color: #dc3545 !important;
+    }
+    .alert-info {
+        background-color: #f0f9ff;
+        border-color: #bae6fd;
+        color: #0369a1;
+    }
+</style>
+
 <script>
-    $(document).ready(function () {
+    $(document).ready(function() {
         $("#form-create-tempat").validate({
-            rules: {},
-            submitHandler: function (form) {
+            rules: {
+                nama_tempat: {
+                    required: true,
+                    minlength: 3,
+                    maxlength: 50
+                }
+            },
+            messages: {
+                nama_tempat: {
+                    required: "Nama ruang wajib diisi",
+                    minlength: "Minimal 3 karakter",
+                    maxlength: "Maksimal 50 karakter"
+                }
+            },
+            errorElement: 'span',
+            errorPlacement: function(error, element) {
+                error.addClass('invalid-feedback');
+                element.closest('.form-group').find('.error-text').html(error);
+            },
+            highlight: function(element, errorClass, validClass) {
+                $(element).addClass('is-invalid');
+                $(element).closest('.input-group').find('.input-group-text').addClass('border-danger text-danger');
+            },
+            unhighlight: function(element, errorClass, validClass) {
+                $(element).removeClass('is-invalid');
+                $(element).closest('.input-group').find('.input-group-text').removeClass('border-danger text-danger');
+            },
+            submitHandler: function(form) {
+                const submitBtn = $(form).find('button[type="submit"]');
+                const originalContent = submitBtn.html();
+
+                // Disable button and show loading state
+                submitBtn.prop('disabled', true);
+                submitBtn.html('<i class="fas fa-spinner fa-spin me-2"></i>Menyimpan...');
+
+                // Submit form via AJAX
                 $.ajax({
                     url: form.action,
                     type: form.method,
                     data: new FormData(form),
                     processData: false,
                     contentType: false,
-                    success: function (response) {
+                    success: function(response) {
                         if (response.status) {
-                            $('#myModal').modal('hide');
+                            // Show success message
                             Swal.fire({
                                 icon: 'success',
-                                title: 'Berhasil',
-                                text: response.message
+                                title: 'Berhasil!',
+                                text: response.message,
+                                showConfirmButton: false,
+                                timer: 1500,
+                                background: '#fff',
+                                backdrop: 'rgba(0,0,0,0.5)'
+                            }).then(() => {
+                                $('#myModal').modal('hide');
+                                if (typeof dataTempat !== 'undefined') {
+                                    dataTempat.ajax.reload(null, false);
+                                }
                             });
-                            // reload datatable-tempat jika perlu
-                            if (typeof dataTempat !== 'undefined') dataTempat.ajax.reload();
                         } else {
-                            $('.error-text').text('');
-                            $.each(response.msgField, function (prefix, val) {
-                                $('#error-' + prefix).text(val[0]);
-                            });
+                            // Show error message
                             Swal.fire({
                                 icon: 'error',
-                                title: 'Terjadi Kesalahan',
-                                text: response.message
+                                title: 'Gagal!',
+                                text: response.message || 'Terjadi kesalahan saat menyimpan data',
+                                background: '#fff',
+                                backdrop: 'rgba(0,0,0,0.5)'
                             });
+
+                            // Display field errors if any
+                            $('.error-text').text('');
+                            if (response.msgField) {
+                                $.each(response.msgField, function(prefix, val) {
+                                    $('#error-' + prefix.replace('.', '-')).text(val[0]);
+                                });
+                            }
                         }
+                    },
+                    error: function(xhr) {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error!',
+                            text: 'Terjadi kesalahan pada server',
+                            background: '#fff',
+                            backdrop: 'rgba(0,0,0,0.5)'
+                        });
+                    },
+                    complete: function() {
+                        // Reset button state
+                        submitBtn.prop('disabled', false);
+                        submitBtn.html(originalContent);
                     }
                 });
+
+                return false;
+            }
+        });
+
+        // Prevent form submission on Enter key
+        $('#form-create-tempat').on('keyup keypress', function(e) {
+            if (e.keyCode === 13) {
+                e.preventDefault();
                 return false;
             }
         });
