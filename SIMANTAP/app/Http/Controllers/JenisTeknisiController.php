@@ -68,11 +68,11 @@ class JenisTeknisiController extends Controller
         if ($request->ajax() || $request->wantsJson()) {
             return response()->json([
                 'status' => true,
-                'message' => 'Jenis Teknisi created successfully.',
+                'message' => 'Jenis Teknisi Berhasil dibuat.',
                 'data' => $jenisteknisi
             ]);
         }
-        return redirect()->route('jenisteknisi.index')->with('success', 'Jenis Teknisi created successfully.');
+        return redirect()->route('jenisteknisi.index')->with('success', 'Jenis Teknisi Berhasil dibuat.');
     }
     public function edit($id)
     {
@@ -98,11 +98,11 @@ class JenisTeknisiController extends Controller
         if ($request->ajax() || $request->wantsJson()) {
             return response()->json([
                 'status' => true,
-                'message' => 'Jenis Teknisi updated successfully.',
+                'message' => 'Jenis Teknisi Berhasil diperbarui.',
                 'data' => $jenisteknisi
             ]);
         }
-        return redirect()->route('jenisteknisi.index')->with('success', 'Jenis Teknisi updated successfully.');
+        return redirect()->route('jenisteknisi.index')->with('success', 'Jenis Teknisi Berhasil diperbarui.');
     }
     public function show($id)
     {
@@ -118,41 +118,51 @@ class JenisTeknisiController extends Controller
 
     public function destroy($id)
     {
-        // Gunakan transaksi agar aman jika terjadi error
         DB::beginTransaction();
         try {
             $jenisteknisi = JenisTeknisiModel::findOrFail($id);
 
-            // Ambil semua teknisi yang punya jenis_teknisi_id = $id
+            // cek apakah ada teknisi dengan user
+            $teknisisWithUsers = TeknisiModel::with('user')
+                                ->where('jenis_teknisi_id', $id)
+                                ->whereHas('user')
+                                ->count();
+
+            if ($teknisisWithUsers > 0) {
+                DB::rollBack();
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Tidak dapat menghapus jenis teknisi karena terdapat '.$teknisisWithUsers.' user terkait. Harap hapus user terkait terlebih dahulu.',
+                    'alert_type' => 'warning'
+                ], 422);
+            }
+
+            // penghapusan jika tidak ada user terkait
             $teknisis = TeknisiModel::where('jenis_teknisi_id', $id)->get();
 
             foreach ($teknisis as $teknisi) {
-                // Hapus user yang terkait (via user_id)
-                $user = UserModel::find($teknisi->user_id);
-                if ($user) {
-                    $user->delete();
-                }
-
-                // Hapus teknisinya
                 $teknisi->delete();
             }
 
-            // Hapus jenis teknisinya
             $jenisteknisi->delete();
 
             DB::commit();
 
-            if (request()->ajax() || request()->wantsJson()) {
-                return response()->json([
-                    'status' => true,
-                    'message' => 'Jenis Teknisi dan teknisi serta user terkait berhasil dihapus.',
-                ]);
-            }
+            return response()->json([
+                'status' => true,
+                'message' => 'Jenis teknisi dan teknisi terkait berhasil dihapus',
+                'alert_type' => 'success'
+            ]);
 
-            return redirect()->route('jenisteknisi.index')->with('success', 'Jenis Teknisi dan teknisi serta user terkait berhasil dihapus.');
         } catch (\Exception $e) {
             DB::rollBack();
-            return back()->with('error', 'Gagal menghapus data: ' . $e->getMessage());
+            // \Log::error('Delete error: '.$e->getMessage());
+
+            return response()->json([
+                'status' => false,
+                'message' => 'Gagal menghapus data: '.$e->getMessage(),
+                'alert_type' => 'error'
+            ], 500);
         }
     }
 }

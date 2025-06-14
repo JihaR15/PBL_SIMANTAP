@@ -126,11 +126,11 @@ class UserController extends Controller
         if ($request->ajax() || $request->wantsJson()) {
             return response()->json([
                 'status' => true,
-                'message' => 'User created successfully.',
+                'message' => 'User Berhasil dibuat.',
                 'data' => $user
             ]);
         }
-        return redirect()->route('user.index')->with('success', 'User created successfully.');
+        return redirect()->route('user.index')->with('success', 'User Berhasil dibuat.');
     }
     public function edit($id)
     {
@@ -200,12 +200,12 @@ class UserController extends Controller
         if ($request->ajax() || $request->wantsJson()) {
             return response()->json([
                 'status' => true,
-                'message' => 'User updated successfully.',
+                'message' => 'User Berhasil diperbarui.',
                 'data' => $user
             ]);
         }
 
-        return redirect()->route('user.index')->with('success', 'User updated successfully.');
+        return redirect()->route('user.index')->with('success', 'User Berhasil diperbarui.');
     }
     public function show($id)
     {
@@ -241,7 +241,7 @@ class UserController extends Controller
                 'message' => 'User Berhasil dihapus.',
             ]);
         }
-        return redirect()->route('user.index')->with('success', 'User deleted successfully.');
+        return redirect()->route('user.index')->with('success', 'User Berhasil dihapus.');
     }
     public function getUser(Request $request)
     {

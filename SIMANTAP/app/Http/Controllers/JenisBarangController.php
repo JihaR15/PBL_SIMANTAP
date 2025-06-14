@@ -70,11 +70,11 @@ class JenisBarangController extends Controller
         if ($request->ajax() || $request->wantsJson()) {
             return response()->json([
                 'status' => true,
-                'message' => 'Jenis Barang created successfully.',
+                'message' => 'Jenis Barang Berhasil dibuat.',
                 'data' => $jenisbarang
             ]);
         }
-        return redirect()->route('jenisbarang.index')->with('success', 'Jenis Barang created successfully.');
+        return redirect()->route('jenisbarang.index')->with('success', 'Jenis Barang Berhasil dibuat.');
     }
 
     public function show($id)
@@ -110,11 +110,11 @@ class JenisBarangController extends Controller
         if ($request->ajax() || $request->wantsJson()) {
             return response()->json([
                 'status' => true,
-                'message' => 'Jenis Barang updated successfully.',
+                'message' => 'Jenis Barang Berhasil diperbarui.',
                 'data' => $jenisbarang
             ]);
         }
-        return redirect()->route('jenisbarang.index')->with('success', 'Jenis Barang updated successfully.');
+        return redirect()->route('jenisbarang.index')->with('success', 'Jenis Barang Berhasil diperbarui.');
     }
 
     public function confirmDelete($id)
@@ -157,7 +157,7 @@ class JenisBarangController extends Controller
             foreach ($barangLokasi as $barang) {
                 $barang->delete();
             }
-            
+
 
             // hapus jenis barang
             $jenisbarang->delete();

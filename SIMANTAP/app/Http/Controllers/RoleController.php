@@ -2,11 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use App\Models\UserModel;
 use App\Models\RoleModel;
+use App\Models\UserModel;
 use App\Models\TeknisiModel;
+use Illuminate\Http\Request;
 use App\Models\JenisTeknisiModel;
+use Illuminate\Support\Facades\DB;
 use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Support\Facades\Validator;
 
@@ -62,9 +63,9 @@ class RoleController extends Controller
                 'status' => false,
                 'message' => 'Validasi gagal.',
                 'msgField' => $validator->errors()
-            ]); 
+            ]);
         }
-        
+
         $role = new RoleModel();
         $role->kode_role = $request->kode_role;
         $role->nama_role = $request->nama_role;
@@ -72,11 +73,11 @@ class RoleController extends Controller
         if ($request->ajax() || $request->wantsJson()) {
             return response()->json([
                 'status' => true,
-                'message' => 'Role created successfully.',
+                'message' => 'Role Berhasil dibuat.',
                 'data' => $role
             ]);
         }
-        return redirect()->route('role.index')->with('success', 'Role created successfully.');
+        return redirect()->route('role.index')->with('success', 'Role Berhasil dibuat.');
     }
     public function edit($id)
     {
@@ -97,22 +98,22 @@ class RoleController extends Controller
                 'status' => false,
                 'message' => 'Validasi gagal.',
                 'msgField' => $validator->errors()
-            ]); 
+            ]);
         }
-        
+
         $role = RoleModel::findOrFail($id);
         $role->kode_role = $request->kode_role;
         $role->nama_role = $request->nama_role;
         $role->save();
-        
+
         if ($request->ajax() || $request->wantsJson()) {
             return response()->json([
                 'status' => true,
-                'message' => 'Role updated successfully.',
+                'message' => 'Role Berhasil diperbarui.',
                 'data' => $role
             ]);
         }
-        return redirect()->route('role.index')->with('success', 'Role updated successfully.');
+        return redirect()->route('role.index')->with('success', 'Role Berhasil diperbarui.');
     }
     public function show($id)
     {
@@ -128,15 +129,34 @@ class RoleController extends Controller
 
     public function destroy($id)
     {
-        $role = RoleModel::findOrFail($id);
-        $role->delete();
-        if (request()->ajax() || request()->wantsJson()) {
+        DB::beginTransaction();
+        try {
+            $role = RoleModel::findOrFail($id);
+
+            $usersCount = UserModel::where('role_id', $id)->count();
+            if ($usersCount > 0) {
+                DB::rollBack();
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Tidak dapat menghapus role karena terdapat '.$usersCount.' user terkait.'
+                ], 422);
+            }
+
+            $role->delete();
+            DB::commit();
+
             return response()->json([
                 'status' => true,
-                'message' => 'Role deleted successfully.'
+                'message' => 'Role berhasil dihapus.'
             ]);
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json([
+                'status' => false,
+                'message' => 'Gagal menghapus role: '.$e->getMessage()
+            ], 500);
         }
-        return redirect()->route('role.index')->with('success', 'Role deleted successfully.');
     }
 
 }

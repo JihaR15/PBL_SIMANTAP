@@ -133,47 +133,52 @@
 
 <script>
     $(document).ready(function() {
-        $("#form-delete").validate({
-            rules: {},
-            submitHandler: function(form) {
-                const submitBtn = $(form).find('button[type="submit"]');
-                submitBtn.prop('disabled', true);
-                submitBtn.html('<i class="fas fa-spinner fa-spin me-2"></i>Menghapus...');
+        $("#form-delete").on('submit', function(e) {
+            e.preventDefault();
+            const form = this;
+            const submitBtn = $(form).find('button[type="submit"]');
 
-                $.ajax({
-                    url: form.action,
-                    type: form.method,
-                    data: $(form).serialize(),
-                    success: function(response) {
-                        if (response.status) {
-                            $('#myModal').modal('hide');
-                            Swal.fire({
-                                icon: 'success',
-                                title: 'Berhasil',
-                                text: response.message,
-                                showConfirmButton: false,
-                                timer: 1500,
-                                background: '#fff'
-                            });
-                            setTimeout(() => {
-                                dataUser.ajax.reload();
-                            }, 1500);
-                        } else {
-                            Swal.fire({
-                                icon: 'error',
-                                title: 'Terjadi Kesalahan',
-                                text: response.message,
-                                background: '#fff'
-                            });
-                        }
-                    },
-                    complete: function() {
-                        submitBtn.prop('disabled', false);
-                        submitBtn.html('<i class="fas fa-trash-alt me-2"></i>Ya, Hapus');
+            submitBtn.prop('disabled', true);
+            submitBtn.html('<i class="fas fa-spinner fa-spin me-2"></i>Memproses...');
+
+            $.ajax({
+                url: form.action,
+                type: form.method,
+                data: $(form).serialize(),
+                success: function(response) {
+                    if (response.status) {
+                        $('#myModal').modal('hide')
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Berhasil',
+                            text: response.message,
+                            showConfirmButton: false,
+                            timer: 1500
+                        }).then(() => {
+                            dataUser.ajax.reload();
+                        });
+                    } else {
+                        Swal.fire({
+                            icon: response.alert_type || 'error',
+                            title: 'Peringatan',
+                            text: response.message,
+                            confirmButtonText: 'Mengerti'
+                        });
                     }
-                });
-                return false;
-            }
+                },
+                error: function(xhr) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: xhr.responseJSON?.message || 'Terjadi kesalahan saat menghapus data',
+                        confirmButtonText: 'Mengerti'
+                    });
+                },
+                complete: function() {
+                    submitBtn.prop('disabled', false);
+                    submitBtn.html('<i class="fas fa-trash-alt me-2"></i>Ya, Hapus');
+                }
+            });
         });
     });
 </script>

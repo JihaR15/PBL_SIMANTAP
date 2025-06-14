@@ -173,18 +173,29 @@
                                 showConfirmButton: false,
                                 timer: 1500,
                                 background: '#fff'
+                            }).then(() => {
+                                if (typeof dataUser !== 'undefined') {
+                                    dataUser.ajax.reload();
+                                } else {
+                                    window.location.reload();
+                                }
                             });
-                            setTimeout(() => {
-                                dataUser.ajax.reload();
-                            }, 1500);
                         } else {
                             Swal.fire({
                                 icon: 'error',
-                                title: 'Terjadi Kesalahan',
+                                title: 'Error',
                                 text: response.message,
-                                background: '#fff'
+                                confirmButtonText: 'Mengerti'
                             });
                         }
+                    },
+                    error: function(xhr) {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: xhr.responseJSON?.message || 'Terjadi kesalahan',
+                            confirmButtonText: 'Mengerti'
+                        });
                     },
                     complete: function() {
                         submitBtn.prop('disabled', false);
