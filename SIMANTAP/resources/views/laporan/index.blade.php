@@ -136,13 +136,17 @@
                                         <i class="fas fa-calendar-alt me-2"></i> Informasi Periode
                                     </h5>
 
+                                    @php
+                                        $periodeSekarang = $periode->firstWhere('nama_periode', date('Y'));
+                                    @endphp
                                     <div class="mb-3">
-                                        <label class="form-label fw-semibold">Pilih Periode</label>
-                                        <select name="periode_id" id="periode_id" class="form-select select2" required>
-                                            @foreach($periode as $p)
-                                                <option value="{{ $p->periode_id }}">{{ $p->nama_periode }}
-                                                </option>
-                                            @endforeach
+                                        <label class="form-label fw-semibold">Periode (Tahun Ini)</label>
+                                        <select name="periode_id" id="periode_id" class="form-select" required readonly>
+                                            @if($periodeSekarang)
+                                                <option value="{{ $periodeSekarang->periode_id }}" selected>{{ $periodeSekarang->nama_periode }}</option>
+                                            @else
+                                                <option value="" disabled selected>Periode tahun ini tidak tersedia</option>
+                                            @endif
                                         </select>
                                         <small id="error-periode_id" class="error-text form-text text-danger"></small>
                                     </div>

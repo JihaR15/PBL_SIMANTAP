@@ -331,7 +331,7 @@ class LaporanController extends Controller
 
     public function laporanadmin(Request $request)
     {
-
+        ini_set('max_execution_time', 36000);
         // Ambil hanya tahun-tahun dari periode yang punya laporan
         $periodeTahun = PeriodeModel::whereHas('laporan')
             ->pluck('nama_periode')
@@ -526,7 +526,7 @@ class LaporanController extends Controller
 
             'teknisiStats' => $teknisiStats,
             'verifikatorStats' => $verifikatorStats,
-            
+
             'totalFasilitasTersedia' => $totalFasilitasTersedia,
             'totalFasilitasRusak' => $totalFasilitasRusak,
             'totalFasilitasSudahDiperbaiki' => $totalFasilitasSudahDiperbaiki,
@@ -536,7 +536,7 @@ class LaporanController extends Controller
             ->setOptions(['defaultFont' => 'sans-serif'])
             ->setOptions([
                 'isRemoteEnabled' => true,
-                'isHtml5ParserEnabled' => true
+                // 'isHtml5ParserEnabled' => true,
             ]);
 
         return $pdf->stream('Laporan Admin ' . Carbon::now()->format('Y-m-d_H-i-s') . '.pdf');

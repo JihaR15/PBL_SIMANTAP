@@ -190,81 +190,87 @@
                 @endif
                 @if(Auth::user()->role->kode_role == 'ADM' || Auth::user()->role->kode_role == 'SRN')
                     @if(Auth::user()->role->kode_role == 'ADM')
-                        <div class="col-md-12">
-                            <div class="card shadow-lg rounded-lg" style="height: 90%;">
-                                <div class="card-body d-flex align-items-center justify-content-between">
-                                    <div>
+                        <div class="col-12 mb-3">
+                            <div class="card shadow-lg rounded-lg h-100">
+                                <div
+                                    class="card-body d-flex flex-column flex-md-row align-items-start align-items-md-center justify-content-between gap-3">
+                                    <div class="w-100">
                                         <h4 class="card-title">Generate Data Laporan</h4>
-                                        <p class="card-desc">Pilih Filter, lalu Detail dan Rangkuman Laporan akan muncul dalam
-                                            bentuk PDF</p>
-                                        <form action="{{ route('laporan.laporanadmin') }}" method="GET"
-                                            class="d-flex align-items-center gap-2" target="_blank">
-                                            <select name="sort_by" id="sort_by" class="form-select form-select-sm me-2" style="width: auto;">
-                                                <option value="" disabled selected>Urutkan Berdasarkan</option>
-                                                <option value="tempat_asc" {{ request('sort_by') == 'tempat_asc' ? 'selected' : '' }}>
-                                                    Tempat (A-Z)</option>
-                                                <option value="tanggal_desc" {{ request('sort_by') == 'tanggal_desc' ? 'selected' : '' }}>Tanggal Terbaru</option>
-                                                <option value="tanggal_asc" {{ request('sort_by') == 'tanggal_asc' ? 'selected' : '' }}>Tanggal Terlama</option>
-                                            </select>
-                                            <select name="tahun" class="form-select form-select-sm me-2" style="width: auto;">
-                                                <option value="">Semua Periode</option>
-                                                @foreach($periodeTahun as $tahun)
-                                                    <option value="{{ $tahun }}">{{ $tahun }}</option>
-                                                @endforeach
-                                            </select>
-                                            <select name="status" id="statusFilter" class="form-select form-select-sm me-2"
-                                                style="width: auto;">
-                                                <option value="">Semua Status</option>
-                                                <option value="belum diverifikasi" {{ request('status') == 'belum diverifikasi' ? 'selected' : '' }}>Belum
-                                                    Diverifikasi</option>
-                                                <option value="diverifikasi" {{ request('status') == 'diverifikasi' ? 'selected' : '' }}>
-                                                    Diverifikasi</option>
-                                                <option value="ditolak" {{ request('status') == 'ditolak' ? 'selected' : '' }}>Ditolak
-                                                </option>
-                                            </select>
-                                            <select name="status_perbaikan" id="statusPerbaikanFilter"
-                                                class="form-select form-select-sm me-2" style="width: auto; display: none;">
-                                                <option value="">Semua Perbaikan</option>
-                                                <option value="belum" {{ request('status_perbaikan') == 'belum' ? 'selected' : '' }}>
-                                                    Belum</option>
-                                                <option value="sedang diperbaiki" {{ request('status_perbaikan') == 'sedang diperbaiki' ? 'selected' : '' }}>Sedang Diperbaiki</option>
-                                                <option value="selesai" {{ request('status_perbaikan') == 'selesai' ? 'selected' : '' }}>
-                                                    Selesai</option>
-                                            </select>
-                                            <button type="submit" class="btn btn-info btn-sm">
-                                                <i class="ri-file-download-line me-1"></i> Buat Laporan
-                                            </button>
+                                        <p class="card-desc">Untuk membuat laporan, silakan pilih filter yang sesuai. Detail dan
+                                            Rangkuman Laporan akan muncul dalam bentuk PDF.</p>
+
+                                        <form action="{{ route('laporan.laporanadmin') }}" method="GET" target="_blank"
+                                            class="row gx-2 gy-2">
+                                            <div class="col-12 col-md-auto">
+                                                <select name="sort_by" class="form-select form-select-sm">
+                                                    <option value="" disabled selected>Urutkan Berdasarkan</option>
+                                                    <option value="tempat_asc" {{ request('sort_by') == 'tempat_asc' ? 'selected' : '' }}>Tempat (A-Z)</option>
+                                                    <option value="tanggal_desc" {{ request('sort_by') == 'tanggal_desc' ? 'selected' : '' }}>Tanggal Terbaru</option>
+                                                    <option value="tanggal_asc" {{ request('sort_by') == 'tanggal_asc' ? 'selected' : '' }}>Tanggal Terlama</option>
+                                                </select>
+                                            </div>
+                                            <div class="col-12 col-md-auto">
+                                                <select name="tahun" class="form-select form-select-sm">
+                                                    <option value="">Semua Periode</option>
+                                                    @foreach($periodeTahun as $tahun)
+                                                        <option value="{{ $tahun }}">{{ $tahun }}</option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
+                                            <div class="col-12 col-md-auto">
+                                                <select name="status" id="statusFilter" class="form-select form-select-sm">
+                                                    <option value="">Semua Status</option>
+                                                    <option value="belum diverifikasi" {{ request('status') == 'belum diverifikasi' ? 'selected' : '' }}>Belum Diverifikasi</option>
+                                                    <option value="diverifikasi" {{ request('status') == 'diverifikasi' ? 'selected' : '' }}>Diverifikasi</option>
+                                                    <option value="ditolak" {{ request('status') == 'ditolak' ? 'selected' : '' }}>
+                                                        Ditolak</option>
+                                                </select>
+                                            </div>
+                                            <div class="col-12 col-md-auto" id="statusPerbaikanContainer" style="display: none;">
+                                                <select name="status_perbaikan" id="statusPerbaikanFilter"
+                                                    class="form-select form-select-sm">
+                                                    <option value="">Semua Perbaikan</option>
+                                                    <option value="belum" {{ request('status_perbaikan') == 'belum' ? 'selected' : '' }}>Belum</option>
+                                                    <option value="sedang diperbaiki" {{ request('status_perbaikan') == 'sedang diperbaiki' ? 'selected' : '' }}>Sedang Diperbaiki</option>
+                                                    <option value="selesai" {{ request('status_perbaikan') == 'selesai' ? 'selected' : '' }}>Selesai</option>
+                                                </select>
+                                            </div>
+                                            <div class="col-12 col-md-auto">
+                                                <button type="submit" class="btn btn-info btn-sm w-100">
+                                                    <i class="ri-file-download-line me-1"></i> Buat Laporan
+                                                </button>
+                                            </div>
                                         </form>
-
-                                        <script>
-                                            document.addEventListener('DOMContentLoaded', function () {
-                                                const statusSelect = document.getElementById('statusFilter');
-                                                const perbaikanSelect = document.getElementById('statusPerbaikanFilter');
-
-                                                function togglePerbaikanFilter() {
-                                                    if (statusSelect.value === 'diverifikasi') {
-                                                        perbaikanSelect.style.display = 'inline-block';
-                                                    } else {
-                                                        perbaikanSelect.style.display = 'none';
-                                                        perbaikanSelect.value = '';
-                                                    }
-                                                }
-
-                                                statusSelect.addEventListener('change', togglePerbaikanFilter);
-
-                                                // Jalankan saat pertama kali
-                                                togglePerbaikanFilter();
-                                            });
-                                        </script>
                                     </div>
                                     <div class="avatar-sm">
                                         <span class="avatar-title bg-light text-info rounded-3">
-                                            <i class="ri-file-list-3-line font-size-24"></i>
+                                            <i class="ri-file-list-3-line fs-4"></i>
                                         </span>
                                     </div>
                                 </div>
                             </div>
                         </div>
+
+                        <script>
+                            document.addEventListener('DOMContentLoaded', function () {
+                                const statusSelect = document.getElementById('statusFilter');
+                                const perbaikanSelect = document.getElementById('statusPerbaikanFilter');
+                                const perbaikanContainer = document.getElementById('statusPerbaikanContainer');
+
+                                function togglePerbaikanFilter() {
+                                    if (statusSelect.value === 'diverifikasi') {
+                                        perbaikanContainer.style.display = 'block';
+                                    } else {
+                                        perbaikanContainer.style.display = 'none';
+                                        perbaikanSelect.value = '';
+                                    }
+                                }
+
+                                statusSelect.addEventListener('change', togglePerbaikanFilter);
+                                togglePerbaikanFilter();
+                            });
+                        </script>
+
                     @endif
                     <div class="col-xl-6">
                         <div class="card">
@@ -521,8 +527,8 @@
                                     series: [{
                                         name: 'Jumlah',
                                         data: [
-                                                    {{ $laporanUserBelumDiverifikasiCount ?? 0 }},
-                                                    {{ $laporanUserDiverifikasiCount ?? 0 }},
+                                                            {{ $laporanUserBelumDiverifikasiCount ?? 0 }},
+                                                            {{ $laporanUserDiverifikasiCount ?? 0 }},
                                             {{ $laporanUserDitolakCount ?? 0 }}
                                         ]
                                     }],
@@ -579,8 +585,8 @@
                                     series: [{
                                         name: 'Jumlah',
                                         data: [
-                                                    {{ $perbaikanUserBelumCount ?? 0 }},
-                                                    {{ $perbaikanUserBerjalanCount ?? 0 }},
+                                                            {{ $perbaikanUserBelumCount ?? 0 }},
+                                                            {{ $perbaikanUserBerjalanCount ?? 0 }},
                                             {{ $perbaikanUserSelesaiCount ?? 0 }}
                                         ]
                                     }],
@@ -766,8 +772,8 @@
                                         series: [{
                                             name: 'Jumlah',
                                             data: [
-                                                        {{ $perbaikanTeknisiBelumCount ?? 0 }},
-                                                        {{ $perbaikanTeknisiSedangdikerjakanCount ?? 0 }},
+                                                                {{ $perbaikanTeknisiBelumCount ?? 0 }},
+                                                                {{ $perbaikanTeknisiSedangdikerjakanCount ?? 0 }},
                                                 {{ $perbaikanTeknisiSudahCount ?? 0 }}
                                             ]
                                         }],
@@ -875,8 +881,8 @@
             series: [{
                 name: 'Jumlah',
                 data: [
-                                                            {{ $laporanBelumDiverifikasiCount }},
-                                                            {{ $laporanDiverifikasiCount }},
+                                                                {{ $laporanBelumDiverifikasiCount }},
+                                                                {{ $laporanDiverifikasiCount }},
                     {{ $laporanDitolakCount }}
                 ]
             }],
@@ -904,8 +910,8 @@
             series: [{
                 name: 'Jumlah',
                 data: [
-                                                    {{ $perbaikanBelumCount }},
-                                                    {{ $perbaikanBerjalanCount }},
+                                                        {{ $perbaikanBelumCount }},
+                                                        {{ $perbaikanBerjalanCount }},
                     {{ $perbaikanSelesaiCount }}
                 ]
             }],
