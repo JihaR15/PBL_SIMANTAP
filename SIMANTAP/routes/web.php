@@ -68,6 +68,8 @@ Route::middleware(['auth'])->group(function () {
         Route::get('user/{id}/delete/', [UserController::class,'confirmDelete'])->name('user.confirmDelete');
         Route::delete('user/{id}/delete/', [UserController::class,'destroy'])->name('user.delete');
         Route::post('/user/toggle-status', [UserController::class, 'toggleStatus'])->name('user.toggleStatus');
+        Route::get('user/import', [UserController::class, 'import'])->name('user.import');
+        Route::post('user/import_ajax', [UserController::class, 'import_ajax'])->name('user.importAjax');
 
         //role
         Route::get('role', [RoleController::class,'index'])->name('role.index');

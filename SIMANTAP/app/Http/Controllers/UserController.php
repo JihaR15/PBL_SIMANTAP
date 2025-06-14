@@ -9,6 +9,8 @@ use App\Models\TeknisiModel;
 use App\Models\JenisTeknisiModel;
 use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Support\Facades\Validator;
+use PhpOffice\PhpSpreadsheet\IOFactory;
+use Illuminate\Support\Facades\DB;
 
 class UserController extends Controller
 {
@@ -252,5 +254,126 @@ class UserController extends Controller
     {
         $users = UserModel::where('role_id', $request->role_id)->get();
         return response()->json($users);
+    }
+
+    public function import() 
+    { 
+        return view('user.import'); 
+    } 
+
+
+    public function import_ajax(Request $request) 
+    { 
+        try {
+            $rules = [ 
+                'file_user' => ['required', 'mimes:xlsx', 'max:1024'] 
+            ];
+
+            $validator = Validator::make($request->all(), $rules);
+            
+            if ($validator->fails()) {
+                if ($request->ajax() || $request->wantsJson()) {
+                    return response()->json([ 
+                        'status' => false, 
+                        'message' => 'Validasi gagal: ' . $validator->errors()->first(),
+                        'errors' => $validator->errors(),
+                        'redirect' => route('user.import')
+                    ]);
+                }
+                return redirect()->route('user.import')
+                    ->withErrors($validator)
+                    ->withInput();
+            }
+
+            $file = $request->file('file_user');
+            
+            if (!$file->isValid()) {
+                throw new \Exception('File tidak valid');
+            }
+
+            $reader = IOFactory::createReader('Xlsx');
+            $reader->setReadDataOnly(true);
+            $spreadsheet = $reader->load($file->getRealPath()); 
+            $sheet = $spreadsheet->getActiveSheet();
+            $data = $sheet->toArray(null, false, true, true);
+
+            if (count($data) <= 1) {
+                $message = 'File Excel kosong atau hanya berisi header';
+                if ($request->ajax() || $request->wantsJson()) {
+                    return response()->json([
+                        'status' => false,
+                        'message' => $message,
+                        'redirect' => route('user.import')
+                    ]);
+                }
+                return redirect()->route('user.import')->with('error', $message);
+            }
+
+            DB::beginTransaction();
+            
+            try {
+                $insert = [];
+                foreach ($data as $baris => $value) {
+                    if ($baris > 1) {
+                        $password = $value['D'] ?? '';
+                        if (strlen($password) < 5) {
+                            $password = str_pad($password, 5, '0');
+                        }
+                        
+                        $insert[] = [ 
+                            'role_id' => $value['A'] ?? null, 
+                            'username' => $value['B'] ?? '', 
+                            'name' => $value['C'] ?? '',
+                            'password' => bcrypt($password),
+                            'status' => $value['E'] ?? 1,
+                            'created_at' => now(),
+                        ];
+                    }
+                }
+
+                if (count($insert) > 0) {
+                    UserModel::insert($insert);
+                    DB::commit();
+                    
+                    $successMessage = count($insert) . ' data berhasil diimport';
+                    
+                    if ($request->ajax() || $request->wantsJson()) {
+                        return response()->json([ 
+                            'status' => true, 
+                            'message' => $successMessage,
+                            'redirect' => route('user.index')
+                        ]);
+                    }
+                    
+                    return redirect()->route('user.index')->with('success', $successMessage);
+                }
+
+                throw new \Exception('Tidak ada data yang valid untuk diimport');
+
+            } catch (\Exception $e) {
+                DB::rollBack();
+                
+                $errorMessage = 'Gagal mengimport data: ' . $e->getMessage();
+                if ($request->ajax() || $request->wantsJson()) {
+                    return response()->json([
+                        'status' => false,
+                        'message' => $errorMessage,
+                        'redirect' => route('user.import')
+                    ]);
+                }
+                return redirect()->route('user.import')->with('error', $errorMessage);
+            }
+
+        } catch (\Exception $e) {
+            $errorMessage = 'Terjadi kesalahan: ' . $e->getMessage();
+            if ($request->ajax() || $request->wantsJson()) {
+                return response()->json([
+                    'status' => false,
+                    'message' => $errorMessage,
+                    'redirect' => route('user.import')
+                ], 500);
+            }
+            return redirect()->route('user.import')->with('error', $errorMessage);
+        }
     }
 }

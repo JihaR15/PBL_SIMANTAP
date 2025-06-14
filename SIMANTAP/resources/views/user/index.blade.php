@@ -33,9 +33,12 @@
                                     <small class="form-text text-muted">Role Pengguna</small>
                                 </div>
                                 <div class="col-md-8 text-end align-items-center d-flex justify-content-end">
-                                    <button type="button" class="btn btn-success"
-                                        onclick="modalAction('{{ url('user/create') }}')"><i class="fas fa-plus"></i> Tambah
-                                        Pengguna</button>
+                                    <button type="button" class="btn btn-primary me-2" onclick="modalAction('{{ route('user.import') }}')">
+                                        <i class="fas fa-file-import"></i> Import Pengguna
+                                    </button>
+                                    <button type="button" class="btn btn-success" onclick="modalAction('{{ url('user/create') }}')">
+                                        <i class="fas fa-plus"></i> Tambah Pengguna
+                                    </button>
                                 </div>
                             </div>
 
@@ -62,6 +65,8 @@
         </div>
 
     </div>
+    <div id="myModal" class="modal fade animate shake" tabindex="-1" role="dialog" data-backdrop="static"
+        data-keyboard="false" data-width="75%" aria-hidden="true"></div>
     <!-- End Page-content -->
 @endsection
 
