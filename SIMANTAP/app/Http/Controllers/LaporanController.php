@@ -417,26 +417,83 @@ class LaporanController extends Controller
         $totalBiaya = $laporan->sum(fn($l) => $l->perbaikan->biaya ?? 0);
 
         $teknisiStats = $laporan->filter(fn($l) => $l->perbaikan && $l->perbaikan->teknisi)
-            ->groupBy(fn($l) => optional($l->perbaikan->teknisi->user)->name) // misal teknisi->user->name
+            ->groupBy(fn($l) => optional($l->perbaikan->teknisi->user)->name)
             ->map(function ($group) {
-                $jumlahPerbaikan = $group->count();
-                $totalBiayaTeknisi = $group->sum(fn($l) => $l->perbaikan->biaya ?? 0);
+            $jumlahPerbaikan = $group->count();
+            $totalBiayaTeknisi = $group->sum(fn($l) => $l->perbaikan->biaya ?? 0);
 
-                // Ambil semua rating dari feedback
-                $allRatings = $group
-                    ->flatMap(fn($l) => optional($l->feedback)->pluck('rating_id') ?? collect())
-                    ->filter(); // hilangkan null jika ada
+            // Ambil semua rating dari feedback
+            $allRatings = $group
+                ->flatMap(fn($l) => optional($l->feedback)->pluck('rating_id') ?? collect())
+                ->filter();
 
-                $avgRating = $allRatings->count() > 0
-                    ? round($allRatings->avg(), 2)
-                    : null;
+            $avgRating = $allRatings->count() > 0
+                ? round($allRatings->avg(), 2)
+                : null;
 
-                return [
-                    'jumlah_perbaikan' => $jumlahPerbaikan,
-                    'total_biaya' => $totalBiayaTeknisi,
-                    'rata_rata_rating' => $avgRating ?? '-',
-                ];
+            // Hitung jumlah perbaikan yang selesai
+            $jumlahSelesai = $group->filter(function ($l) {
+                return $l->perbaikan && $l->perbaikan->status_perbaikan === 'selesai';
+            })->count();
+
+            return [
+                'jumlah_perbaikan' => $jumlahPerbaikan,
+                'total_biaya' => $totalBiayaTeknisi,
+                'rata_rata_rating' => $avgRating ?? '-',
+                'jumlah_selesai' => $jumlahSelesai,
+            ];
             })->sortByDesc('jumlah_perbaikan');
+
+        // Hitung total fasilitas yang ada (dari semua BarangLokasi)
+        $totalFasilitasTersedia = BarangLokasiModel::sum('jumlah_barang');
+
+        // Hitung total fasilitas yang rusak (dari laporan sesuai periode yang dipilih, exclude status_verif 'ditolak')
+        if ($request->filled('tahun')) {
+            $totalFasilitasRusak = LaporanModel::whereHas('periode', function ($q) use ($request) {
+                $q->where('nama_periode', $request->tahun);
+            })
+            ->where('status_verif', '!=', 'ditolak')
+            ->sum('jumlah_barang_rusak');
+        } else {
+            $totalFasilitasRusak = LaporanModel::where('status_verif', '!=', 'ditolak')
+            ->sum('jumlah_barang_rusak');
+        }
+
+        // Hitung total fasilitas yang sudah diperbaiki (status_perbaikan = 'selesai')
+        if ($request->filled('tahun')) {
+            $totalFasilitasSudahDiperbaiki = LaporanModel::whereHas('periode', function ($q) use ($request) {
+                $q->where('nama_periode', $request->tahun);
+            })
+            ->where('status_verif', '!=', 'ditolak')
+            ->whereHas('perbaikan', function ($q) {
+                $q->where('status_perbaikan', 'selesai');
+            })
+            ->sum('jumlah_barang_rusak');
+        } else {
+            $totalFasilitasSudahDiperbaiki = LaporanModel::where('status_verif', '!=', 'ditolak')
+            ->whereHas('perbaikan', function ($q) {
+                $q->where('status_perbaikan', 'selesai');
+            })
+            ->sum('jumlah_barang_rusak');
+        }
+
+        // Hitung total fasilitas yang belum diperbaiki (status_perbaikan != 'selesai')
+        if ($request->filled('tahun')) {
+            $totalFasilitasBelumDiperbaiki = LaporanModel::whereHas('periode', function ($q) use ($request) {
+                $q->where('nama_periode', $request->tahun);
+            })
+            ->where('status_verif', '!=', 'ditolak')
+            ->whereHas('perbaikan', function ($q) {
+                $q->where('status_perbaikan', '!=', 'selesai');
+            })
+            ->sum('jumlah_barang_rusak');
+        } else {
+            $totalFasilitasBelumDiperbaiki = LaporanModel::where('status_verif', '!=', 'ditolak')
+            ->whereHas('perbaikan', function ($q) {
+                $q->where('status_perbaikan', '!=', 'selesai');
+            })
+            ->sum('jumlah_barang_rusak');
+        }
 
         $verifikatorStats = $laporan
             ->whereNotNull('verifikator_id')
@@ -469,6 +526,11 @@ class LaporanController extends Controller
 
             'teknisiStats' => $teknisiStats,
             'verifikatorStats' => $verifikatorStats,
+            
+            'totalFasilitasTersedia' => $totalFasilitasTersedia,
+            'totalFasilitasRusak' => $totalFasilitasRusak,
+            'totalFasilitasSudahDiperbaiki' => $totalFasilitasSudahDiperbaiki,
+            'totalFasilitasBelumDiperbaiki' => $totalFasilitasBelumDiperbaiki,
         ])
             ->setPaper('A4', 'landscape')
             ->setOptions(['defaultFont' => 'sans-serif'])

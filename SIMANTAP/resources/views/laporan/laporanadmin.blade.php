@@ -150,6 +150,7 @@
                 <tr>
                     <th>Nama Teknisi</th>
                     <th>Jumlah Perbaikan</th>
+                    <th>Jumlah Selesai</th>
                     <th>Total Biaya (Rp)</th>
                     <th>Rating (Avg)</th>
                 </tr>
@@ -159,6 +160,7 @@
                     <tr>
                         <td>{{ $namaTeknisi }}</td>
                         <td>{{ $stat['jumlah_perbaikan'] }}</td>
+                        <td>{{ $stat['jumlah_selesai'] }}</td>
                         <td>{{ number_format($stat['total_biaya'], 0, ',', '.') }}</td>
                         <td>{{  $stat['rata_rata_rating'] }}</td>
                     </tr>
@@ -167,6 +169,28 @@
                         <td colspan="3" style="text-align:center;">Data tidak ditemukan</td>
                     </tr>
                 @endforelse
+            </tbody>
+
+            <tr>
+                <th colspan="5" class="text-center">Total Fasilitas</th>
+            </tr>
+            <thead>
+                <tr>
+                    <th>Ket.</th>
+                    <th>Fasilitas</th>
+                    <th>Rusak</th>
+                    <th>Sudah Diperbaiki</th>
+                    <th>Belum Diperbaiki</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Total :</td>
+                    <td>{{ isset($totalFasilitasTersedia) && $totalFasilitasTersedia !== null ? $totalFasilitasTersedia : '-' }}</td>
+                    <td>{{ isset($totalFasilitasRusak) && $totalFasilitasRusak !== null ? $totalFasilitasRusak : '-' }}</td>
+                    <td>{{ isset($totalFasilitasSudahDiperbaiki) && $totalFasilitasSudahDiperbaiki !== null ? $totalFasilitasSudahDiperbaiki : '-' }}</td>
+                    <td>{{ isset($totalFasilitasBelumDiperbaiki) && $totalFasilitasBelumDiperbaiki !== null ? $totalFasilitasBelumDiperbaiki : '-' }}</td>
+                </tr>
             </tbody>
         </table>
     </div>
@@ -203,6 +227,7 @@
                 <th class="text-center">No</th>
                 <th>Tempat</th>
                 <th>Fasilitas</th>
+                <th>Rusak</th>
                 <th>Tanggal dibuat</th>
                 <th>Tanggal Diverif</th>
                 <th>Status Verifikasi</th>
@@ -221,6 +246,7 @@
                     <td class="text-center">{{ $no++ }}</td>
                     <td>{{ $l->tempat->nama_tempat }}</td>
                     <td>{{ $l->barangLokasi->jenisBarang->nama_barang ?? '-' }}</td>
+                    <td>{{ $l->jumlah_barang_rusak ?? '-' }}</td>
                     <td>{{ \Carbon\Carbon::parse($l->created_at)->locale('id')->translatedFormat('d F Y') ?? '-' }}</td>
                     <td>{{ \Carbon\Carbon::parse($l->updated_at)->locale('id')->translatedFormat('d F Y') ?? '-' }}</td>
 

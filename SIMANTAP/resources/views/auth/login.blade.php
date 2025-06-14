@@ -115,8 +115,25 @@
                                     <div class="col-12">
                                         <input class="form-control" type="password" id="password" name="password"
                                             required="" placeholder="Password">
+                                        <button type="button" class="btn btn-link position-absolute end-0 top-0 mt-2 me-4 p-0" id="togglePassword" tabindex="-1" style="color: #6c757d;">
+                                            <i class="ri-eye-off-line" id="togglePasswordIcon"></i>
+                                        </button>
                                     </div>
                                 </div>
+                                <script>
+                                    document.addEventListener('DOMContentLoaded', function () {
+                                        const passwordInput = document.getElementById('password');
+                                        const togglePassword = document.getElementById('togglePassword');
+                                        const togglePasswordIcon = document.getElementById('togglePasswordIcon');
+                                        if (passwordInput && togglePassword && togglePasswordIcon) {
+                                            togglePassword.addEventListener('click', function () {
+                                                const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+                                                passwordInput.setAttribute('type', type);
+                                                togglePasswordIcon.className = type === 'password' ? 'ri-eye-off-line' : 'ri-eye-line';
+                                            });
+                                        }
+                                    });
+                                </script>
 
                                 <div class="form-group mb-3 row">
                                     <div class="col-12">
@@ -162,16 +179,16 @@
 
 
     <!-- JAVASCRIPT -->
-    <script src="assets/libs/jquery/jquery.min.js"></script>
-    <script src="assets/libs/sweetalert2/sweetalert2.all.min.js"></script>
-    <script src="assets/libs/jquery-validation/jquery.validate.min.js"></script>
-    <script src="assets/libs/jquery-validation/additional-methods.min.js"></script>
-    <script src="assets/libs/bootstrap/js/bootstrap.bundle.min.js"></script>
-    <script src="assets/libs/metismenu/metisMenu.min.js"></script>
-    <script src="assets/libs/simplebar/simplebar.min.js"></script>
-    <script src="assets/libs/node-waves/waves.min.js"></script>
+    <script src="{{ asset('assets/libs/jquery/jquery.min.js') }}"></script>
+    <script src="{{ asset('assets/libs/sweetalert2/sweetalert2.all.min.js') }}"></script>
+    <script src="{{ asset('assets/libs/jquery-validation/jquery.validate.min.js') }}"></script>
+    <script src="{{ asset('assets/libs/jquery-validation/additional-methods.min.js') }}"></script>
+    <script src="{{ asset('assets/libs/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+    <script src="{{ asset('assets/libs/metismenu/metisMenu.min.js') }}"></script>
+    <script src="{{ asset('assets/libs/simplebar/simplebar.min.js') }}"></script>
+    <script src="{{ asset('assets/libs/node-waves/waves.min.js') }}"></script>
 
-    <script src="assets/js/app.js"></script>
+    <script src="{{ asset('assets/js/app.js') }}"></script>
 
     <script>
         $.ajaxSetup({
@@ -191,11 +208,20 @@
                     password: "Password wajib diisi"
                 },
                 submitHandler: function (form) {
+                    Swal.fire({
+                        title: 'Memproses...',
+                        text: 'Mohon tunggu sebentar',
+                        allowOutsideClick: false,
+                        didOpen: () => {
+                            Swal.showLoading();
+                        }
+                    });
                     $.ajax({
                         url: form.action,
                         type: form.method,
                         data: $(form).serialize(),
                         success: function (response) {
+                            Swal.close();
                             if (response.status) {
                                 Swal.fire({
                                     icon: 'success',
@@ -213,6 +239,7 @@
                             }
                         },
                         error: function (xhr) {
+                            Swal.close();
                             Swal.fire({
                                 icon: 'error',
                                 title: 'Gagal',

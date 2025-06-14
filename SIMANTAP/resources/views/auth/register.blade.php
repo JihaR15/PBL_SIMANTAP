@@ -119,12 +119,52 @@
                                     <div class="col-6 pe-1">
                                         <input class="form-control" type="password" id="password" name="password"
                                             required="" placeholder="Password">
+                                        <button type="button" class="btn btn-link position-absolute end-0 top-0 mt-2 me-4 p-0" id="togglePassword" tabindex="-1" style="color: #6c757d;">
+                                            <i class="ri-eye-off-line" id="togglePasswordIcon"></i>
+                                        </button>
                                     </div>
                                     <div class="col-6 ps-1">
                                         <input class="form-control" type="password" id="password_confirmation" name="password_confirmation"
                                             required="" placeholder="Konfirmasi Password">
+                                        <button type="button" class="btn btn-link position-absolute end-0 top-0 mt-2 me-4 p-0" id="togglePasswordConfirmation" tabindex="-1" style="color: #6c757d;">
+                                            <i class="ri-eye-off-line" id="togglePasswordConfirmationIcon"></i>
+                                        </button>
                                     </div>
                                 </div>
+                                <script>
+                                    document.getElementById('togglePassword').addEventListener('click', function () {
+                                        const passwordField = document.getElementById('password');
+                                        const icon = document.getElementById('togglePasswordIcon');
+
+                                        if (passwordField.type === 'password') {
+                                            passwordField.type = 'text';
+                                            passwordConfirmationField.type = 'text';
+                                            icon.classList.remove('ri-eye-off-line');
+                                            icon.classList.add('ri-eye-line');
+                                        } else {
+                                            passwordField.type = 'password';
+                                            passwordConfirmationField.type = 'password';
+                                            icon.classList.remove('ri-eye-line');
+                                            icon.classList.add('ri-eye-off-line');
+                                        }
+                                    });
+                                    document.getElementById('togglePasswordConfirmation').addEventListener('click', function () {
+                                        const passwordField = document.getElementById('password_confirmation');
+                                        const icon = document.getElementById('togglePasswordConfirmationIcon');
+
+                                        if (passwordField.type === 'password') {
+                                            passwordField.type = 'text';
+                                            passwordConfirmationField.type = 'text';
+                                            icon.classList.remove('ri-eye-off-line');
+                                            icon.classList.add('ri-eye-line');
+                                        } else {
+                                            passwordField.type = 'password';
+                                            passwordConfirmationField.type = 'password';
+                                            icon.classList.remove('ri-eye-line');
+                                            icon.classList.add('ri-eye-off-line');
+                                        }
+                                    });
+                                </script>
 
                                 {{-- <div class="form-group mb-3 row">
                                     <div class="col-12">
