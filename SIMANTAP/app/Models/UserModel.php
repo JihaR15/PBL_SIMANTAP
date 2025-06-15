@@ -51,13 +51,16 @@ class UserModel extends Authenticatable
         return $this->hasMany(NotifikasiModel::class, 'sender_id');
     }
 
-    // public function laporan()
-    // {
-    //     return $this->hasMany(LaporanModel::class, 'user_id');
-    // }
+// Relasi ke laporan
+    public function laporan()
+    {
+        return $this->hasMany(LaporanModel::class, 'user_id', 'user_id');
+    }
 
-    // public function feedback()
-    // {
-    //     return $this->hasMany(FeedbackModel::class, 'user_id');
-    // }
+    // Relasi ke feedback (yang dibuat oleh user ini)
+    public function feedback()
+    {
+        return $this->hasMany(FeedbackModel::class, 'user_id', 'user_id');
+    }
+
 }

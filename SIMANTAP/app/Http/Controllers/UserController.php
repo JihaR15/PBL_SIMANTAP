@@ -7,6 +7,11 @@ use App\Models\UserModel;
 use App\Models\RoleModel;
 use App\Models\TeknisiModel;
 use App\Models\JenisTeknisiModel;
+use App\Models\LaporanModel;
+use App\Models\NotifikasiModel;
+use App\Models\FeedbackModel;
+use App\Models\PerbaikanModel;
+use App\Models\PrioritasModel;
 use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Support\Facades\Validator;
 use PhpOffice\PhpSpreadsheet\IOFactory;
@@ -78,7 +83,7 @@ class UserController extends Controller
         $teknisi = RoleModel::where('kode_role', ['TDK'])->get();
         $role = RoleModel::all();
         $jenis_teknisi = JenisTeknisiModel::all();
-        return view('user.create', compact('role', 'pelapor','sarpras','admin','teknisi', 'jenis_teknisi'));
+        return view('user.create', compact('role', 'pelapor', 'sarpras', 'admin', 'teknisi', 'jenis_teknisi'));
     }
     public function store(Request $request)
     {
@@ -218,16 +223,62 @@ class UserController extends Controller
 
     public function confirmDelete($id)
     {
-        $user = UserModel::findOrFail($id);
-        return view('user.confirm_delete', compact('user'));
+        $user = UserModel::with(['role', 'teknisi'])->findOrFail($id);
+        $data = [
+            'user' => $user,
+            'laporan_count' => 0,
+            'feedback_count' => 0,
+            'laporan_diverifikasi' => 0,
+            'perbaikan_count' => 0,
+        ];
+
+        $kodeRole = $user->role->kode_role;
+
+        if (in_array($kodeRole, ['MHS', 'DSN', 'TDK'])) {
+            $data['laporan_count'] = $user->laporan()->count();
+            $data['feedback_count'] = $user->feedback()->count();
+        }
+
+        if ($kodeRole === 'SRN') {
+            $data['laporan_diverifikasi'] = LaporanModel::where('verifikator_id', $user->user_id)->count();
+        }
+
+        if ($kodeRole === 'TKS' && $user->teknisi) {
+            $data['perbaikan_count'] = PerbaikanModel::where('teknisi_id', $user->teknisi->teknisi_id)->count();
+        }
+
+        return view('user.confirm_delete', $data);
     }
 
     public function destroy($id)
     {
         $user = UserModel::findOrFail($id);
-        // hapus data teknisi jika ada
-        TeknisiModel::where('user_id', $user->user_id)->delete();
-        // Hapus foto profil jika ada
+
+        if ($user->role->kode_role === 'TKS' && $user->teknisi) {
+            $teknisiId = $user->teknisi->teknisi_id;
+            PerbaikanModel::where('teknisi_id', $teknisiId)->delete();
+            TeknisiModel::where('teknisi_id', $teknisiId)->delete();
+        }
+
+        if ($user->role->kode_role === 'SRN') {
+            LaporanModel::where('verifikator_id', $user->user_id)->update(['verifikator_id' => null]);
+        }
+
+        $laporanIds = LaporanModel::where('user_id', $user->user_id)->pluck('laporan_id');
+
+        PrioritasModel::whereIn('laporan_id', $laporanIds)->delete();
+        PerbaikanModel::whereIn('laporan_id', $laporanIds)->delete();
+        NotifikasiModel::whereIn('laporan_id', $laporanIds)->delete();
+        FeedbackModel::whereIn('laporan_id', $laporanIds)->delete();
+
+        NotifikasiModel::where('user_id', $user->user_id)->delete();
+        NotifikasiModel::where('sender_id', $user->user_id)->delete();
+
+        LaporanModel::where('user_id', $user->user_id)->delete();
+
+        FeedbackModel::where('user_id', $user->user_id)->delete();
+
+
         if ($user->foto_profile) {
             $filePath = public_path('images/' . $user->foto_profile);
             if (file_exists($filePath)) {
@@ -256,25 +307,25 @@ class UserController extends Controller
         return response()->json($users);
     }
 
-    public function import() 
-    { 
-        return view('user.import'); 
-    } 
+    public function import()
+    {
+        return view('user.import');
+    }
 
 
-    public function import_ajax(Request $request) 
-    { 
+    public function import_ajax(Request $request)
+    {
         try {
-            $rules = [ 
-                'file_user' => ['required', 'mimes:xlsx', 'max:1024'] 
+            $rules = [
+                'file_user' => ['required', 'mimes:xlsx', 'max:1024']
             ];
 
             $validator = Validator::make($request->all(), $rules);
-            
+
             if ($validator->fails()) {
                 if ($request->ajax() || $request->wantsJson()) {
-                    return response()->json([ 
-                        'status' => false, 
+                    return response()->json([
+                        'status' => false,
                         'message' => 'Validasi gagal: ' . $validator->errors()->first(),
                         'errors' => $validator->errors(),
                         'redirect' => route('user.import')
@@ -286,14 +337,14 @@ class UserController extends Controller
             }
 
             $file = $request->file('file_user');
-            
+
             if (!$file->isValid()) {
                 throw new \Exception('File tidak valid');
             }
 
             $reader = IOFactory::createReader('Xlsx');
             $reader->setReadDataOnly(true);
-            $spreadsheet = $reader->load($file->getRealPath()); 
+            $spreadsheet = $reader->load($file->getRealPath());
             $sheet = $spreadsheet->getActiveSheet();
             $data = $sheet->toArray(null, false, true, true);
 
@@ -310,7 +361,7 @@ class UserController extends Controller
             }
 
             DB::beginTransaction();
-            
+
             try {
                 $insert = [];
                 foreach ($data as $baris => $value) {
@@ -319,10 +370,10 @@ class UserController extends Controller
                         if (strlen($password) < 5) {
                             $password = str_pad($password, 5, '0');
                         }
-                        
-                        $insert[] = [ 
-                            'role_id' => $value['A'] ?? null, 
-                            'username' => $value['B'] ?? '', 
+
+                        $insert[] = [
+                            'role_id' => $value['A'] ?? null,
+                            'username' => $value['B'] ?? '',
                             'name' => $value['C'] ?? '',
                             'password' => bcrypt($password),
                             'status' => $value['E'] ?? 1,
@@ -334,25 +385,24 @@ class UserController extends Controller
                 if (count($insert) > 0) {
                     UserModel::insert($insert);
                     DB::commit();
-                    
+
                     $successMessage = count($insert) . ' data berhasil diimport';
-                    
+
                     if ($request->ajax() || $request->wantsJson()) {
-                        return response()->json([ 
-                            'status' => true, 
+                        return response()->json([
+                            'status' => true,
                             'message' => $successMessage,
                             'redirect' => route('user.index')
                         ]);
                     }
-                    
+
                     return redirect()->route('user.index')->with('success', $successMessage);
                 }
 
                 throw new \Exception('Tidak ada data yang valid untuk diimport');
-
             } catch (\Exception $e) {
                 DB::rollBack();
-                
+
                 $errorMessage = 'Gagal mengimport data: ' . $e->getMessage();
                 if ($request->ajax() || $request->wantsJson()) {
                     return response()->json([
@@ -363,7 +413,6 @@ class UserController extends Controller
                 }
                 return redirect()->route('user.import')->with('error', $errorMessage);
             }
-
         } catch (\Exception $e) {
             $errorMessage = 'Terjadi kesalahan: ' . $e->getMessage();
             if ($request->ajax() || $request->wantsJson()) {
