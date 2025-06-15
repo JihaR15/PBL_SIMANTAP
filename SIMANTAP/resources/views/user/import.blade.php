@@ -95,56 +95,82 @@
 
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-<script> 
-    $(document).ready(function() { 
-        $("#form-import").validate({ 
-            rules: { 
-                file_user: {required: true, extension: "xlsx"}, 
-            }, 
-            submitHandler: function(form) {  
-                var formData = new FormData(form);
- 
-                $.ajax({ 
-                    url: "{{ route('user.importAjax') }}", 
-                    type: form.method, 
-                    data: formData,   
-                    processData: false,
-                    contentType: false, 
-                    success: function(response) { 
-                        if(response.status) { // jika sukses 
-                            $('#myModal').modal('hide'); 
-                            Swal.fire({ 
-                                icon: 'success', 
-                                title: 'Berhasil', 
-                                text: response.message 
-                            }); 
-                            dataUser.ajax.reload();
-                        } else { // jika error 
-                            $('.error-text').text(''); 
-                            $.each(response.msgField, function(prefix, val) { 
-                                $('#error-'+prefix).text(val[0]); 
-                            }); 
-                            Swal.fire({ 
-                                icon: 'error', 
-                                title: 'Terjadi Kesalahan', 
-                                text: response.message 
-                            }); 
-                        } 
-                    } 
-                }); 
-                return false; 
-            }, 
-            errorElement: 'span', 
-            errorPlacement: function (error, element) { 
-                error.addClass('invalid-feedback'); 
-                element.closest('.form-group').append(error); 
-            }, 
-            highlight: function (element, errorClass, validClass) { 
-                $(element).addClass('is-invalid'); 
-            }, 
-            unhighlight: function (element, errorClass, validClass) { 
-                $(element).removeClass('is-invalid'); 
-            } 
-        }); 
-    }); 
+<script>
+    $(document).ready(function() {
+        $('#form-import').on('submit', function(e) {
+            e.preventDefault();
+
+            let formData = new FormData(this);
+
+            Swal.fire({
+                title: 'Memproses...',
+                html: 'Mohon tunggu, data sedang diimport.',
+                allowOutsideClick: false,
+                didOpen: () => {
+                    Swal.showLoading();
+                }
+            });
+
+            $.ajax({
+                url: "{{ route('user.importAjax') }}",
+                type: "POST",
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function(response) {
+                    if (response.status) {
+                        $('#modal-master').modal('hide');
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Berhasil',
+                            text: response.message
+                        });
+                        dataUser.ajax.reload();
+                    } else {
+                        $('#error-file_user').text('');
+                        if (response.errors) {
+                            if (response.errors.file_user) {
+                                $('#error-file_user').text(response.errors.file_user[0]);
+                            }
+
+                            if (response.errors.general) {
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Terjadi Kesalahan',
+                                    html: '<pre style="text-align:left;">' + response.errors.general.join("\n") + '</pre>'
+                                });
+                            }
+                        }
+                    }
+                },
+                error: function(xhr) {
+                    Swal.close();
+                    let response = xhr.responseJSON;
+                    let htmlMsg = '';
+                    if (response && response.errors && response.errors.general) {
+                        // Cek apakah ada error duplikat username
+                        let duplikat = response.errors.general.filter(msg => msg.includes("Username"));
+                        if (duplikat.length > 0) {
+                            htmlMsg = '<b>Data username yang duplikat :</b><ul style="text-align:left;">';
+                            duplikat.forEach(function(msg) {
+                                htmlMsg += `<li>${msg}</li>`;
+                            });
+                            htmlMsg += '</ul>';
+                        } else {
+                            htmlMsg = response.errors.general.join('<br>');
+                        }
+                    } else if (response && response.message) {
+                        htmlMsg = response.message;
+                    } else {
+                        htmlMsg = 'Terjadi kesalahan sistem. Silakan coba lagi.';
+                    }
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Gagal Import',
+                        html: htmlMsg
+                    });
+                }
+            });
+        });
+    });
 </script>
