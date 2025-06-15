@@ -298,8 +298,7 @@ $(document).ready(function() {
                         timer: 1500,
                         backdrop: 'rgba(0,0,0,0.4)'
                     }).then(() => {
-                        $('#modalEditBobot').modal('hide');
-                        if (typeof dataBobot !== 'undefined') dataBobot.ajax.reload();
+                        location.reload();
                     });
                 } else {
                     Swal.fire({

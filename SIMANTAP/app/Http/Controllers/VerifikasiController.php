@@ -21,8 +21,8 @@ class VerifikasiController extends Controller
         $activeMenu = 'verifikasi';
 
         $laporans = LaporanModel::with(['fasilitas', 'unit', 'tempat', 'barangLokasi'])
-        ->where('status_verif', 'belum diverifikasi')
-        ->get();
+            ->where('status_verif', 'belum diverifikasi')
+            ->get();
 
         return view('verifikasi.index', [
             'title' => 'Laporan Kerusakan',
@@ -72,8 +72,12 @@ class VerifikasiController extends Controller
     public function show($laporan_id)
     {
         $laporan = LaporanModel::with([
-            'fasilitas', 'unit', 'tempat', 'barangLokasi.jenisBarang',
-            'kategoriKerusakan', 'periode'
+            'fasilitas',
+            'unit',
+            'tempat',
+            'barangLokasi.jenisBarang',
+            'kategoriKerusakan',
+            'periode'
         ])->findOrFail($laporan_id);
 
         $laporan->formatted_created_at = $laporan->created_at->format('d M Y');
@@ -245,32 +249,30 @@ class VerifikasiController extends Controller
             // dump('Solusi Ideal Positif: ' . json_encode($Apositif));
             // dump('Solusi Ideal Negatif: ' . json_encode($Anegatif));
 
-            // hitung jarak Euclidean dari solusi ideal positif dan negatif
-            $matriksTerbobotTarget = $allMatriksTerbobot[$laporan_id];
-            error_log("Matriks Terbobot Target Laporan $laporan_id: " . json_encode($matriksTerbobotTarget));
-            $jarakPositif = 0;
-            $jarakNegatif = 0;
-            foreach ($matriksTerbobotTarget as $k => $v) {
-                $jarakPositif += pow($v - $Apositif[$k], 2);
-                $jarakNegatif += pow($v - $Anegatif[$k], 2);
+            // hitung jarak Euclidean dari solusi ideal positif dan negatif untuk semua laporan yang perbaikannya belum selesai
+            foreach ($allMatriksTerbobot as $lapId => $matriksTerbobotTarget) {
+                $jarakPositif = 0;
+                $jarakNegatif = 0;
+                foreach ($matriksTerbobotTarget as $k => $v) {
+                    $jarakPositif += pow($v - $Apositif[$k], 2);
+                    $jarakNegatif += pow($v - $Anegatif[$k], 2);
+                }
+                $jarakPositif = sqrt($jarakPositif);
+                $jarakNegatif = sqrt($jarakNegatif);
+
+                $denominator = $jarakPositif + $jarakNegatif;
+                $nilaiTopsis = $denominator == 0 ? 1 : $jarakNegatif / $denominator;
+
+                PrioritasModel::updateOrCreate(
+                    ['laporan_id' => $lapId],
+                    [
+                        'jarak_positif' => $jarakPositif,
+                        'jarak_negatif' => $jarakNegatif,
+                        'nilai_topsis' => $nilaiTopsis,
+                        'klasifikasi_urgensi' => $this->klasifikasiUrgensi($nilaiTopsis),
+                    ]
+                );
             }
-            $jarakPositif = sqrt($jarakPositif);
-            $jarakNegatif = sqrt($jarakNegatif);
-            // dump("Jarak Positif: $jarakPositif, Jarak Negatif: $jarakNegatif");
-
-            $denominator = $jarakPositif + $jarakNegatif;
-            $nilaiTopsis = $denominator == 0 ? 1 : $jarakNegatif / $denominator;
-            // dump("Nilai TOPSIS: $nilaiTopsis");
-
-            PrioritasModel::updateOrCreate(
-                ['laporan_id' => $laporan_id],
-                [
-                    'jarak_positif' => $jarakPositif,
-                    'jarak_negatif' => $jarakNegatif,
-                    'nilai_topsis' => $nilaiTopsis,
-                    'klasifikasi_urgensi' => $this->klasifikasiUrgensi($nilaiTopsis),
-                ]
-            );
         }
 
         PerbaikanModel::updateOrCreate(
@@ -392,8 +394,13 @@ class VerifikasiController extends Controller
     public function showRiwayatVerif($laporan_id)
     {
         $laporan = LaporanModel::with([
-            'fasilitas', 'unit', 'tempat', 'barangLokasi.jenisBarang',
-            'kategoriKerusakan', 'periode', 'perbaikan'
+            'fasilitas',
+            'unit',
+            'tempat',
+            'barangLokasi.jenisBarang',
+            'kategoriKerusakan',
+            'periode',
+            'perbaikan'
         ])->findOrFail($laporan_id);
 
         if ($laporan->perbaikan) {
