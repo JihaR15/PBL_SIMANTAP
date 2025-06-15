@@ -25,7 +25,7 @@
                         <td>{{ $i+1 }}</td>
                         <td>{{ $t->nama_tempat }}</td>
                         <td class="text-center">
-                            <button class="btn btn-info btn-sm" onclick="modalAction('{{ url('/tempat/'.$unit->unit_id.'/show/'.$t->tempat_id) }}')" title="Detail">
+                            <button class="btn btn-primary btn-sm" onclick="modalAction('{{ url('/tempat/'.$unit->unit_id.'/show/'.$t->tempat_id) }}')" title="Detail">
                                 <i class="bi bi-info-circle"></i> Detail
                             </button>
                             <button class="btn btn-warning btn-sm" onclick="modalAction('{{ url('/tempat/'.$unit->unit_id.'/edit/'.$t->tempat_id) }}')" title="Edit">
