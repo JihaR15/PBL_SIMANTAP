@@ -149,8 +149,10 @@ class VerifikasiController extends Controller
             ]
         );
 
-        // ambil semua prioritas untuk TOPSIS
-        $allPrioritas = PrioritasModel::all();
+        // ambil semua prioritas yang laporan & perbaikan belum selesai untuk TOPSIS
+        $allPrioritas = PrioritasModel::whereHas('laporan.perbaikan', function ($q) {
+            $q->where('status_perbaikan', '!=', 'selesai');
+        })->orWhereDoesntHave('laporan.perbaikan')->get();
 
         // tipe kriteria benefit atau cost
         $tipeKriteria = [
@@ -333,6 +335,7 @@ class VerifikasiController extends Controller
         NotifikasiModel::create([
             'user_id' => $laporan->user_id,
             'laporan_id' => $laporan->laporan_id,
+            'sender_id' => auth()->user()->user_id,
             'isi_notifikasi' => 'Laporan Anda dengan ID #' . $laporan->laporan_id . ' telah ditolak.',
             'is_read' => false,
         ]);
