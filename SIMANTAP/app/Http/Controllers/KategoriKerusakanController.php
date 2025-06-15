@@ -128,6 +128,7 @@ class KategoriKerusakanController extends Controller
             $laporan->notifikasi()->delete();
             $laporan->perbaikan()->delete();
             $laporan->prioritas()->delete();
+            $laporan->feedback()->delete();
 
             $laporan->delete();
         }
