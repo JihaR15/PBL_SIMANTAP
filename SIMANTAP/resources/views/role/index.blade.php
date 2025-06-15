@@ -22,9 +22,9 @@
                                     <p class="card-title-desc">Daftar role pengguna yang tersedia dalam sistem. Anda dapat menambah, mengedit, atau menghapus data role sesuai kebutuhan.</p>
                                 </div>
 
-                                <div class="col-md-4 text-end align-items-center d-flex justify-content-end">
+                                {{-- <div class="col-md-4 text-end align-items-center d-flex justify-content-end">
                                     <button type="button" class="btn btn-success" onclick="modalAction('{{ url('role/create') }}')"><i class="fas fa-plus"></i> Tambah Role</button>
-                                </div>
+                                </div> --}}
                             </div>
 
                             <table id="datatable" class="table table-bordered table-striped table-sm dt-responsive nowrap"

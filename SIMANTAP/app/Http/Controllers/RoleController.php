@@ -36,9 +36,10 @@ class RoleController extends Controller
         return DataTables::of($roles)
             ->addIndexColumn()
             ->addColumn('action', function ($role) {
-                return '<button onclick="modalAction(\'' . url('/role/' . $role->role_id . '/show') . '\')"class="btn btn-sm btn-primary" onclick="editUser(' . $role->role_id . ')">Detail</button>
-                <button onclick="modalAction(\'' . url('/role/' . $role->role_id . '/edit') . '\')"class="btn btn-sm btn-warning" onclick="editUser(' . $role->role_id . ')">Edit</button>
-                <button onclick="modalAction(\'' . url('/role/' . $role->role_id . '/delete') .  '\')"class="btn btn-sm btn-danger">Delete</button>';
+                // return '<button onclick="modalAction(\'' . url('/role/' . $role->role_id . '/show') . '\')"class="btn btn-sm btn-primary" onclick="editUser(' . $role->role_id . ')">Detail</button>
+                // <button onclick="modalAction(\'' . url('/role/' . $role->role_id . '/edit') . '\')"class="btn btn-sm btn-warning" onclick="editUser(' . $role->role_id . ')">Edit</button>
+                // <button onclick="modalAction(\'' . url('/role/' . $role->role_id . '/delete') .  '\')"class="btn btn-sm btn-danger">Delete</button>';
+                return '<button onclick="modalAction(\'' . url('/role/' . $role->role_id . '/show') . '\')"class="btn btn-sm btn-primary" onclick="editUser(' . $role->role_id . ')">Detail</button>';
             })
             ->rawColumns(['action'])
             ->make(true);

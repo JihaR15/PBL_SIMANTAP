@@ -48,7 +48,7 @@ class UnitController extends Controller
                 // Untuk Fasum (Button edit tidak tersedia)
                 $detailBtn = '<button onclick="modalAction(\'' . url('/unit/' . $unit->unit_id . '/show') . '\')" class="btn btn-sm btn-primary w-50">Detail</button>';
                 $deleteBtn = '<button onclick="modalAction(\'' . url('/unit/' . $unit->unit_id . '/delete') . '\')" class="btn btn-sm btn-danger w-50">Hapus</button>';
-                return '<div class="d-flex gap-1 justify-content-center" style="min-width:180px;">' . $detailBtn . $deleteBtn . '</div>';
+                return '<div class="d-flex gap-1 justify-content-center" style="min-width:180px;">' . $detailBtn . '</div>';
     }
             })
             ->addColumn('tempat', function ($unit) {
